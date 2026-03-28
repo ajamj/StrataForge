@@ -2,6 +2,10 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use sf_core::domain::surface::Mesh;
 
+pub mod velocity;
+
+pub use velocity::VelocityState;
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum PickSource {
     Manual,
@@ -36,7 +40,9 @@ pub struct Horizon {
     pub color: [f32; 3],
     pub is_visible: bool,
     #[serde(skip)]
-    pub mesh: Option<Mesh>,
+    pub meshes: Vec<Mesh>,
+    #[serde(skip)]
+    pub intersection_lines: Vec<Vec<[f32; 3]>>,
 }
 
 impl Horizon {
@@ -47,7 +53,8 @@ impl Horizon {
             picks: Vec::new(),
             color,
             is_visible: true,
-            mesh: None,
+            meshes: Vec::new(),
+            intersection_lines: Vec::new(),
         }
     }
 
@@ -89,14 +96,14 @@ impl Horizon {
             let dx = ((max_x - min_x) * 0.1).max(10.0);
             let dy = ((max_y - min_y) * 0.1).max(10.0);
 
-            self.mesh = Some(interp.generate_mesh(
+            self.meshes = vec![interp.generate_mesh(
                 min_x - dx,
                 max_x + dx,
                 min_y - dy,
                 max_y + dy,
                 20,
                 20,
-            ));
+            )];
         }
     }
 }
@@ -133,7 +140,9 @@ pub struct Fault {
     pub sticks: Vec<FaultStick>,
     pub is_visible: bool,
     #[serde(skip)]
-    pub mesh: Option<Mesh>,
+    pub meshes: Vec<Mesh>,
+    #[serde(skip)]
+    pub intersection_lines: Vec<Vec<[f32; 3]>>,
 }
 
 impl Fault {
@@ -144,7 +153,8 @@ impl Fault {
             color,
             sticks: Vec::new(),
             is_visible: true,
-            mesh: None,
+            meshes: Vec::new(),
+            intersection_lines: Vec::new(),
         }
     }
 
@@ -167,7 +177,7 @@ impl Fault {
         use sf_compute::interpolation::{RbfInterpolator, RbfType};
 
         if let Ok(interp) = RbfInterpolator::new(&points, RbfType::ThinPlateSpline) {
-            self.mesh = Some(interp.generate_mesh_3d(20, 20));
+            self.meshes = vec![interp.generate_mesh_3d(20, 20)];
         }
     }
 }
@@ -177,6 +187,8 @@ pub struct InterpretationState {
     pub faults: Vec<Fault>,
     pub active_horizon_id: Option<Uuid>,
     pub active_fault_id: Option<Uuid>,
+    pub selected_horizon_ids: Vec<Uuid>,
+    pub selected_fault_ids: Vec<Uuid>,
     pub picking_mode: PickingMode,
 }
 
@@ -187,6 +199,8 @@ impl InterpretationState {
             faults: Vec::new(),
             active_horizon_id: None,
             active_fault_id: None,
+            selected_horizon_ids: Vec::new(),
+            selected_fault_ids: Vec::new(),
             picking_mode: PickingMode::None,
         }
     }
@@ -257,8 +271,8 @@ mod tests {
         fault.add_stick(stick2);
         
         fault.update_mesh();
-        assert!(fault.mesh.is_some());
-        let mesh = fault.mesh.as_ref().unwrap();
+        assert!(!fault.meshes.is_empty());
+        let mesh = &fault.meshes[0];
         assert!(mesh.vertices.len() > 0);
     }
 }
