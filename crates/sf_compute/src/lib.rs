@@ -4,6 +4,7 @@
 
 pub mod triangulation;
 pub mod resampling;
+pub mod seismic;
 
 pub use triangulation::triangulate_points;
 pub use resampling::resample_trajectory;
