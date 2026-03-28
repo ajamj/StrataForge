@@ -1,10 +1,10 @@
 # StrataForge Project State
 
 ## Current Position
-- **Phase:** v03-phase-a-mmap-io
-- **Plan:** v03-phase-a-mmap-io-PLAN.md
+- **Phase:** v03-phase-b-picking-interpolation
+- **Plan:** 2026-03-28-v03-phase-b-picking-interpolation.md
 - **Status:** In Progress
-- **Last Session:** v03-phase-a-mmap-io execution started.
+- **Last Session:** Task 2 (Seed & Auto-Track Algorithm) complete.
 
 ## Progress Overview
 - **Completed Phases:** 2

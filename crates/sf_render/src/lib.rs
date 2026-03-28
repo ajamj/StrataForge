@@ -7,8 +7,10 @@
 
 pub mod mesh;
 pub mod lines;
+pub mod points;
 pub mod scene;
 
 pub use mesh::MeshRenderer;
 pub use lines::LineRenderer;
+pub use points::PointRenderer;
 pub use scene::Scene;

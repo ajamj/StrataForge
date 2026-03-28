@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+use sf_core::domain::surface::Mesh;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum PickSource {
@@ -34,6 +35,8 @@ pub struct Horizon {
     pub picks: Vec<Pick>,
     pub color: [f32; 3],
     pub is_visible: bool,
+    #[serde(skip)]
+    pub mesh: Option<Mesh>,
 }
 
 impl Horizon {
@@ -44,11 +47,49 @@ impl Horizon {
             picks: Vec::new(),
             color,
             is_visible: true,
+            mesh: None,
         }
     }
 
     pub fn add_pick(&mut self, pick: Pick) {
         self.picks.push(pick);
+    }
+
+    pub fn update_mesh(&mut self) {
+        if self.picks.len() < 3 {
+            return;
+        }
+
+        use sf_compute::interpolation::{RbfInterpolator, RbfType};
+
+        let points: Vec<[f32; 3]> = self.picks.iter().map(|p| p.position).collect();
+        if let Ok(interp) = RbfInterpolator::new(&points, RbfType::ThinPlateSpline) {
+            // Find bounds
+            let mut min_x = f32::MAX;
+            let mut max_x = f32::MIN;
+            let mut min_y = f32::MAX;
+            let mut max_y = f32::MIN;
+
+            for p in &points {
+                min_x = min_x.min(p[0]);
+                max_x = max_x.max(p[0]);
+                min_y = min_y.min(p[1]);
+                max_y = max_y.max(p[1]);
+            }
+
+            // Expand bounds slightly
+            let dx = ((max_x - min_x) * 0.1).max(10.0);
+            let dy = ((max_y - min_y) * 0.1).max(10.0);
+
+            self.mesh = Some(interp.generate_mesh(
+                min_x - dx,
+                max_x + dx,
+                min_y - dy,
+                max_y + dy,
+                20,
+                20,
+            ));
+        }
     }
 }
 
