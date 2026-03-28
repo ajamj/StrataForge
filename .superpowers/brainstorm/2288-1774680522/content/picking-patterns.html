@@ -1,0 +1,52 @@
+<h2>Horizon Picking: Interaction Patterns</h2>
+<p class="subtitle">How should the user "pick" points on a seismic slice?</p>
+
+<div class="cards">
+  <div class="card" data-choice="point-click" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #222; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 40px;">
+      🖱️
+    </div>
+    <div class="card-body">
+      <h3>Point-by-Point</h3>
+      <p>Click individual points on the seismic reflector. High precision, but slower.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="continuous-paint" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #222; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 40px;">
+      🖌️
+    </div>
+    <div class="card-body">
+      <h3>Continuous Paint</h3>
+      <p>Hold the mouse and "draw" along the reflector. Fast coverage, then simplified into picks.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="auto-tracker" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #222; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 40px;">
+      ⚡
+    </div>
+    <div class="card-body">
+      <h3>Seed & Auto-Track</h3>
+      <p>Click once, and an algorithm automatically follows the peak/trough across the slice.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 20px;">
+  <div class="mockup">
+    <div class="mockup-header">Visual Feedback Concept</div>
+    <div class="mockup-body" style="padding: 15px; background: #111;">
+      <div style="border: 1px solid #444; height: 100px; position: relative; overflow: hidden; background: repeating-linear-gradient(0deg, #222, #222 10px, #111 10px, #111 20px);">
+        <!-- Mock seismic wave -->
+        <svg width="100%" height="100%">
+          <path d="M0 50 Q 50 10, 100 50 T 200 50 T 300 50" fill="none" stroke="#888" stroke-width="2" />
+          <!-- Mock pick -->
+          <circle cx="100" cy="50" r="4" fill="var(--warning)" />
+          <line x1="100" y1="0" x2="100" y2="100" stroke="rgba(var(--warning-rgb), 0.3)" stroke-dasharray="4" />
+        </svg>
+        <div style="position: absolute; top: 5px; left: 5px; font-size: 10px; color: var(--warning);">Pick: [Inline 245, Xline 410, Z 1502ms]</div>
+      </div>
+    </div>
+  </div>
+</div>

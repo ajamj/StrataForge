@@ -1,0 +1,41 @@
+<h2>v0.3 Design Summary: Interactive interpretation</h2>
+<p class="subtitle">From data viewing to active geological interpretation.</p>
+
+<div class="pros-cons">
+  <div class="pros">
+    <h4>Key Features</h4>
+    <ul>
+      <li><strong>Seed & Auto-Track:</strong> Click a reflector, and the app tracks the event across the slice.</li>
+      <li><strong>Smooth Surfaces:</strong> Turn sparse picks into continuous geological horizons using RBF interpolation.</li>
+      <li><strong>High-Performance I/O:</strong> Memory-mapped SEG-Y access for near-instant slice extraction.</li>
+      <li><strong>Picking Workflow:</strong> Integrated tools to create, edit, and manage multiple interpretation horizons.</li>
+    </ul>
+  </div>
+  <div class="cons">
+    <h4>Technical Focus</h4>
+    <ul>
+      <li>Implementing robust 2D/3D interpolation algorithms in <code>sf_compute</code>.</li>
+      <li>Refactoring <code>sf_io</code> to use <code>memmap2</code> for large seismic files.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 20px;">
+  <h3 class="label">Interpretation Loop</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="padding: 15px;">
+      <p style="text-align: center;"><strong>Slice View</strong> ➔ <strong>Pick (Seed)</strong> ➔ <strong>Auto-Track</strong> ➔ <strong>Generate Smooth Surface</strong> ➔ <strong>3D Visualization</strong></p>
+    </div>
+  </div>
+</div>
+
+<h3>Does this design and scope look right for Phase v0.3?</h3>
+<div class="options">
+  <div class="option" data-choice="approve" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Approve Design</h3>
+      <p>This is perfect. Let's move to the implementation plan.</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+<h2>Surface Generation Approaches</h2>
+<p class="subtitle">How should we turn sparse 2D picks into a 3D surface?</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">A: Delaunay Triangulation</div>
+    <div class="mockup-body" style="padding: 15px; text-align: center;">
+      <div style="font-size: 48px;">📐</div>
+      <p>Connects picks directly with triangles.</p>
+      <div class="pros-cons">
+        <div class="pros"><ul><li>Exact (passes through picks)</li><li>Fast computation</li></ul></div>
+        <div class="cons"><ul><li>Can be jagged/angular</li><li>No extrapolation</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">B: RBF Interpolation (Smooth)</div>
+    <div class="mockup-body" style="padding: 15px; text-align: center;">
+      <div style="font-size: 48px;">🌊</div>
+      <p>Creates a continuous mathematical surface.</p>
+      <div class="pros-cons">
+        <div class="pros"><ul><li>Looks "geological"</li><li>Handles irregular spacing</li></ul></div>
+        <div class="cons"><ul><li>Computationally expensive</li><li>May "overshoot" in gaps</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="triangulation" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Triangulation (Mesh)</h3>
+      <p>Focus on precision and speed. Use the existing <code>sf_compute</code> triangulation logic.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="interpolation" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Interpolation (Smooth)</h3>
+      <p>Focus on visual quality. Implement a Radial Basis Function (RBF) or Kriging approach.</p>
+    </div>
+  </div>
+</div>

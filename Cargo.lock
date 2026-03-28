@@ -3511,7 +3511,9 @@ name = "sf_compute"
 version = "0.1.0"
 dependencies = [
  "sf_core",
+ "sf_io",
  "spade",
+ "tempfile",
  "thiserror 1.0.69",
  "uuid",
 ]
@@ -3543,6 +3545,7 @@ name = "sf_io"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "memmap2",
  "sf_core",
  "tempfile",
  "thiserror 1.0.69",
