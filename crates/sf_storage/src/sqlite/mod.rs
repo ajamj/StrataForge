@@ -61,4 +61,26 @@ mod tests {
         
         Ok(())
     }
+
+    #[test]
+    fn test_structural_schema() -> Result<()> {
+        let temp_dir = TempDir::new().unwrap();
+        let db_path = temp_dir.path().join("test_structural.sqlite");
+        
+        let conn = init_database(&db_path)?;
+        
+        // Verify tables exist
+        let mut stmt = conn.prepare("SELECT name FROM sqlite_master WHERE type='table'")?;
+        let table_iter = stmt.query_map([], |row| row.get::<_, String>(0))?;
+        
+        let mut tables = Vec::new();
+        for table in table_iter {
+            tables.push(table?);
+        }
+        
+        assert!(tables.contains(&"faults".to_string()), "faults table should exist");
+        assert!(tables.contains(&"fault_sticks".to_string()), "fault_sticks table should exist");
+        
+        Ok(())
+    }
 }

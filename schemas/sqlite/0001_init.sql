@@ -87,3 +87,22 @@ CREATE INDEX IF NOT EXISTS idx_datasets_type ON datasets(type);
 CREATE INDEX IF NOT EXISTS idx_wells_name ON wells(name);
 CREATE INDEX IF NOT EXISTS idx_trajectories_well ON trajectories(well_id);
 CREATE INDEX IF NOT EXISTS idx_logs_well ON logs(well_id);
+
+-- Faults
+CREATE TABLE IF NOT EXISTS faults (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    color_r REAL NOT NULL,
+    color_g REAL NOT NULL,
+    color_b REAL NOT NULL,
+    is_visible INTEGER NOT NULL DEFAULT 1
+);
+
+-- Fault Sticks
+CREATE TABLE IF NOT EXISTS fault_sticks (
+    id TEXT PRIMARY KEY,
+    fault_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    picks_blob BLOB NOT NULL, -- Serialized Vec<[f32; 3]>
+    FOREIGN KEY(fault_id) REFERENCES faults(id) ON DELETE CASCADE
+);
