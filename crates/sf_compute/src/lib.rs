@@ -5,6 +5,8 @@
 pub mod triangulation;
 pub mod resampling;
 pub mod seismic;
+pub mod interpolation;
 
 pub use triangulation::triangulate_points;
 pub use resampling::resample_trajectory;
+pub use interpolation::{RbfInterpolator, RbfType};

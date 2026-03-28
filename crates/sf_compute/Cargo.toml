@@ -8,6 +8,7 @@ sf_core.workspace = true
 sf_io.workspace = true
 spade.workspace = true
 thiserror.workspace = true
+nalgebra.workspace = true
 
 [dev-dependencies]
 uuid.workspace = true
