@@ -2,7 +2,7 @@ use eframe::egui;
 use uuid::Uuid;
 
 use crate::widgets::viewport::ViewportWidget;
-use crate::interpretation::{InterpretationState, Horizon, PickingMode};
+use crate::interpretation::{InterpretationState, Horizon, Fault, PickingMode};
 use sf_compute::seismic::{SeismicVolume, InMemoryProvider};
 
 pub struct StrataForgeApp {
@@ -23,6 +23,13 @@ impl StrataForgeApp {
         horizon.id = h_id;
         interpretation.add_horizon(horizon);
         interpretation.active_horizon_id = Some(h_id);
+
+        // Add a default fault for demo
+        let f_id = Uuid::new_v4();
+        let mut fault = Fault::new("Fault A".to_string(), [1.0, 0.0, 0.0]);
+        fault.id = f_id;
+        interpretation.add_fault(fault);
+        interpretation.active_fault_id = Some(f_id);
 
         // Create a dummy seismic volume for interaction demo
         let sample_count = 512;
@@ -75,6 +82,7 @@ impl eframe::App for StrataForgeApp {
                 ui.selectable_value(&mut self.interpretation.picking_mode, PickingMode::Seed, "Seed");
                 ui.selectable_value(&mut self.interpretation.picking_mode, PickingMode::AutoTrack, "Auto-Track");
                 ui.selectable_value(&mut self.interpretation.picking_mode, PickingMode::Manual, "Manual");
+                ui.selectable_value(&mut self.interpretation.picking_mode, PickingMode::SketchFault, "Sketch Fault");
             });
         });
 
@@ -86,7 +94,7 @@ impl eframe::App for StrataForgeApp {
                 ui.label("None loaded");
             });
 
-            ui.collapsing("Interpretation", |ui| {
+            ui.collapsing("Horizons", |ui| {
                 if ui.button("Add Horizon").clicked() {
                     let name = format!("Horizon {}", self.interpretation.horizons.len() + 1);
                     self.interpretation.add_horizon(Horizon::new(name, [1.0, 1.0, 0.0]));
@@ -104,6 +112,26 @@ impl eframe::App for StrataForgeApp {
                     });
                 }
                 self.interpretation.active_horizon_id = active_id;
+            });
+
+            ui.collapsing("Faults", |ui| {
+                if ui.button("Add Fault").clicked() {
+                    let name = format!("Fault {}", self.interpretation.faults.len() + 1);
+                    self.interpretation.add_fault(Fault::new(name, [1.0, 0.0, 0.0]));
+                }
+                ui.separator();
+                let mut active_id = self.interpretation.active_fault_id;
+                for fault in &mut self.interpretation.faults {
+                    ui.horizontal(|ui| {
+                        let is_active = active_id == Some(fault.id);
+                        if ui.selectable_label(is_active, &fault.name).clicked() {
+                            active_id = Some(fault.id);
+                        }
+                        ui.checkbox(&mut fault.is_visible, "");
+                        ui.label(format!("({} sticks)", fault.sticks.len()));
+                    });
+                }
+                self.interpretation.active_fault_id = active_id;
             });
             
             ui.collapsing("Wells", |ui| {

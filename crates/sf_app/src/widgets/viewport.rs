@@ -6,12 +6,14 @@ use sf_compute::tracking::{snap_to_extrema, track_event};
 
 pub struct ViewportWidget {
     pub target_format: Option<eframe::wgpu::TextureFormat>,
+    pub sketch_points: Vec<[f32; 3]>,
 }
 
 impl ViewportWidget {
     pub fn new() -> Self {
         Self {
             target_format: None,
+            sketch_points: Vec::new(),
         }
     }
 
@@ -21,9 +23,41 @@ impl ViewportWidget {
         interpretation: &mut InterpretationState,
         volume: Option<&SeismicVolume>,
     ) {
-        let (rect, response) = ui.allocate_at_least(ui.available_size(), egui::Sense::click());
+        let (rect, response) = ui.allocate_at_least(ui.available_size(), egui::Sense::drag());
         
-        if response.clicked() {
+        if interpretation.picking_mode == PickingMode::SketchFault {
+            if response.drag_started() {
+                self.sketch_points.clear();
+            }
+            if response.dragged() {
+                if let Some(pos) = response.interact_pointer_pos() {
+                    let rel_x = (pos.x - rect.min.x) / rect.width();
+                    let rel_y = (pos.y - rect.min.y) / rect.height();
+                    let iline = (rel_x * 500.0) as f32;
+                    let xline = (rel_y * 500.0) as f32;
+                    let sample = 250.0f32; // Fixed depth for 2D sketch
+                    
+                    // Simple distance check to avoid redundant points
+                    if self.sketch_points.is_empty() || 
+                       (pos.to_vec2() - egui::pos2(
+                           rect.min.x + (self.sketch_points.last().unwrap()[0]/500.0)*rect.width(),
+                           rect.min.y + (self.sketch_points.last().unwrap()[1]/500.0)*rect.height()
+                       ).to_vec2()).length() > 5.0 
+                    {
+                        self.sketch_points.push([iline, xline, sample]);
+                    }
+                }
+            }
+            if response.drag_released() {
+                if !self.sketch_points.is_empty() {
+                    if let Some(fault) = interpretation.active_fault_mut() {
+                        fault.add_stick(crate::interpretation::FaultStick::new(self.sketch_points.clone()));
+                        fault.update_mesh();
+                    }
+                    self.sketch_points.clear();
+                }
+            }
+        } else if response.clicked() {
             if let Some(pos) = response.interact_pointer_pos() {
                 if interpretation.picking_mode != PickingMode::None {
                     self.handle_click(pos, rect, interpretation, volume);
@@ -44,6 +78,7 @@ impl ViewportWidget {
 
         // 2D Overlay Visualization (Fallback for stub 3D renderer)
         self.draw_overlays(ui, rect, interpretation);
+        self.draw_fault_overlays(ui, rect, interpretation);
     }
 
     fn draw_overlays(&self, ui: &mut egui::Ui, rect: egui::Rect, interpretation: &InterpretationState) {
@@ -83,6 +118,74 @@ impl ViewportWidget {
                         painter.line_segment([pts[0], pts[1]], (0.5, color.linear_multiply(0.3)));
                         painter.line_segment([pts[1], pts[2]], (0.5, color.linear_multiply(0.3)));
                         painter.line_segment([pts[2], pts[0]], (0.5, color.linear_multiply(0.3)));
+                    }
+                }
+            }
+        }
+    }
+
+    fn draw_fault_overlays(&self, ui: &mut egui::Ui, rect: egui::Rect, interpretation: &InterpretationState) {
+        let painter = ui.painter().with_clip_rect(rect);
+
+        // Draw active sketch
+        if !self.sketch_points.is_empty() {
+            let color = egui::Color32::YELLOW;
+            let pts: Vec<egui::Pos2> = self.sketch_points.iter().map(|p| {
+                egui::pos2(
+                    rect.min.x + (p[0] / 500.0) * rect.width(),
+                    rect.min.y + (p[1] / 500.0) * rect.height(),
+                )
+            }).collect();
+            
+            for i in 0..pts.len() - 1 {
+                painter.line_segment([pts[i], pts[i+1]], (2.0, color));
+            }
+        }
+
+        for fault in &interpretation.faults {
+            if !fault.is_visible { continue; }
+            
+            let color = egui::Color32::from_rgb(
+                (fault.color[0] * 255.0) as u8,
+                (fault.color[1] * 255.0) as u8,
+                (fault.color[2] * 255.0) as u8,
+            );
+
+            // Draw Sticks
+            for stick in &fault.sticks {
+                let pts: Vec<egui::Pos2> = stick.picks.iter().map(|p| {
+                    egui::pos2(
+                        rect.min.x + (p[0] / 500.0) * rect.width(),
+                        rect.min.y + (p[1] / 500.0) * rect.height(),
+                    )
+                }).collect();
+                
+                for i in 0..pts.len() - 1 {
+                    painter.line_segment([pts[i], pts[i+1]], (1.5, color));
+                }
+                for pt in &pts {
+                    painter.circle_filled(*pt, 2.0, color);
+                }
+            }
+
+            // Draw Fault Mesh (wireframe)
+            if let Some(mesh) = &fault.mesh {
+                for chunk in mesh.indices.chunks(3) {
+                    if chunk.len() == 3 {
+                        let p1 = mesh.vertices[chunk[0] as usize];
+                        let p2 = mesh.vertices[chunk[1] as usize];
+                        let p3 = mesh.vertices[chunk[2] as usize];
+
+                        let pts = [p1, p2, p3].map(|p| {
+                            egui::pos2(
+                                rect.min.x + (p[0] / 500.0) * rect.width(),
+                                rect.min.y + (p[1] / 500.0) * rect.height(),
+                            )
+                        });
+
+                        painter.line_segment([pts[0], pts[1]], (0.5, color.linear_multiply(0.5)));
+                        painter.line_segment([pts[1], pts[2]], (0.5, color.linear_multiply(0.5)));
+                        painter.line_segment([pts[2], pts[0]], (0.5, color.linear_multiply(0.5)));
                     }
                 }
             }
@@ -152,6 +255,9 @@ impl egui_wgpu::CallbackTrait for ViewportCallback {
         if !resources.contains::<sf_render::Renderer>() {
             resources.insert(sf_render::Renderer::new(device, self.format));
         }
+        if !resources.contains::<sf_render::Scene>() {
+            resources.insert(sf_render::Scene::new());
+        }
         Vec::new()
     }
 
@@ -161,8 +267,12 @@ impl egui_wgpu::CallbackTrait for ViewportCallback {
         render_pass: &mut egui_wgpu::wgpu::RenderPass<'a>,
         resources: &'a egui_wgpu::CallbackResources,
     ) {
-        if let Some(renderer) = resources.get::<sf_render::Renderer>() {
-            renderer.render(render_pass);
+        let renderer = resources.get::<sf_render::Renderer>();
+        let scene = resources.get::<sf_render::Scene>();
+
+        if let (Some(renderer), Some(scene)) = (renderer, scene) {
+            let camera_pos = [0.0, 0.0, 5.0]; // Default camera
+            renderer.render(render_pass, scene, camera_pos);
         }
     }
 }

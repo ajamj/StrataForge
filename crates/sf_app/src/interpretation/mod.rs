@@ -107,13 +107,22 @@ pub enum PickingMode {
     Seed,
     AutoTrack,
     Manual,
+    SketchFault,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FaultStick {
     pub id: Uuid,
-    pub name: String,
     pub picks: Vec<[f32; 3]>,
+}
+
+impl FaultStick {
+    pub fn new(picks: Vec<[f32; 3]>) -> Self {
+        Self {
+            id: Uuid::new_v4(),
+            picks,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -136,6 +145,29 @@ impl Fault {
             sticks: Vec::new(),
             is_visible: true,
             mesh: None,
+        }
+    }
+
+    pub fn add_stick(&mut self, stick: FaultStick) {
+        self.sticks.push(stick);
+    }
+
+    pub fn update_mesh(&mut self) {
+        let mut points = Vec::new();
+        for stick in &self.sticks {
+            for &pick in &stick.picks {
+                points.push(pick);
+            }
+        }
+
+        if points.len() < 3 {
+            return;
+        }
+
+        use sf_compute::interpolation::{RbfInterpolator, RbfType};
+
+        if let Ok(interp) = RbfInterpolator::new(&points, RbfType::ThinPlateSpline) {
+            self.mesh = Some(interp.generate_mesh_3d(20, 20));
         }
     }
 }
@@ -174,6 +206,14 @@ impl InterpretationState {
     pub fn active_horizon_mut(&mut self) -> Option<&mut Horizon> {
         self.active_horizon_id.and_then(|id| self.horizons.iter_mut().find(|h| h.id == id))
     }
+
+    pub fn active_fault(&self) -> Option<&Fault> {
+        self.active_fault_id.and_then(|id| self.faults.iter().find(|f| f.id == id))
+    }
+
+    pub fn active_fault_mut(&mut self) -> Option<&mut Fault> {
+        self.active_fault_id.and_then(|id| self.faults.iter_mut().find(|f| f.id == id))
+    }
 }
 
 #[cfg(test)]
@@ -196,12 +236,29 @@ mod tests {
     }
 
     #[test]
-    fn test_picking_logic() {
-        let mut horizon = Horizon::new("H1".to_string(), [1.0, 0.0, 0.0]);
-        let pick = Pick::new([100.0, 200.0, 10.0], PickSource::Manual);
-        horizon.add_pick(pick);
+    fn test_fault_sketching() {
+        let mut fault = Fault::new("F1".to_string(), [1.0, 0.0, 0.0]);
+        let stick1 = FaultStick::new(vec![
+            [10.0, 10.0, 250.0],
+            [20.0, 20.0, 250.0],
+            [30.0, 30.0, 250.0],
+        ]);
+        fault.add_stick(stick1);
         
-        assert_eq!(horizon.picks.len(), 1);
-        assert_eq!(horizon.picks[0].position, [100.0, 200.0, 10.0]);
+        assert_eq!(fault.sticks.len(), 1);
+        assert_eq!(fault.sticks[0].picks.len(), 3);
+
+        // Add another stick to make it possible to form a surface
+        let stick2 = FaultStick::new(vec![
+            [10.0, 15.0, 250.0],
+            [20.0, 25.0, 250.0],
+            [30.0, 35.0, 250.0],
+        ]);
+        fault.add_stick(stick2);
+        
+        fault.update_mesh();
+        assert!(fault.mesh.is_some());
+        let mesh = fault.mesh.as_ref().unwrap();
+        assert!(mesh.vertices.len() > 0);
     }
 }
