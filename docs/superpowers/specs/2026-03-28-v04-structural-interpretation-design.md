@@ -14,12 +14,16 @@ StrataForge v0.4 introduces advanced structural interpretation capabilities, mov
 - **Plane-First Logic:** Any addition or modification to a Fault Stick triggers an immediate update to the associated fault surface.
 
 ### 2.2. Enhanced RBF Engine (`sf_compute`)
-- **Near-Vertical Modeling:** Adapt the RBF (Radial Basis Function) engine to handle high-angle and vertical fault planes, which typically challenge standard surface interpolation.
+- **3D RBF Implementation:** Transition from 2D surface interpolation to a true 3D RBF approach (e.g., using Hermite RBFs) to handle high-angle and vertical fault planes, which typically challenge standard Z=f(X,Y) surface interpolation.
 - **Stick-to-Surface Conversion:** Logic to turn sparse 3D sticks into a continuous mathematical representation of a fault plane.
 
-### 2.3. Transparency & Depth Rendering (`sf_render`)
+### 2.3. Transparency & 3D Rendering (`sf_render`)
+- **Baseline 3D Renderer:** First, transition the current dummy `PaintCallback` into a functional 3D render pass capable of displaying primitive geometry.
 - **Alpha Blending:** Update the `wgpu` pipelines to support semi-transparent surface rendering.
 - **Depth Sorting:** Implement basic depth-sorting for transparent objects to ensure correct visual alignment when viewing faults over seismic slices.
+
+### 2.5. Data Persistence (`sf_storage`)
+- **SQLite Integration:** Update the project schema to store Faults, Fault Sticks, and associated pick data, ensuring interpretation work is preserved across sessions.
 
 ### 2.4. Structural UI Module (`sf_app`)
 - **Structural Explorer:** A dedicated tab or tree-view in the interpretation panel for managing Fault systems.
