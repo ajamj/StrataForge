@@ -21,6 +21,8 @@ anyhow.workspace = true
 tokio.workspace = true
 tonic.workspace = true
 prost.workspace = true
+serde.workspace = true
+uuid.workspace = true
 
 [build-dependencies]
 tonic-build.workspace = true

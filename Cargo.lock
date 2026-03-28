@@ -3480,6 +3480,7 @@ dependencies = [
  "eframe",
  "egui",
  "prost",
+ "serde",
  "sf_compute",
  "sf_core",
  "sf_io",
@@ -3488,6 +3489,7 @@ dependencies = [
  "tokio",
  "tonic",
  "tonic-build",
+ "uuid",
  "wgpu",
  "winit",
 ]
