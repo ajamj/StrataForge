@@ -48,6 +48,8 @@ pub struct StrataForgeApp {
     volumetric_result: Option<f32>,
     wells: WellState,
     theme_manager: ThemeManager,
+    current_project_path: Option<std::path::PathBuf>,
+    recent_projects: Vec<std::path::PathBuf>,
 }
 
 impl StrataForgeApp {
@@ -128,6 +130,8 @@ impl StrataForgeApp {
             velocity: VelocityState::new(),
             volumetric_result: None,
             theme_manager,
+            current_project_path: None,
+            recent_projects: Vec::new(),
         }
     }
 
