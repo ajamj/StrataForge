@@ -31,3 +31,15 @@ impl AiClient {
         Ok((response.mask, response.confidence))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_ai_client_placeholder() {
+        // This test will fail if no server is running, so we keep it as a placeholder
+        // or we could use a mock if tonic supports it easily.
+        // For now, let's just ensure it compiles.
+    }
+}
