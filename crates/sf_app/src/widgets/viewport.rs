@@ -4,11 +4,15 @@ use crate::interpretation::{InterpretationState, Pick, PickSource, PickingMode};
 use sf_compute::seismic::SeismicVolume;
 use sf_compute::tracking::{snap_to_extrema, track_event};
 
-pub struct ViewportWidget {}
+pub struct ViewportWidget {
+    pub target_format: Option<eframe::wgpu::TextureFormat>,
+}
 
 impl ViewportWidget {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            target_format: None,
+        }
     }
 
     pub fn ui(
@@ -27,11 +31,13 @@ impl ViewportWidget {
             }
         }
 
-        let callback = egui_wgpu::Callback::new_paint_callback(
-            rect,
-            DummyCallback {},
-        );
-        ui.painter().add(callback);
+        if let Some(format) = self.target_format {
+            let callback = egui_wgpu::Callback::new_paint_callback(
+                rect,
+                ViewportCallback { format },
+            );
+            ui.painter().add(callback);
+        }
         
         // Add a visual fallback to confirm the widget area is correctly allocated
         ui.painter().rect_stroke(rect, 0.0, (1.0, egui::Color32::DARK_GRAY));
@@ -130,26 +136,33 @@ impl ViewportWidget {
     }
 }
 
-struct DummyCallback {}
+struct ViewportCallback {
+    format: eframe::wgpu::TextureFormat,
+}
 
-impl egui_wgpu::CallbackTrait for DummyCallback {
+impl egui_wgpu::CallbackTrait for ViewportCallback {
     fn prepare(
         &self,
-        _device: &egui_wgpu::wgpu::Device,
+        device: &egui_wgpu::wgpu::Device,
         _queue: &egui_wgpu::wgpu::Queue,
         _screen_descriptor: &egui_wgpu::ScreenDescriptor,
         _egui_encoder: &mut egui_wgpu::wgpu::CommandEncoder,
-        _resources: &mut egui_wgpu::CallbackResources,
+        resources: &mut egui_wgpu::CallbackResources,
     ) -> Vec<egui_wgpu::wgpu::CommandBuffer> {
+        if !resources.contains::<sf_render::Renderer>() {
+            resources.insert(sf_render::Renderer::new(device, self.format));
+        }
         Vec::new()
     }
 
     fn paint<'a>(
         &'a self,
         _info: egui::PaintCallbackInfo,
-        _render_pass: &mut egui_wgpu::wgpu::RenderPass<'a>,
-        _resources: &'a egui_wgpu::CallbackResources,
+        render_pass: &mut egui_wgpu::wgpu::RenderPass<'a>,
+        resources: &'a egui_wgpu::CallbackResources,
     ) {
-        // No-op for now
+        if let Some(renderer) = resources.get::<sf_render::Renderer>() {
+            renderer.render(render_pass);
+        }
     }
 }

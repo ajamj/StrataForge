@@ -17,8 +17,6 @@
 - [x] CLI commands (init, import, list)
 - [x] Desktop app shell (egui + wgpu)
 
-**Target:** Q2 2026 (Achieved early)
-
 ---
 
 ## v0.2 - Interactive Seismic & AI Integration (Completed)
@@ -37,21 +35,35 @@
   - [x] Python AI Service (PyTorch + gRPC Server)
   - [x] Rust gRPC Client (Tonic)
 
-**Target:** Q3 2026 (Achieved early)
+---
+
+## v0.3 - SEG-Y + Slice + Picks (Completed)
+
+**Status:** Completed
+
+### Completed Features
+- [x] Real SEG-Y header parsing (EBCDIC/Binary)
+- [x] High-performance Memory-mapped volume access (`memmap2`)
+- [x] Interactive Horizon Picking
+  - [x] 1D Snap-to-extrema
+  - [x] 2D Seed & Auto-Track algorithm
+- [x] Interpretation Workflow
+  - [x] Interpretation Explorer (Horizon management)
+  - [x] Picking Toolbar (Mode selection)
+- [x] Smooth Surface Generation (RBF Interpolation)
+- [x] Viewport Visualization (Picks & Smooth Meshes)
 
 ---
 
-## v0.3 - SEG-Y + Slice + Picks (Next)
+## v0.4 - Advanced Features (Next)
 
 **Status:** Planned
 
-### Features
-- [ ] Real SEG-Y header parsing
-- [ ] Memory-mapped volume access
-- [ ] Interactive horizon picking
-- [ ] Picking mode toggle in UI
-- [ ] Surface generation from picks
+### Planned Features
+- [ ] Multi-volume support
+- [ ] Fault stick picking and modeling
+- [ ] Depth conversion (Simple velocity models)
+- [ ] Surface-to-surface intersection
+- [ ] Export interpreted horizons (XYZ/SEG-Y)
 
 **Target:** Q4 2026
-
-... (rest of roadmap)

@@ -13,8 +13,10 @@ pub struct StrataForgeApp {
 }
 
 impl StrataForgeApp {
-    pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
+    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         let mut interpretation = InterpretationState::new();
+        
+        let target_format = cc.wgpu_render_state.as_ref().map(|rs| rs.target_format);
         // Add a default horizon for demo
         let h_id = Uuid::new_v4();
         let mut horizon = Horizon::new("Horizon A".to_string(), [0.0, 1.0, 0.0]);
@@ -47,9 +49,12 @@ impl StrataForgeApp {
         };
         let volume = Some(SeismicVolume::new(Box::new(provider)));
 
+        let mut viewport = ViewportWidget::new();
+        viewport.target_format = target_format;
+
         Self {
             name: "MyField".to_owned(),
-            viewport: ViewportWidget::new(),
+            viewport,
             interpretation,
             volume,
         }

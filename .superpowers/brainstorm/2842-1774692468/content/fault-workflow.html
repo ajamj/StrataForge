@@ -1,0 +1,45 @@
+<h2>Fault Interpretation: Workflow Design</h2>
+<p class="subtitle">How should we manage fault sticks and planes?</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Option A: Stick-Centric</div>
+    <div class="mockup-body" style="padding: 15px; text-align: center;">
+      <div style="font-size: 48px;">🥖</div>
+      <p>Pick individual line segments. Group them into a "Fault Plane" manually.</p>
+      <div class="pros-cons">
+        <div class="pros"><ul><li>Very flexible</li><li>Good for complex geometry</li></ul></div>
+        <div class="cons"><ul><li>More "click-heavy"</li><li>Harder to visualize as surface</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Option B: Plane-First</div>
+    <div class="mockup-body" style="padding: 15px; text-align: center;">
+      <div style="font-size: 48px;">🛡️</div>
+      <p>Create a "Fault Object" first. All picks on that fault automatically update a real-time surface.</p>
+      <div class="pros-cons">
+        <div class="pros"><ul><li>Fast visualization</li><li>Intuitive interpretation</li></ul></div>
+        <div class="cons"><ul><li>Automatic modeling can be messy</li><li>Less control over individual picks</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="stick-centric" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Stick-Centric Workflow</h3>
+      <p>Interpret classic seismic "sticks" on sections. Model the plane later as a separate step.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="plane-first" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Plane-First Workflow</h3>
+      <p>Active 3D surface modeling while picking. See the fault grow as you interpret.</p>
+    </div>
+  </div>
+</div>

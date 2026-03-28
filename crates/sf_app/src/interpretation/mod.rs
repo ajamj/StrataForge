@@ -62,7 +62,15 @@ impl Horizon {
 
         use sf_compute::interpolation::{RbfInterpolator, RbfType};
 
-        let points: Vec<[f32; 3]> = self.picks.iter().map(|p| p.position).collect();
+        // Decimate points if there are too many for RBF (O(N^3))
+        let max_rbf_points = 500;
+        let points: Vec<[f32; 3]> = if self.picks.len() > max_rbf_points {
+            let step = self.picks.len() / max_rbf_points;
+            self.picks.iter().step_by(step).take(max_rbf_points).map(|p| p.position).collect()
+        } else {
+            self.picks.iter().map(|p| p.position).collect()
+        };
+
         if let Ok(interp) = RbfInterpolator::new(&points, RbfType::ThinPlateSpline) {
             // Find bounds
             let mut min_x = f32::MAX;
@@ -101,9 +109,42 @@ pub enum PickingMode {
     Manual,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FaultStick {
+    pub id: Uuid,
+    pub name: String,
+    pub picks: Vec<[f32; 3]>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Fault {
+    pub id: Uuid,
+    pub name: String,
+    pub color: [f32; 3],
+    pub sticks: Vec<FaultStick>,
+    pub is_visible: bool,
+    #[serde(skip)]
+    pub mesh: Option<Mesh>,
+}
+
+impl Fault {
+    pub fn new(name: String, color: [f32; 3]) -> Self {
+        Self {
+            id: Uuid::new_v4(),
+            name,
+            color,
+            sticks: Vec::new(),
+            is_visible: true,
+            mesh: None,
+        }
+    }
+}
+
 pub struct InterpretationState {
     pub horizons: Vec<Horizon>,
+    pub faults: Vec<Fault>,
     pub active_horizon_id: Option<Uuid>,
+    pub active_fault_id: Option<Uuid>,
     pub picking_mode: PickingMode,
 }
 
@@ -111,13 +152,19 @@ impl InterpretationState {
     pub fn new() -> Self {
         Self {
             horizons: Vec::new(),
+            faults: Vec::new(),
             active_horizon_id: None,
+            active_fault_id: None,
             picking_mode: PickingMode::None,
         }
     }
 
     pub fn add_horizon(&mut self, horizon: Horizon) {
         self.horizons.push(horizon);
+    }
+
+    pub fn add_fault(&mut self, fault: Fault) {
+        self.faults.push(fault);
     }
 
     pub fn active_horizon(&self) -> Option<&Horizon> {

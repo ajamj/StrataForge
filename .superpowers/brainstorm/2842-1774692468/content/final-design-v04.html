@@ -1,0 +1,41 @@
+<h2>v0.4 Design Summary: Structural Interpretation</h2>
+<p class="subtitle">Advanced tools for fault modeling and structural breaks.</p>
+
+<div class="pros-cons">
+  <div class="pros">
+    <h4>Key Features</h4>
+    <ul>
+      <li><strong>Plane-First Workflow:</strong> Interactive fault objects that update in real-time as you pick.</li>
+      <li><strong>Semi-Transparent Planes:</strong> Visual feedback allowing you to see through faults to the underlying seismic data.</li>
+      <li><strong>Structural Explorer:</strong> Dedicated tree-view for managing fault systems and their associated sticks.</li>
+      <li><strong>RBF Fault Modeling:</strong> Adapting the RBF engine to handle near-vertical fault plane interpolation.</li>
+    </ul>
+  </div>
+  <div class="cons">
+    <h4>Technical Focus</h4>
+    <ul>
+      <li>Enhancing the <code>sf_render</code> crate to support transparency and depth-sorting for surfaces.</li>
+      <li>Extending the interpretation state to distinguish between Horizons and Faults.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 20px;">
+  <h3 class="label">Structural Loop</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="padding: 15px;">
+      <p style="text-align: center;"><strong>Define Fault</strong> ➔ <strong>Pick Sticks</strong> ➔ <strong>Auto-Update Surface</strong> ➔ <strong>Verify Alignment (Transparent)</strong></p>
+    </div>
+  </div>
+</div>
+
+<h3>Does this design and scope look right for the first part of Phase v0.4?</h3>
+<div class="options">
+  <div class="option" data-choice="approve" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Approve Design</h3>
+      <p>This is perfect. Let's move to the implementation plan.</p>
+    </div>
+  </div>
+</div>
