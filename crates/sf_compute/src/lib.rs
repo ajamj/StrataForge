@@ -2,6 +2,7 @@
 //!
 //! Provides algorithms for triangulation, resampling, and other computations.
 
+pub mod clipping;
 pub mod interpolation;
 pub mod resampling;
 pub mod seismic;
@@ -10,6 +11,7 @@ pub mod triangulation;
 pub mod velocity;
 pub mod volumetrics;
 
+pub use clipping::{intersect_mesh_plane, update_surface_intersections, Plane};
 pub use interpolation::{RbfInterpolator, RbfType};
 pub use resampling::resample_trajectory;
 pub use tracking::{snap_to_extrema, track_event};
