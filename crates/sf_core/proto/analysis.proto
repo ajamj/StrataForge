@@ -1,0 +1,17 @@
+syntax = "proto3";
+package strataforge.analysis;
+
+service Detection {
+  rpc DetectFaults (SliceRequest) returns (DetectionResponse);
+}
+
+message SliceRequest {
+  bytes data = 1;
+  uint32 width = 2;
+  uint32 height = 3;
+}
+
+message DetectionResponse {
+  bytes mask = 1;
+  float confidence = 2;
+}
