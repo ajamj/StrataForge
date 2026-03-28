@@ -136,7 +136,7 @@ impl LasParser {
         // Parse mnemonic and unit (e.g., "DEPT.M")
         if let Some(dot_pos) = mnemonic_unit.find('.') {
             let mnemonic = mnemonic_unit[..dot_pos].trim().to_string();
-            let unit = mnemonic_unit[dot_pos + 1..].trim().split_whitespace().next().unwrap_or("").to_string();
+            let unit = mnemonic_unit[dot_pos + 1..].split_whitespace().next().unwrap_or("").to_string();
             
             // Skip if mnemonic looks like a section header
             if mnemonic.len() > 10 || mnemonic.is_empty() {
