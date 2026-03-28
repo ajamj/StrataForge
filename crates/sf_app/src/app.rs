@@ -4,18 +4,20 @@ use uuid::Uuid;
 use crate::widgets::viewport::ViewportWidget;
 use crate::interpretation::{InterpretationState, Horizon, Fault, PickingMode};
 use sf_compute::seismic::{SeismicVolume, InMemoryProvider};
+use sf_storage::project::SeismicVolumeEntry;
 
 pub struct StrataForgeApp {
     name: String,
     viewport: ViewportWidget,
     interpretation: InterpretationState,
     volume: Option<SeismicVolume>,
+    seismic_volumes: Vec<SeismicVolumeEntry>,
 }
 
 impl StrataForgeApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         let mut interpretation = InterpretationState::new();
-        
+
         let target_format = cc.wgpu_render_state.as_ref().map(|rs| rs.target_format);
         // Add a default horizon for demo
         let h_id = Uuid::new_v4();
@@ -36,7 +38,7 @@ impl StrataForgeApp {
         let inline_range = (0, 500);
         let crossline_range = (0, 500);
         let mut data = vec![0.0; 501 * 501 * sample_count];
-        
+
         // Add a "reflector" at sample 250
         for i in 0..501 {
             for j in 0..501 {
@@ -59,11 +61,29 @@ impl StrataForgeApp {
         let mut viewport = ViewportWidget::new();
         viewport.target_format = target_format;
 
+        let seismic_volumes = vec![
+            SeismicVolumeEntry {
+                id: Uuid::new_v4().to_string(),
+                name: "Full Stack".to_string(),
+                path: "seismic/full_stack.segy".to_string(),
+                is_visible: true,
+                channel_assignment: 0,
+            },
+            SeismicVolumeEntry {
+                id: Uuid::new_v4().to_string(),
+                name: "Near Stack".to_string(),
+                path: "seismic/near_stack.segy".to_string(),
+                is_visible: false,
+                channel_assignment: 0,
+            },
+        ];
+
         Self {
             name: "MyField".to_owned(),
             viewport,
             interpretation,
             volume,
+            seismic_volumes,
         }
     }
 }
@@ -89,11 +109,22 @@ impl eframe::App for StrataForgeApp {
         egui::SidePanel::left("left_panel").show(ctx, |ui| {
             ui.heading("Project Data");
             ui.separator();
-            
-            ui.collapsing("Seismic Volumes", |ui| {
-                ui.label("None loaded");
-            });
 
+            ui.collapsing("Seismic Volumes", |ui| {
+                for vol in &mut self.seismic_volumes {
+                    ui.horizontal(|ui| {
+                        ui.checkbox(&mut vol.is_visible, "");
+                        ui.label(&vol.name);
+
+                        ui.separator();
+                        ui.label("RGB:");
+                        ui.radio_value(&mut vol.channel_assignment, 1, "R");
+                        ui.radio_value(&mut vol.channel_assignment, 2, "G");
+                        ui.radio_value(&mut vol.channel_assignment, 3, "B");
+                        ui.radio_value(&mut vol.channel_assignment, 0, "None");
+                    });
+                }
+            });
             ui.collapsing("Horizons", |ui| {
                 if ui.button("Add Horizon").clicked() {
                     let name = format!("Horizon {}", self.interpretation.horizons.len() + 1);
