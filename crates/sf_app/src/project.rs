@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::path::Path;
 
 /// Project data structure for serialization
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectData {
     pub name: String,
@@ -15,6 +16,7 @@ pub struct ProjectData {
 }
 
 /// Snapshot of interpretation state
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InterpretationSnapshot {
     pub horizons: Vec<HorizonSnapshot>,
@@ -24,6 +26,7 @@ pub struct InterpretationSnapshot {
 }
 
 /// Snapshot of well state
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WellStateSnapshot {
     pub wells: Vec<WellSnapshot>,
@@ -31,6 +34,7 @@ pub struct WellStateSnapshot {
 }
 
 // Simplified snapshots for now - will be expanded
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HorizonSnapshot {
     pub id: uuid::Uuid,
@@ -39,6 +43,7 @@ pub struct HorizonSnapshot {
     pub picks_count: usize,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FaultSnapshot {
     pub id: uuid::Uuid,
@@ -47,6 +52,7 @@ pub struct FaultSnapshot {
     pub sticks_count: usize,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WellSnapshot {
     pub id: uuid::Uuid,
