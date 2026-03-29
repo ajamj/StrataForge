@@ -54,8 +54,11 @@ pub struct StrataForgeApp {
     velocity: VelocityState,
     volumetric_result: Option<f32>,
     wells: WellState,
+    #[allow(dead_code)]
     theme_manager: ThemeManager,
+    #[allow(dead_code)]
     current_project_path: Option<std::path::PathBuf>,
+    #[allow(dead_code)]
     recent_projects: Vec<std::path::PathBuf>,
 }
 
