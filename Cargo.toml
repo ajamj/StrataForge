@@ -13,6 +13,8 @@ members = [
   "crates/sf_plugin",
   "crates/sf_attributes",
   "crates/sf_attributes_gpu",
+  "crates/sf_qi",
+  "crates/sf_4d",
 ]
 
 [workspace.package]
@@ -35,6 +37,8 @@ sf_ml = { path = "crates/sf_ml" }
 sf_plugin = { path = "crates/sf_plugin" }
 sf_attributes = { path = "crates/sf_attributes" }
 sf_attributes_gpu = { path = "crates/sf_attributes_gpu" }
+sf_qi = { path = "crates/sf_qi" }
+sf_4d = { path = "crates/sf_4d" }
 
 # Serialization
 serde = { version = "1.0", features = ["derive"] }
