@@ -100,11 +100,8 @@ pub fn intersect_mesh_plane(mesh: &Mesh, plane: &Plane) -> Vec<Vec<[f32; 3]>> {
         let v1 = Point3::from(mesh.vertices[chunk[1] as usize]);
         let v2 = Point3::from(mesh.vertices[chunk[2] as usize]);
 
-        match intersect_triangle_plane(v0, v1, v2, plane) {
-            TriangleIntersection::Segment(p1, p2) => {
-                segments.push((p1, p2));
-            }
-            _ => {}
+        if let TriangleIntersection::Segment(p1, p2) = intersect_triangle_plane(v0, v1, v2, plane) {
+            segments.push((p1, p2));
         }
     }
 

@@ -21,6 +21,7 @@ impl VolumetricEngine {
     ///
     /// The integration sums `(z_upper - z_lower) * dx * dy` for all points on the grid
     /// where the upper surface is above the lower surface.
+    #[allow(clippy::too_many_arguments)]
     pub fn calculate_volume(
         &self,
         upper_surface: &RbfInterpolator,

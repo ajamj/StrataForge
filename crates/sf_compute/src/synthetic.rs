@@ -34,8 +34,8 @@ impl SyntheticSeismic {
         let mut rng = rand::thread_rng();
 
         // Generate background noise
-        for i in 0..data.len() {
-            data[i] = rng.gen_range(-0.1..=0.1);
+        for val in data.iter_mut() {
+            *val = rng.gen_range(-0.1..=0.1);
         }
 
         // Add reflectors (horizontal layers)
@@ -101,7 +101,7 @@ impl SyntheticSeismic {
         }
     }
 
-    fn add_fold(&self, data: &mut [f32], center_sample: usize, amplitude: usize) {
+    fn add_fold(&self, data: &mut [f32], _center_sample: usize, amplitude: usize) {
         for il in 0..self.inline_count {
             for xl in 0..self.crossline_count {
                 let base_idx = (il * self.crossline_count + xl) * self.sample_count;
@@ -138,10 +138,10 @@ impl SyntheticSeismic {
         let mut wavelet = vec![0.0f32; samples_each_side * 2 + 1];
         let pi_dt_freq = PI * dominant_freq * dt;
 
-        for i in 0..wavelet.len() {
+        for (i, val) in wavelet.iter_mut().enumerate() {
             let t = (i as i32 - samples_each_side as i32) as f32 * dt;
             let pi_ft = pi_dt_freq * t;
-            wavelet[i] = (1.0 - 2.0 * pi_ft * pi_ft) * (-pi_ft * pi_ft).exp();
+            *val = (1.0 - 2.0 * pi_ft * pi_ft) * (-pi_ft * pi_ft).exp();
         }
 
         // Normalize
