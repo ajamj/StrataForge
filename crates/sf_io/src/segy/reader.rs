@@ -1,12 +1,12 @@
 //! SEG-Y file reader with memory-mapped access
 //!
 //! Hybrid approach:
-//! - giga-segy-in: Header parsing (EBCDIC decoding, binary header)
+//! - segy-rs: Header parsing (EBCDIC decoding, binary header)
 //! - memmap2: Zero-copy trace data access
 //! - Custom: Optimized I/O layer
 
-use giga_segy_in::{SegyFile, SegyMetadata, SegySettings};
 use memmap2::Mmap;
+use segy_rs::{SegyFile, BinaryHeader, TraceHeader};
 use std::fs::File;
 use std::path::Path;
 use thiserror::Error;
@@ -32,59 +32,47 @@ impl SegyReader {
         let file = File::open(path.as_ref())?;
         let mmap = unsafe { Mmap::map(&file)? };
         
-        // Use default settings for standard SEG-Y format
-        let settings = SegySettings::default();
-        let segy = SegyFile::open(&file, settings)
+        // Parse SEG-Y from memory-mapped bytes
+        let segy = SegyFile::from_bytes(&mmap)
             .map_err(|e| IoError::ParseError(format!("Failed to parse SEG-Y file: {}", e)))?;
-        
+
         Ok(Self { mmap, segy })
     }
 
     /// Get textual header (EBCDIC/ASCII)
     pub fn textual_header(&self) -> &str {
-        self.segy.get_text_header()
+        self.segy.textual_header()
     }
 
     /// Get binary header
-    pub fn binary_header(&self) -> Result<&giga_segy_in::BinHeader, IoError> {
-        Ok(self.segy.get_bin_header())
+    pub fn binary_header(&self) -> Result<&BinaryHeader, IoError> {
+        Ok(self.segy.binary_header())
     }
 
     /// Get number of traces
     pub fn trace_count(&self) -> usize {
-        self.segy.traces_iter().count()
+        self.segy.trace_count()
     }
 
     /// Read a trace by index
     pub fn read_trace(&self, index: usize) -> Result<Vec<f32>, IoError> {
         let trace = self.segy
-            .traces_iter()
-            .nth(index)
-            .ok_or_else(|| IoError::ParseError(format!("Trace index {} out of range", index)))?;
+            .trace(index)
+            .map_err(|e| IoError::ParseError(format!("Failed to read trace {}: {}", index, e)))?;
         
-        // Extract trace data as f32
-        let data = self.segy
-            .get_trace_data_as_f32_from_trace(&trace)
-            .map_err(|e| IoError::ParseError(format!("Failed to read trace data: {}", e)))?;
+        // Convert trace data to Vec<f32>
+        let data = trace.iter()
+            .map(|sample| sample as f32)
+            .collect();
         
         Ok(data)
     }
 
     /// Get trace header at index
-    pub fn trace_header(&self, index: usize) -> Result<giga_segy_in::TraceHeader, IoError> {
-        let trace = self.segy
-            .traces_iter()
-            .nth(index)
-            .ok_or_else(|| IoError::ParseError(format!("Trace index {} out of range", index)))?;
-        
-        Ok(trace.header)
-    }
-    
-    /// Get SEG-Y metadata
-    pub fn metadata(&self) -> Result<SegyMetadata, IoError> {
+    pub fn trace_header(&self, index: usize) -> Result<&TraceHeader, IoError> {
         self.segy
-            .get_metadata()
-            .map_err(|e| IoError::ParseError(format!("Failed to get metadata: {}", e)))
+            .trace_header(index)
+            .map_err(|e| IoError::ParseError(format!("Failed to read trace header {}: {}", index, e)))
     }
 }
 
@@ -96,13 +84,13 @@ pub struct ExtendedBinaryHeader {
     pub data_format: u16,
 }
 
-impl From<&giga_segy_in::BinHeader> for ExtendedBinaryHeader {
-    fn from(header: &giga_segy_in::BinHeader) -> Self {
+impl From<&BinaryHeader> for ExtendedBinaryHeader {
+    fn from(header: &BinaryHeader) -> Self {
         Self {
-            sample_rate: header.sample_interval,
-            trace_count: header.trace_count,
-            samples_per_trace: header.samples_per_trace,
-            data_format: header.format,
+            sample_rate: header.sample_rate(),
+            trace_count: header.trace_count(),
+            samples_per_trace: header.samples_per_trace(),
+            data_format: header.data_format(),
         }
     }
 }
