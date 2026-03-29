@@ -7,15 +7,15 @@
 
 ## 🚀 What is StrataForge?
 
-StrataForge adalah aplikasi interpretasi seismik 3D yang modern dan open-source, dirancang untuk geoscientists dalam eksplorasi oil & gas.
+StrataForge is a modern, open-source 3D seismic interpretation application designed for geoscientists in oil & gas exploration.
 
 ### **Key Features:**
 - ✅ Seismic volume visualization (inline, crossline, time slice)
 - ✅ Horizon interpretation (manual picking, auto-tracking)
 - ✅ Fault interpretation (sketch mode, RBF surface modeling)
-- ✅ 3D visualization dengan transparency
+- ✅ 3D visualization with transparency
 - ✅ Velocity modeling & time-depth conversion
-- ✅ Synthetic data generation untuk testing
+- ✅ Synthetic data generation for testing
 - ✅ Light/Dark theme support
 - ✅ Well data integration (LAS import coming soon)
 
@@ -52,20 +52,20 @@ cargo run --release --bin sf-app
 cargo run --release --bin sf-app
 ```
 
-Application window akan terbuka dengan:
-- **Top Ribbon:** Tools dan menu
+Application window will open with:
+- **Top Ribbon:** Tools and menu
 - **Left Panel:** Project data tree
 - **Center:** 3D Viewport
-- **Right Panel:** Properties dan analysis
+- **Right Panel:** Properties and analysis
 - **Bottom Panel:** Well logs (collapsible)
-- **Status Bar:** Coordinates dan status
+- **Status Bar:** Coordinates and status
 
 ### **Step 2: Generate Synthetic Data (Optional)**
 
-Untuk testing tanpa data asli, generate synthetic data:
+For testing without real data, generate synthetic data:
 
 ```rust
-// Di Rust REPL atau test script
+// In Rust REPL or test script
 use sf_compute::synthetic::*;
 
 // Generate synthetic seismic
@@ -81,26 +81,26 @@ let (_depths, gr) = well.generate_gr();
 
 1. **Select Picking Mode:**
    - Click toolbar: `Seed` | `Manual` | `Auto` | `Sketch`
-   
+
 2. **Pick Horizon Points:**
-   - Click pada seismic volume untuk add picks
-   - Horizon mesh akan auto-generate
+   - Click on seismic volume to add picks
+   - Horizon mesh will auto-generate
 
 3. **View Properties:**
-   - Select horizon di left panel
-   - Edit color, visibility di right panel
+   - Select horizon in left panel
+   - Edit color, visibility in right panel
 
 ### **Step 4: Sketch Fault**
 
 1. **Enable Sketch Mode:**
-   - Click `Sketch Fault` di toolbar
+   - Click `Sketch Fault` in toolbar
 
 2. **Draw Fault Stick:**
-   - Click-drag di viewport untuk draw
-   - Fault surface auto-model dengan RBF
+   - Click-drag in viewport to draw
+   - Fault surface auto-models with RBF
 
 3. **Adjust Properties:**
-   - Select fault di left panel
+   - Select fault in left panel
    - Change color, transparency
 
 ### **Step 5: Velocity & Depth Conversion**
@@ -114,15 +114,15 @@ let (_depths, gr) = well.generate_gr();
 
 3. **Enable Depth Mode:**
    - Toggle "Depth" checkbox
-   - Viewport menampilkan depth domain
+   - Viewport displays depth domain
 
 ---
 
 ## 🎨 UI Guide
 
 ### **Theme Toggle:**
-- Click ☀ (sun) untuk Light theme
-- Click ☾ (moon) untuk Dark theme
+- Click ☀ (sun) for Light theme
+- Click ☾ (moon) for Dark theme
 
 ### **Viewport Navigation:**
 - **Rotate:** Right-click + drag
@@ -153,8 +153,8 @@ let (_depths, gr) = well.generate_gr();
 - **Mesh Surfaces:** XYZ
 
 ### **Export Horizon:**
-1. Select horizon di left panel
-2. Right panel → "Export XYZ" atau "Export JSON"
+1. Select horizon in left panel
+2. Right panel → "Export XYZ" or "Export JSON"
 3. File saved to project directory
 
 ---
