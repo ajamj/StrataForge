@@ -1,0 +1,14 @@
+[package]
+name = "sf_ml_deep"
+version.workspace = true
+edition.workspace = true
+description = "Deep Learning for StrataForge - U-Net Auto-Tracking"
+
+[dependencies]
+sf_core.workspace = true
+sf_compute.workspace = true
+sf_ml.workspace = true
+candle-core.workspace = true
+candle-nn.workspace = true
+candle-transformers = "0.3"
+rand = "0.8"
