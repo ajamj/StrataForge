@@ -107,10 +107,8 @@ impl LasParser {
                 null_value = Self::extract_numeric_value(trimmed).unwrap_or(-999.25);
             }
 
-            if section == "WELL" {
-                if trimmed.starts_with(" WELL.") {
-                    well_name = Self::extract_value(trimmed).unwrap_or_default();
-                }
+            if section == "WELL" && trimmed.starts_with(" WELL.") {
+                well_name = Self::extract_value(trimmed).unwrap_or_default();
             }
 
             if section == "CURVE" && !trimmed.is_empty() {
@@ -257,16 +255,6 @@ impl LasParser {
             }
         }
         None
-    }
-
-    /// Extract unit from LAS line
-    fn extract_unit(line: &str) -> Option<String> {
-        let parts: Vec<&str> = line.split('.').collect();
-        if parts.len() > 1 {
-            parts[1].split_whitespace().next().map(|s| s.to_string())
-        } else {
-            None
-        }
     }
 }
 
