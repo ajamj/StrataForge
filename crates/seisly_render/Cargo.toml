@@ -5,7 +5,7 @@ edition.workspace = true
 
 [dependencies]
 seisly_core.workspace = true
-sf_compute = { path = "../sf_compute" }
+seisly_compute.workspace = true
 wgpu.workspace = true
 nalgebra.workspace = true
 bytemuck = "1.14"
