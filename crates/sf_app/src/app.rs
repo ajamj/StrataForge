@@ -4,7 +4,7 @@ use uuid::Uuid;
 use crate::interpretation::{
     Fault, HistoryManager, Horizon, InterpretationState, PickingMode, VelocityState, WellState,
 };
-use crate::ui_styles::{self, ThemeManager, UiTheme};
+use crate::ui_styles::{self, ThemeManager};
 use crate::widgets::crossplot::CrossPlotWidget;
 use crate::widgets::fault_properties_panel::FaultPropertiesPanel;
 use crate::widgets::horizon_properties_panel::HorizonPropertiesPanel;
