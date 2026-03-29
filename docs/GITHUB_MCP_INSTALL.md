@@ -1,12 +1,93 @@
-# GitHub MCP Server Installation Guide
+# MCP Server Installation Guide
 
 ## 🎯 Overview
 
-GitHub MCP Server allows AI assistants to interact with GitHub directly - create issues, manage PRs, search code, and more!
+This guide covers installation of MCP (Model Context Protocol) servers for AI assistants:
+- **GitHub MCP Server** - Interact with GitHub
+- **MCP Server Everything** - Test/demo server with all features
 
 ---
 
-## 🔑 Prerequisites
+## 🛠️ MCP Server Everything (Test Server)
+
+### **What is it?**
+
+MCP Server Everything is a test/demo server that provides all MCP features for testing AI assistant integration.
+
+### **Installation**
+
+#### **For Qwen Code:**
+
+1. Copy `.mcp/qwen-code-everything.json`
+2. Add to your Qwen Code MCP config
+
+**Config:**
+```json
+{
+  "mcpServers": {
+    "everything": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-everything"
+      ]
+    }
+  }
+}
+```
+
+#### **For Gemini CLI:**
+
+1. Copy `.mcp/gemini-cli-everything.json`
+2. Add to `~/.gemini-cli/config.json`
+
+**Config:**
+```json
+{
+  "mcp": {
+    "servers": {
+      "everything": {
+        "command": "npx",
+        "args": [
+          "@modelcontextprotocol/server-everything"
+        ]
+      }
+    }
+  }
+}
+```
+
+#### **For Cursor:**
+
+1. Open Cursor Settings → MCP Servers
+2. Click "Add Server"
+3. Select "Command"
+4. Copy from `.mcp/cursor-everything.json`
+
+**Config:**
+```json
+{
+  "mcpServers": [
+    {
+      "name": "everything",
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-everything"
+      ]
+    }
+  ]
+}
+```
+
+### **Test**
+
+After installation, test with:
+```
+Echo "Hello World"
+```
+
+---
+
+## 🔑 GitHub MCP Server
 
 ### 1. Create GitHub Personal Access Token (PAT)
 
