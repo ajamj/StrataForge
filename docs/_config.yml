@@ -1,0 +1,52 @@
+# Jekyll configuration for StrataForge Documentation
+title: StrataForge Documentation
+description: Open-source subsurface interpretation platform
+baseurl: "/StrataForge"
+url: "https://ajamj.github.io"
+
+# Theme
+theme: jekyll-theme-cayman
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Include docs files
+include:
+  - docs
+  - QUICKSTART.md
+  - README.md
+
+# Exclude from build
+exclude:
+  - superpowers/plans
+  - superpowers/specs
+  - "*.md"
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+      show_sidebar: true
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:path/
+
+# Navigation
+nav:
+  - title: Home
+    link: /
+  - title: Quick Start
+    link: /QUICKSTART
+  - title: Blueprint
+    link: /docs/blueprint
+  - title: Features
+    link: /docs/PHASE_1_FEATURES
+  - title: GitHub
+    link: https://github.com/ajamj/StrataForge
