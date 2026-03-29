@@ -716,9 +716,9 @@ impl eframe::App for StrataForgeApp {
 
                         ui.separator();
                         ui.label("Log:");
-                        ui.selectable_label(true, "GR");
-                        ui.selectable_label(false, "DT");
-                        ui.selectable_label(false, "RHOB");
+                        let _ = ui.selectable_label(true, "GR");
+                        let _ = ui.selectable_label(false, "DT");
+                        let _ = ui.selectable_label(false, "RHOB");
                     });
 
                     ui.add_space(8.0);
