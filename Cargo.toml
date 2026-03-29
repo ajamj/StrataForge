@@ -17,6 +17,8 @@ members = [
   "crates/sf_4d",
   "crates/sf_ml_deep",
   "crates/sf_fwi",
+  "crates/sf_tracking",
+  "crates/sf_production",
 ]
 
 [workspace.package]
@@ -43,6 +45,8 @@ sf_qi = { path = "crates/sf_qi" }
 sf_4d = { path = "crates/sf_4d" }
 sf_ml_deep = { path = "crates/sf_ml_deep" }
 sf_fwi = { path = "crates/sf_fwi" }
+sf_tracking = { path = "crates/sf_tracking" }
+sf_production = { path = "crates/sf_production" }
 
 # Serialization
 serde = { version = "1.0", features = ["derive"] }

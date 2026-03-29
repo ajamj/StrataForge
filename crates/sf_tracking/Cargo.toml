@@ -1,0 +1,13 @@
+[package]
+name = "sf_tracking"
+version.workspace = true
+edition.workspace = true
+description = "Enhanced Auto-Tracking for StrataForge"
+
+[dependencies]
+sf_core.workspace = true
+sf_compute.workspace = true
+sf_ml.workspace = true
+sf_ml_deep.workspace = true
+nalgebra.workspace = true
+rayon = "1.8"

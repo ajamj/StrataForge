@@ -1,0 +1,13 @@
+[package]
+name = "sf_production"
+version.workspace = true
+edition.workspace = true
+description = "Production Tools for StrataForge - Well Planning, CCUS Monitoring"
+
+[dependencies]
+sf_core.workspace = true
+sf_compute.workspace = true
+sf_io.workspace = true
+sf_qi.workspace = true
+nalgebra.workspace = true
+ndarray = "0.15"
