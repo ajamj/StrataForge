@@ -69,9 +69,8 @@ impl StrataForgeApp {
         let theme_manager = ThemeManager::new();
         
         // Setup egui with proper icon support
-        let mut fonts = egui::FontDefinitions::default();
         egui_extras::install_image_loaders(&cc.egui_ctx);
-        
+
         // Apply theme
         ui_styles::apply_theme(&cc.egui_ctx, theme_manager.current_theme);
         

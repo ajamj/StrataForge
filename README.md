@@ -6,6 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Rust Version](https://img.shields.io/badge/rust-1.70+-orange.svg)](https://www.rust-lang.org)
 [![Contributors Welcome](https://img.shields.io/badge/contributors-welcome-brightgreen.svg)](docs/blueprint.md)
+[![Documentation](https://img.shields.io/badge/docs-latest-blue)](https://ajamj.github.io/StrataForge)
 
 StrataForge is a modern, reproducible platform for geoscientists and engineers to analyze subsurface data from exploration to production.
 
@@ -20,33 +21,40 @@ StrataForge is a modern, reproducible platform for geoscientists and engineers t
 | **License** | MIT (Free) | $10k+/yr | Open-core |
 | **Architecture** | Rust + GPU | .NET | C++ |
 
-- **Status:** v0.1.1 Beta → **v0.2.0 in development** 🚧
+- **Status:** v0.5.0 Latest Release 🎉
 - **Platform:** Windows, Linux, macOS
 - **License:** MIT (Free for academic & commercial use)
 - **Language:** Rust
 
+## 📚 Documentation
+
+- **[📖 Main Documentation](https://ajamj.github.io/StrataForge)** - Complete guides and tutorials
+- **[📊 API Reference](https://ajamj.github.io/StrataForge/docs/api/)** - Auto-generated API docs
+- **[🚀 Quick Start](QUICKSTART.md)** - Get started in 5 minutes
+- **[📋 Blueprint](docs/blueprint.md)** - Strategic roadmap 2026-2028
+
 ## ✨ Features
 
-### Core Features
+### Core Features (v0.5.0)
 - ✅ **Seismic Visualization** - 3D volume rendering with inline/crossline slicing
 - ✅ **Horizon Interpretation** - Manual picking, auto-tracking, seed picking
 - ✅ **Fault Modeling** - Interactive sketch mode, RBF surface modeling
 - ✅ **Velocity Modeling** - Linear velocity model (V0 + kZ)
 - ✅ **Time-Depth Conversion** - Real-time depth domain visualization
-- ✅ **Synthetic Data Generation** - Generate test data for training/demo
-- ✅ **Well Data Support** - LAS 2.0/3.0 import, well-seismic tie **(NEW v0.2)** 🚧
-- ✅ **Formation Tops** - Stratigraphic marker management **(NEW v0.2)** 🚧
-- ✅ **Full SEG-Y Support** - Reader/writer with textual/binary headers **(NEW v0.2)** 🚧
-- ✅ **Modern UI** - Light/Dark themes, intuitive workflow
+- ✅ **Synthetic Data Generation** - Generate test data for training/demo **(GUI)** 🎉
+- ✅ **Well Data Support** - LAS 2.0/3.0 import, well-seismic tie
+- ✅ **Formation Tops** - Stratigraphic marker management
+- ✅ **Full SEG-Y Support** - Reader/writer with textual/binary headers
+- ✅ **Modern UI** - Light/Dark themes, native menu bar, settings panel ⚙️ 🎉
 
-### Technical Features
-- ✅ **Cross-Platform** - Native builds for Windows, Linux, macOS
-- ✅ **GPU Accelerated** - wgpu-based 3D rendering and seismic attribute computation
-- ✅ **Seismic Attributes** - GPU-accelerated RMS, Mean, Energy computation (10x speedup)
-- ✅ **SQLite Storage** - Persistent project metadata
-- ✅ **Blob Storage** - Efficient large data management
-- ✅ **CRS Support** - Coordinate reference system transformations
-- ✅ **Plugin System** - Rust + Python plugins **(Coming v0.3)**
+### Advanced Features
+- ✅ **Machine Learning** - U-Net based auto-tracking, CNN fault detection 🤖
+- ✅ **GPU Acceleration** - wgpu-based rendering, 10x speedup for attributes ⚡
+- ✅ **Seismic Attributes** - 20 attributes (amplitude + frequency) 📊
+- ✅ **Quantitative Interpretation** - AVO analysis, FWI, elastic parameters 🔬
+- ✅ **4D Monitoring** - Time-lapse seismic, CCUS monitoring 🌊
+- ✅ **Plugin System** - Rust + Python plugins 🔌
+- ✅ **Production Tools** - Well planning, reservoir surveillance 🛢️
 
 ## 📦 Installation
 

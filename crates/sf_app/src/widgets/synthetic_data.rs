@@ -62,7 +62,7 @@ impl SyntheticDataWidget {
                 ui.end_row();
                 
                 ui.label("  Frequency (Hz):");
-                ui.add(egui::DragValue::new(&mut self.frequency).speed(1.0).range(10.0..=100.0));
+                ui.add(egui::DragValue::new(&mut self.frequency).speed(1.0));
                 ui.end_row();
                 
                 ui.label("  Noise Level:");
