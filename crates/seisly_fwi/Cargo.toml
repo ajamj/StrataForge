@@ -1,13 +1,13 @@
 [package]
-name = "sf_fwi"
+name = "seisly_fwi"
 version.workspace = true
 edition.workspace = true
 description = "Full Waveform Inversion for StrataForge"
 
 [dependencies]
-sf_core.workspace = true
-sf_compute.workspace = true
-sf_io.workspace = true
+seisly_core.workspace = true
+seisly_compute.workspace = true
+seisly_io.workspace = true
 nalgebra.workspace = true
 ndarray = "0.15"
 rayon = "1.8"

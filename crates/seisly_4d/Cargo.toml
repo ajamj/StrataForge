@@ -1,12 +1,12 @@
 [package]
-name = "sf_4d"
+name = "seisly_4d"
 version.workspace = true
 edition.workspace = true
 description = "4D Time-Lapse Seismic Monitoring for StrataForge"
 
 [dependencies]
-sf_core.workspace = true
-sf_compute.workspace = true
+seisly_core.workspace = true
+seisly_compute.workspace = true
 sf_attributes.workspace = true
 nalgebra.workspace = true
 rayon = "1.8"

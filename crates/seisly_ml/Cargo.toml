@@ -1,12 +1,12 @@
 [package]
-name = "sf_ml"
+name = "seisly_ml"
 version.workspace = true
 edition.workspace = true
 description = "Machine learning for seismic interpretation"
 
 [dependencies]
-sf_core.workspace = true
-sf_compute.workspace = true
+seisly_core.workspace = true
+seisly_compute.workspace = true
 
 # ML frameworks
 candle-core.workspace = true

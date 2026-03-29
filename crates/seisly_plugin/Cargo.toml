@@ -1,11 +1,11 @@
 [package]
-name = "sf_plugin"
+name = "seisly_plugin"
 version.workspace = true
 edition.workspace = true
 description = "Plugin system for StrataForge"
 
 [dependencies]
-sf_core.workspace = true
+seisly_core.workspace = true
 thiserror.workspace = true
 serde_json.workspace = true
 serde.workspace = true

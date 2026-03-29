@@ -1,11 +1,11 @@
 [package]
-name = "sf_compute"
+name = "seisly_compute"
 version.workspace = true
 edition.workspace = true
 
 [dependencies]
-sf_core.workspace = true
-sf_io.workspace = true
+seisly_core.workspace = true
+seisly_io.workspace = true
 spade.workspace = true
 thiserror.workspace = true
 nalgebra.workspace = true

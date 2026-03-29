@@ -1,12 +1,12 @@
 [package]
-name = "sf_attributes"
+name = "seisly_attributes"
 version.workspace = true
 edition.workspace = true
 description = "Seismic attributes for StrataForge"
 
 [dependencies]
-sf_core.workspace = true
-sf_compute.workspace = true
+seisly_core.workspace = true
+seisly_compute.workspace = true
 nalgebra.workspace = true
 rayon = "1.8"
 rustfft = "6.2"

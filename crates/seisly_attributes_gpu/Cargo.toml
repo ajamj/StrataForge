@@ -1,5 +1,5 @@
 [package]
-name = "sf_attributes_gpu"
+name = "seisly_attributes_gpu"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
