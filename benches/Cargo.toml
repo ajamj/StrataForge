@@ -1,0 +1,24 @@
+[package]
+name = "stratforge-benches"
+version = "0.4.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+criterion = "0.5"
+sf_ml = { path = "../crates/sf_ml" }
+sf_attributes = { path = "../crates/sf_attributes" }
+sf_qi = { path = "../crates/sf_qi" }
+sf_4d = { path = "../crates/sf_4d" }
+
+[[bench]]
+name = "phase1_benchmarks"
+harness = false
+
+[[bench]]
+name = "phase2_benchmarks"
+harness = false
+
+[[bench]]
+name = "gpu_vs_cpu"
+harness = false
