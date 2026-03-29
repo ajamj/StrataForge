@@ -14,7 +14,7 @@ sf_io.workspace = true
 sf_compute.workspace = true
 sf_render.workspace = true
 eframe = { workspace = true, features = ["wgpu"] }
-egui.workspace = true
+egui = { workspace = true, features = ["persistence"] }
 egui_extras = { version = "0.29", features = ["svg", "all_loaders"] }
 winit.workspace = true
 anyhow.workspace = true
