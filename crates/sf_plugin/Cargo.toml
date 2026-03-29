@@ -9,3 +9,7 @@ sf_core.workspace = true
 thiserror.workspace = true
 serde_json.workspace = true
 serde.workspace = true
+pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
+
+[features]
+python = ["pyo3"]
