@@ -14,6 +14,15 @@ pub struct Crs {
 }
 
 impl Crs {
+    /// WGS84 coordinate reference system (EPSG:4326)
+    pub fn wgs84() -> Self {
+        Self {
+            authority: Some("EPSG".to_string()),
+            code: Some("4326".to_string()),
+            definition: "EPSG:4326".to_string(),
+        }
+    }
+
     /// Create a CRS from EPSG code
     pub fn from_epsg(code: u32) -> Self {
         Self {

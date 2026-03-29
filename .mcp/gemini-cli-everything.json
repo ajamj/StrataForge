@@ -1,0 +1,12 @@
+{
+  "mcp": {
+    "servers": {
+      "everything": {
+        "command": "npx",
+        "args": [
+          "@modelcontextprotocol/server-everything"
+        ]
+      }
+    }
+  }
+}

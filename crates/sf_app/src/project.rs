@@ -1,9 +1,10 @@
 //! Project management for StrataForge
 
 use serde::{Deserialize, Serialize};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 /// Project data structure for serialization
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectData {
     pub name: String,
@@ -15,6 +16,7 @@ pub struct ProjectData {
 }
 
 /// Snapshot of interpretation state
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InterpretationSnapshot {
     pub horizons: Vec<HorizonSnapshot>,
@@ -24,6 +26,7 @@ pub struct InterpretationSnapshot {
 }
 
 /// Snapshot of well state
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WellStateSnapshot {
     pub wells: Vec<WellSnapshot>,
@@ -31,6 +34,7 @@ pub struct WellStateSnapshot {
 }
 
 // Simplified snapshots for now - will be expanded
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HorizonSnapshot {
     pub id: uuid::Uuid,
@@ -39,6 +43,7 @@ pub struct HorizonSnapshot {
     pub picks_count: usize,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FaultSnapshot {
     pub id: uuid::Uuid,
@@ -47,6 +52,7 @@ pub struct FaultSnapshot {
     pub sticks_count: usize,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WellSnapshot {
     pub id: uuid::Uuid,
@@ -80,10 +86,9 @@ impl ProjectManager {
 
     /// Save project to file
     pub fn save(project: &ProjectData, path: &Path) -> Result<(), String> {
-        let json = serde_json::to_string_pretty(project)
-            .map_err(|e| format!("JSON error: {}", e))?;
-        std::fs::write(path, json)
-            .map_err(|e| format!("IO error: {}", e))?;
+        let json =
+            serde_json::to_string_pretty(project).map_err(|e| format!("JSON error: {}", e))?;
+        std::fs::write(path, json).map_err(|e| format!("IO error: {}", e))?;
         Ok(())
     }
 
@@ -92,58 +97,64 @@ impl ProjectManager {
         if !path.exists() {
             return Err(format!("Project not found: {}", path.display()));
         }
-        let content = std::fs::read_to_string(path)
-            .map_err(|e| format!("IO error: {}", e))?;
-        serde_json::from_str(&content)
-            .map_err(|e| format!("JSON error: {}", e))
+        let content = std::fs::read_to_string(path).map_err(|e| format!("IO error: {}", e))?;
+        serde_json::from_str(&content).map_err(|e| format!("JSON error: {}", e))
     }
 
     /// Get project file extension
+    #[allow(dead_code)]
     pub const EXTENSION: &'static str = "sfp"; // StrataForge Project
 }
 
 // Conversion methods (to be implemented as needed)
 impl ProjectData {
+    #[allow(dead_code)]
     pub fn from_state(
         name: &str,
         interpretation: &crate::interpretation::InterpretationState,
         wells: &crate::interpretation::WellState,
     ) -> Self {
         let now = "2026-03-28T00:00:00Z";
-        let mut project = Self::create_new(name);
+        let mut project = ProjectManager::create_new(name);
         project.modified_at = now.to_string();
-        
+
         // Snapshot interpretation
         project.interpretation = InterpretationSnapshot {
-            horizons: interpretation.horizons.iter().map(|h| {
-                HorizonSnapshot {
+            horizons: interpretation
+                .horizons
+                .iter()
+                .map(|h| HorizonSnapshot {
                     id: h.id,
                     name: h.name.clone(),
                     color: h.color,
                     picks_count: h.picks.len(),
-                }
-            }).collect(),
-            faults: interpretation.faults.iter().map(|f| {
-                FaultSnapshot {
+                })
+                .collect(),
+            faults: interpretation
+                .faults
+                .iter()
+                .map(|f| FaultSnapshot {
                     id: f.id,
                     name: f.name.clone(),
                     color: f.color,
                     sticks_count: f.sticks.len(),
-                }
-            }).collect(),
+                })
+                .collect(),
             active_horizon_id: interpretation.active_horizon_id,
             active_fault_id: interpretation.active_fault_id,
         };
 
         // Snapshot wells
         project.wells = WellStateSnapshot {
-            wells: wells.wells.iter().map(|w| {
-                WellSnapshot {
+            wells: wells
+                .wells
+                .iter()
+                .map(|w| WellSnapshot {
                     id: w.id,
                     name: w.name.clone(),
                     logs_count: w.logs.len(),
-                }
-            }).collect(),
+                })
+                .collect(),
             active_well_id: wells.active_well_id,
         };
 
@@ -154,7 +165,6 @@ impl ProjectData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::io::Write;
     use tempfile::TempDir;
 
     #[test]
@@ -175,7 +185,7 @@ mod tests {
         let path = temp_dir.path().join("test.sfp");
 
         ProjectManager::save(&project, &path).unwrap();
-        
+
         let loaded = ProjectManager::load(&path).unwrap();
         assert_eq!(loaded.name, "Test Project");
     }

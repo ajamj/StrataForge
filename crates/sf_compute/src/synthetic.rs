@@ -17,11 +17,7 @@ pub struct SyntheticSeismic {
 }
 
 impl SyntheticSeismic {
-    pub fn new(
-        inline_count: usize,
-        crossline_count: usize,
-        sample_count: usize,
-    ) -> Self {
+    pub fn new(inline_count: usize, crossline_count: usize, sample_count: usize) -> Self {
         Self {
             inline_count,
             crossline_count,
@@ -38,16 +34,16 @@ impl SyntheticSeismic {
         let mut rng = rand::thread_rng();
 
         // Generate background noise
-        for i in 0..data.len() {
-            data[i] = rng.gen_range(-0.1..=0.1);
+        for val in data.iter_mut() {
+            *val = rng.gen_range(-0.1..=0.1);
         }
 
         // Add reflectors (horizontal layers)
         let reflectors = vec![
-            (100, 0.8),   // Sample 100, amplitude 0.8
-            (200, 0.6),   // Sample 200, amplitude 0.6
-            (300, 0.9),   // Sample 300, amplitude 0.9
-            (400, 0.7),   // Sample 400, amplitude 0.7
+            (100, 0.8), // Sample 100, amplitude 0.8
+            (200, 0.6), // Sample 200, amplitude 0.6
+            (300, 0.9), // Sample 300, amplitude 0.9
+            (400, 0.7), // Sample 400, amplitude 0.7
         ];
 
         for (reflector_sample, amplitude) in reflectors {
@@ -105,7 +101,7 @@ impl SyntheticSeismic {
         }
     }
 
-    fn add_fold(&self, data: &mut [f32], center_sample: usize, amplitude: usize) {
+    fn add_fold(&self, data: &mut [f32], _center_sample: usize, amplitude: usize) {
         for il in 0..self.inline_count {
             for xl in 0..self.crossline_count {
                 let base_idx = (il * self.crossline_count + xl) * self.sample_count;
@@ -142,10 +138,10 @@ impl SyntheticSeismic {
         let mut wavelet = vec![0.0f32; samples_each_side * 2 + 1];
         let pi_dt_freq = PI * dominant_freq * dt;
 
-        for i in 0..wavelet.len() {
+        for (i, val) in wavelet.iter_mut().enumerate() {
             let t = (i as i32 - samples_each_side as i32) as f32 * dt;
             let pi_ft = pi_dt_freq * t;
-            wavelet[i] = (1.0 - 2.0 * pi_ft * pi_ft) * (-pi_ft * pi_ft).exp();
+            *val = (1.0 - 2.0 * pi_ft * pi_ft) * (-pi_ft * pi_ft).exp();
         }
 
         // Normalize
@@ -216,7 +212,7 @@ impl SyntheticWellLog {
             // Add noise
             gr += rng.gen_range(-3.0..=3.0);
 
-            gr_values.push(gr.max(0.0).min(150.0));
+            gr_values.push(gr.clamp(0.0, 150.0));
         }
 
         (depths, gr_values)
@@ -255,7 +251,7 @@ impl SyntheticWellLog {
             // Add noise
             dt += rng.gen_range(-5.0..=5.0);
 
-            dt_values.push(dt.max(100.0).min(400.0));
+            dt_values.push(dt.clamp(100.0, 400.0));
         }
 
         (depths, dt_values)
@@ -294,7 +290,7 @@ impl SyntheticWellLog {
             // Add noise
             rhob += rng.gen_range(-0.05..=0.05);
 
-            rhob_values.push(rhob.max(1.5).min(3.0));
+            rhob_values.push(rhob.clamp(1.5, 3.0));
         }
 
         (depths, rhob_values)
@@ -330,13 +326,16 @@ impl SyntheticHorizonPicks {
                 // Add structural variation (anticline)
                 let il_center = inline_count as f32 / 2.0;
                 let xl_center = crossline_count as f32 / 2.0;
-                let dist = ((il as f32 - il_center).powi(2) + (xl as f32 - xl_center).powi(2)).sqrt();
+                let dist =
+                    ((il as f32 - il_center).powi(2) + (xl as f32 - xl_center).powi(2)).sqrt();
                 let structural_shift = (dist / il_center * self.variation as f32 * 0.5) as i32;
 
                 // Add random variation
-                let random_shift = rng.gen_range(-(self.variation as i32 / 2)..=(self.variation as i32 / 2));
+                let random_shift =
+                    rng.gen_range(-(self.variation as i32 / 2)..=(self.variation as i32 / 2));
 
-                let sample = (self.base_sample as i32 - structural_shift + random_shift).max(0) as usize;
+                let sample =
+                    (self.base_sample as i32 - structural_shift + random_shift).max(0) as usize;
 
                 picks.push([il as f32, xl as f32, sample as f32]);
             }
@@ -346,7 +345,11 @@ impl SyntheticHorizonPicks {
     }
 
     /// Generate fault stick picks
-    pub fn generate_fault_sticks(&self, fault_inline: usize, stick_count: usize) -> Vec<Vec<[f32; 3]>> {
+    pub fn generate_fault_sticks(
+        &self,
+        fault_inline: usize,
+        stick_count: usize,
+    ) -> Vec<Vec<[f32; 3]>> {
         let mut rng = rand::thread_rng();
         let mut sticks = Vec::new();
 

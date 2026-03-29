@@ -118,6 +118,16 @@ test-results/
 target/doc/
 docs/generated/
 
+# Temporary debug documentation (auto-generated during CI/CD fixes)
+AUTH_QUICK.md
+BRANCH_MERGE.md
+CI_CD_FIX.md
+GITHUB_ACTIONS_ALL_FIXES.md
+GITHUB_ACTIONS_FIX.md
+PUSH_INSTRUCTIONS.md
+PUSH_TO_GITHUB.md
+WINDOWS_TARGET_FIX.md
+
 # ============================================
 # SECRETS & CREDENTIALS
 # ============================================
@@ -167,6 +177,8 @@ gha-creds-*.json
 *.zip
 *.tar.gz
 *.rar
+
+GEMINI.md
 
 # ============================================
 # ALLOWED

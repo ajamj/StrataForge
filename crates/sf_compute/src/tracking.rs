@@ -12,6 +12,7 @@ pub fn snap_to_extrema(trace: &[f32], initial_idx: usize, window: usize, is_peak
         0.0
     };
 
+    #[allow(clippy::needless_range_loop)]
     for i in start..end {
         let val = trace[i];
         if is_peak {
@@ -78,10 +79,13 @@ pub fn track_event(
 
                 // Simple similarity check: amplitude must be at least threshold * seed_val
                 // (Assuming seed_val is non-zero and same polarity)
-                if is_peak && nval >= threshold * seed_val {
-                    visited.insert((nil, nxl));
-                    queue.push_back((nil, nxl, snapped));
-                } else if !is_peak && nval <= threshold * seed_val {
+                let matches = if is_peak {
+                    nval >= threshold * seed_val
+                } else {
+                    nval <= threshold * seed_val
+                };
+
+                if matches {
                     visited.insert((nil, nxl));
                     queue.push_back((nil, nxl, snapped));
                 }
