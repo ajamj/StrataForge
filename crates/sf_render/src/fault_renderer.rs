@@ -298,7 +298,13 @@ mod tests {
 
     #[test]
     fn test_fault_uniforms() {
-        let uniform = FaultUniforms::new([1.0, 0.0, 0.0, 0.5]);
+        let identity = [
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ];
+        let uniform = FaultUniforms::new(identity, identity, identity, [1.0, 0.0, 0.0, 0.5]);
         assert_eq!(uniform.color, [1.0, 0.0, 0.0, 0.5]);
     }
 
