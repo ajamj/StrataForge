@@ -1,7 +1,7 @@
 //! Clipping engine for mesh-surface and mesh-plane intersections.
 
 use nalgebra::{Point3, Vector3};
-use sf_core::domain::surface::{Mesh, Surface};
+use seisly_core::domain::surface::{Mesh, Surface};
 
 /// Geometric plane defined by a point and a normal vector.
 #[derive(Debug, Clone, Copy)]

@@ -1,6 +1,6 @@
 use super::SurfaceExporter;
 use anyhow::Result;
-use sf_core::domain::surface::Mesh;
+use seisly_core::domain::surface::Mesh;
 use std::io::Write;
 use std::path::Path;
 

@@ -1,8 +1,8 @@
-use sf_ml::cnn::HorizonCNN;
-use sf_ml::tracker::AutoTracker;
+use seisly_ml::cnn::HorizonCNN;
+use seisly_ml::tracker::AutoTracker;
 use candle_core::{Device, DType};
 use candle_nn::VarBuilder;
-use sf_compute::seismic::InMemoryProvider;
+use seisly_compute::seismic::InMemoryProvider;
 
 #[test]
 fn test_tracker_initialization() {

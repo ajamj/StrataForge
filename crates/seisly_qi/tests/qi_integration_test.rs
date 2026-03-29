@@ -1,6 +1,6 @@
 //! QI & AVO Integration Tests
 
-use sf_qi::{AvoAnalysis, AvoClass, FluidFactor, PoissonsRatio, VpVsRatio, Gassmann, BrightSpot, Dhi};
+use seisly_qi::{AvoAnalysis, AvoClass, FluidFactor, PoissonsRatio, VpVsRatio, Gassmann, BrightSpot, Dhi};
 
 #[test]
 fn test_full_avo_workflow() {

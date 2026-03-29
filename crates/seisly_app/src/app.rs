@@ -11,8 +11,8 @@ use crate::widgets::horizon_properties_panel::HorizonPropertiesPanel;
 use crate::widgets::velocity_panel::VelocityPanel;
 use crate::widgets::viewport::ViewportWidget;
 use crate::widgets::well_panel::WellPanel;
-use sf_compute::seismic::{InMemoryProvider, SeismicVolume};
-use sf_storage::project::SeismicVolumeEntry;
+use seisly_compute::seismic::{InMemoryProvider, SeismicVolume};
+use seisly_storage::project::SeismicVolumeEntry;
 
 pub struct VisualSettings {
     pub gain: f32,
@@ -166,8 +166,8 @@ impl StrataForgeApp {
         let h2 = self.interpretation.horizons.iter().find(|h| h.id == h2_id);
 
         if let (Some(upper), Some(lower)) = (h1, h2) {
-            use sf_compute::interpolation::{RbfInterpolator, RbfType};
-            use sf_compute::volumetrics::VolumetricEngine;
+            use seisly_compute::interpolation::{RbfInterpolator, RbfType};
+            use seisly_compute::volumetrics::VolumetricEngine;
 
             let p1: Vec<[f32; 3]> = upper.picks.iter().map(|p| p.position).collect();
             let p2: Vec<[f32; 3]> = lower.picks.iter().map(|p| p.position).collect();
@@ -201,7 +201,7 @@ impl StrataForgeApp {
 
     #[allow(dead_code)] // Export feature - used via UI buttons
     fn export_active_horizon(&self, format: &str) {
-        use sf_io::export::{xyz::XyzExporter, SurfaceExporter};
+        use seisly_io::export::{xyz::XyzExporter, SurfaceExporter};
         use std::fs::File;
         use std::io::Write;
 
@@ -763,7 +763,7 @@ impl eframe::App for StrataForgeApp {
                     }
                     if ui.button("+ Add Well").clicked() {
                         // Demo well creation
-                        use sf_core::domain::well::Well;
+                        use seisly_core::domain::well::Well;
                         let mut well = Well::new(
                             "New Well".to_string(),
                             "NW-1".to_string(),

@@ -1,7 +1,7 @@
 //! Fault-Guided Horizon Tracking
 
-use sf_core::domain::{surface::Surface, fault::Fault};
-use sf_ml::AutoTracker;
+use seisly_core::domain::{surface::Surface, fault::Fault};
+use seisly_ml::AutoTracker;
 
 /// Fault-Guided Tracker - track horizons with fault constraints
 pub struct FaultGuidedTracker {

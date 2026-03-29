@@ -1,6 +1,6 @@
 //! Velocity State and Depth Conversion Management
 
-use sf_compute::velocity::LinearVelocityModel;
+use seisly_compute::velocity::LinearVelocityModel;
 
 #[derive(Debug, Clone, Copy)]
 pub struct VelocityState {

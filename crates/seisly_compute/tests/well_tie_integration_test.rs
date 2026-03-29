@@ -1,7 +1,7 @@
 //! Well-seismic tie integration tests
 
-use sf_compute::well_tie::{WellTieEngine, WellTieError};
-use sf_core::domain::Well;
+use seisly_compute::well_tie::{WellTieEngine, WellTieError};
+use seisly_core::domain::Well;
 
 #[test]
 fn test_well_tie_full_workflow() {

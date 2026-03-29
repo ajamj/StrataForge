@@ -1,6 +1,6 @@
 //! XYZ surface point parser
 
-use sf_core::domain::surface::Mesh;
+use seisly_core::domain::surface::Mesh;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 use thiserror::Error;

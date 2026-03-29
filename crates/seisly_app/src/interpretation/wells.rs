@@ -1,6 +1,6 @@
 //! Well State Management
 
-use sf_core::domain::well::Well;
+use seisly_core::domain::well::Well;
 
 /// Well interpretation state
 #[derive(Debug, Clone)]
@@ -56,7 +56,7 @@ impl Default for WellState {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sf_core::domain::well::Well;
+    use seisly_core::domain::well::Well;
 
     #[test]
     fn test_well_state_creation() {

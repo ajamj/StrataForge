@@ -1,6 +1,6 @@
 //! LAS 3.0 Parser Tests
 
-use sf_io::las::LasV3Reader;
+use seisly_io::las::LasV3Reader;
 use std::io::Write;
 use tempfile::NamedTempFile;
 

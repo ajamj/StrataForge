@@ -1,7 +1,7 @@
 //! CCUS (Carbon Capture, Utilization, and Storage) Monitoring
 
-use sf_core::domain::surface::Surface;
-use sf_4d::TimeLapseAnalysis;
+use seisly_core::domain::surface::Surface;
+use seisly_4d::TimeLapseAnalysis;
 
 /// CCUS Monitor - CO2 plume tracking and storage verification
 pub struct CCUSMonitor {

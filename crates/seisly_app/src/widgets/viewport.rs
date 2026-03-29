@@ -1,10 +1,10 @@
 use crate::interpretation::{InterpretationState, Pick, PickSource, PickingMode, VelocityState};
 use eframe::egui_wgpu;
 
-use sf_compute::seismic::SeismicVolume;
-use sf_compute::tracking::{snap_to_extrema, track_event};
+use seisly_compute::seismic::SeismicVolume;
+use seisly_compute::tracking::{snap_to_extrema, track_event};
 
-use sf_render::FaultRenderer;
+use seisly_render::FaultRenderer;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ViewMode {

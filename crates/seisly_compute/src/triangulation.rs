@@ -1,6 +1,6 @@
 //! Delaunay triangulation for surface building
 
-use sf_core::domain::surface::Mesh;
+use seisly_core::domain::surface::Mesh;
 use spade::{DelaunayTriangulation, HasPosition, Point2, Triangulation};
 use thiserror::Error;
 

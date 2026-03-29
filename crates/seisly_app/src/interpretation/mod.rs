@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use sf_core::domain::surface::Mesh;
+use seisly_core::domain::surface::Mesh;
 use uuid::Uuid;
 
 pub mod history;
@@ -75,7 +75,7 @@ impl Horizon {
             return;
         }
 
-        use sf_compute::interpolation::{RbfInterpolator, RbfType};
+        use seisly_compute::interpolation::{RbfInterpolator, RbfType};
 
         // Decimate points if there are too many for RBF (O(N^3))
         let max_rbf_points = 500;
@@ -199,7 +199,7 @@ impl Fault {
             return;
         }
 
-        use sf_compute::interpolation::{RbfInterpolator, RbfType};
+        use seisly_compute::interpolation::{RbfInterpolator, RbfType};
 
         if let Ok(interp) = RbfInterpolator::new(&points, RbfType::ThinPlateSpline) {
             self.meshes = vec![interp.generate_mesh_3d(20, 20)];

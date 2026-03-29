@@ -1,6 +1,6 @@
 //! CRS Registry for managing known CRS definitions
 
-use sf_core::Crs;
+use seisly_core::Crs;
 use std::collections::HashMap;
 
 /// Registry of known CRS definitions

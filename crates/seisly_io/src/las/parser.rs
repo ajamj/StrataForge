@@ -1,6 +1,6 @@
 //! LAS (Log ASCII Standard) file parser
 
-use sf_core::domain::well::{Well, WellLog};
+use seisly_core::domain::well::{Well, WellLog};
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 use thiserror::Error;

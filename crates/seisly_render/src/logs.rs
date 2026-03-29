@@ -1,7 +1,7 @@
-use sf_compute::resampling::interpolate_station;
-use sf_core::domain::log::Curve;
-use sf_core::domain::surface::Mesh;
-use sf_core::domain::trajectory::Trajectory;
+use seisly_compute::resampling::interpolate_station;
+use seisly_core::domain::log::Curve;
+use seisly_core::domain::surface::Mesh;
+use seisly_core::domain::trajectory::Trajectory;
 
 pub struct LogRenderer;
 

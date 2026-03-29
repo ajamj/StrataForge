@@ -1,6 +1,6 @@
 //! LAS (Log ASCII Standard) file writer
 
-use sf_core::domain::well::Well;
+use seisly_core::domain::well::Well;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::path::Path;
@@ -169,7 +169,7 @@ impl LasWriter {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sf_core::domain::well::{Well, WellLog};
+    use seisly_core::domain::well::{Well, WellLog};
     use tempfile::TempDir;
 
     fn create_test_well() -> Well {

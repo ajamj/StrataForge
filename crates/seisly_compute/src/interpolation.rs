@@ -1,7 +1,7 @@
 //! Radial Basis Function (RBF) interpolation for surface modeling
 
 use nalgebra::{DMatrix, DVector, Matrix3, Vector3};
-use sf_core::domain::surface::Mesh;
+use seisly_core::domain::surface::Mesh;
 
 /// Type of Radial Basis Function to use
 #[derive(Debug, Clone, Copy)]

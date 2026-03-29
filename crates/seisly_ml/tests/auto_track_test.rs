@@ -1,5 +1,5 @@
-use sf_ml::cnn::HorizonCNN;
-use sf_ml::tracker::AutoTracker;
+use seisly_ml::cnn::HorizonCNN;
+use seisly_ml::tracker::AutoTracker;
 use candle_core::{Device, DType};
 use candle_nn::VarBuilder;
 

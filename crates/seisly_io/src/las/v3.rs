@@ -6,7 +6,7 @@
 //! - Better encoding support (UTF-8)
 
 use crate::las::parser::LasError;
-use sf_core::domain::well::{Well, WellLog};
+use seisly_core::domain::well::{Well, WellLog};
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 

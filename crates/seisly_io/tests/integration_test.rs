@@ -2,8 +2,8 @@
 //!
 //! Uses synthetic test data generation (no binary files in repo)
 
-use sf_io::segy::{SegyReader, SegyWriter, IoError};
-use sf_io::las::LasV3Reader;
+use seisly_io::segy::{SegyReader, SegyWriter, IoError};
+use seisly_io::las::LasV3Reader;
 use tempfile::{NamedTempFile, TempDir};
 use std::io::Write;
 

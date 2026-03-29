@@ -1,6 +1,6 @@
 //! Project initialization command
 
-use sf_storage::Project;
+use seisly_storage::Project;
 use std::path::PathBuf;
 
 pub fn execute(name: String, path: Option<String>, crs: u32) -> anyhow::Result<()> {

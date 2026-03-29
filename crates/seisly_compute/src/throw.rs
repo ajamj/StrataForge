@@ -1,4 +1,4 @@
-use sf_core::domain::surface::Mesh;
+use seisly_core::domain::surface::Mesh;
 
 pub struct ThrowPoint {
     pub position: [f32; 3],

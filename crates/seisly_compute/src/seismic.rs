@@ -1,4 +1,4 @@
-use sf_io::segy::mmap::MmappedSegy;
+use seisly_io::segy::mmap::MmappedSegy;
 
 pub trait TraceProvider: Send + Sync {
     fn get_trace(&self, inline: i32, xline: i32) -> Option<Vec<f32>>;

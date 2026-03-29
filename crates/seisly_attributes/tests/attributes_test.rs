@@ -1,6 +1,6 @@
 //! Seismic Attributes Integration Tests
 
-use sf_attributes::{
+use seisly_attributes::{
     SeismicAttribute,
     amplitude::{RmsAmplitude, MeanAmplitude, all_amplitude_attributes},
     frequency::{InstantaneousFrequency, DominantFrequency, all_frequency_attributes},

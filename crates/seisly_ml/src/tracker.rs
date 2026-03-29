@@ -6,9 +6,9 @@ use std::collections::{HashSet, VecDeque};
 
 use crate::cnn::HorizonCNN;
 use candle_core::{Device, Tensor};
-use sf_core::domain::surface::{Mesh, Surface};
-use sf_core::Crs;
-use sf_compute::seismic::TraceProvider;
+use seisly_core::domain::surface::{Mesh, Surface};
+use seisly_core::Crs;
+use seisly_compute::seismic::TraceProvider;
 
 pub struct AutoTracker {
     #[allow(dead_code)]

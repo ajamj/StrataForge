@@ -1,7 +1,7 @@
 //! Trajectory CSV parser
 
-use sf_core::domain::trajectory::Trajectory;
-use sf_core::EntityId;
+use seisly_core::domain::trajectory::Trajectory;
+use seisly_core::EntityId;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 use thiserror::Error;

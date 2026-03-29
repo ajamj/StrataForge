@@ -1,7 +1,7 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
-use sf_attributes::amplitude::RmsAmplitude;
-use sf_attributes::trait_def::SeismicAttribute;
-use sf_attributes_gpu::GpuAttributeComputer;
+use seisly_attributes::amplitude::RmsAmplitude;
+use seisly_attributes::trait_def::SeismicAttribute;
+use seisly_attributes_gpu::GpuAttributeComputer;
 use tokio::runtime::Runtime;
 
 fn generate_test_data(size: usize) -> Vec<f32> {

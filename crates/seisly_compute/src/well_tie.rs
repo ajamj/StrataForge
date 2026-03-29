@@ -5,7 +5,7 @@
 //!
 //! Formula: TWT = (2/k) * ln((v0 + k*depth) / v0)
 
-use sf_core::domain::Well;
+use seisly_core::domain::Well;
 use thiserror::Error;
 use uuid::Uuid;
 

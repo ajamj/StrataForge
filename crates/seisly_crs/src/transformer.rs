@@ -1,6 +1,6 @@
 //! CRS Transformer using PROJ library
 
-use sf_core::Crs;
+use seisly_core::Crs;
 use thiserror::Error;
 
 #[derive(Error, Debug)]

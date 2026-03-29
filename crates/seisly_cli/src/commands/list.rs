@@ -1,6 +1,6 @@
 //! Dataset listing command
 
-use sf_storage::Project;
+use seisly_storage::Project;
 use std::path::PathBuf;
 
 pub fn execute(project_path: String, filter: Option<String>) -> anyhow::Result<()> {

@@ -1,7 +1,7 @@
 //! Well-seismic tie tests
 
-use sf_compute::well_tie::WellTieEngine;
-use sf_core::domain::Well;
+use seisly_compute::well_tie::WellTieEngine;
+use seisly_core::domain::Well;
 
 #[test]
 fn test_well_tie_with_velocity_model() {

@@ -1,6 +1,6 @@
 //! Tracking Quality Control
 
-use sf_core::domain::surface::Surface;
+use seisly_core::domain::surface::Surface;
 
 /// Tracking Quality Metrics
 pub struct TrackingQuality {

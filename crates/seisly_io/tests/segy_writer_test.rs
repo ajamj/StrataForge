@@ -1,6 +1,6 @@
 //! SEG-Y writer tests
 
-use sf_io::segy::SegyWriter;
+use seisly_io::segy::SegyWriter;
 use tempfile::TempDir;
 
 #[test]
@@ -25,7 +25,7 @@ fn test_segy_writer_create_and_write() {
     writer.finish().unwrap();
 
     // Verify file can be read back
-    use sf_io::segy::SegyReader;
+    use seisly_io::segy::SegyReader;
     let reader = SegyReader::open(&temp_path).unwrap();
     assert_eq!(reader.trace_count(), 10);
     

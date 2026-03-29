@@ -1,6 +1,6 @@
 //! Plugin System Tests
 
-use sf_plugin::{PluginManager, Plugin, PluginContext, PluginCommand, Result};
+use seisly_plugin::{PluginManager, Plugin, PluginContext, PluginCommand, Result};
 use serde_json::Value;
 
 struct TestPlugin;

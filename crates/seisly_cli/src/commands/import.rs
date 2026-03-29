@@ -1,8 +1,8 @@
 //! Data import commands
 
 use crate::ImportType;
-use sf_io::{LasParser, SurfaceParser, TrajectoryParser};
-use sf_storage::{BlobStore, Project};
+use seisly_io::{LasParser, SurfaceParser, TrajectoryParser};
+use seisly_storage::{BlobStore, Project};
 use std::path::PathBuf;
 
 pub fn execute(project_path: String, import_type: ImportType) -> anyhow::Result<()> {

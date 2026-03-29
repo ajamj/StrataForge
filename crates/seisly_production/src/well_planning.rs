@@ -1,7 +1,7 @@
 //! Well Planning Tools
 
-use sf_core::domain::well::Well;
-use sf_core::domain::trajectory::Trajectory;
+use seisly_core::domain::well::Well;
+use seisly_core::domain::trajectory::Trajectory;
 
 /// Well Planner - design well trajectories
 pub struct WellPlanner {

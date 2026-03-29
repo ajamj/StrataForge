@@ -1,6 +1,6 @@
 //! Fault surface renderer with transparency support
 
-use sf_core::domain::surface::Mesh;
+use seisly_core::domain::surface::Mesh;
 use wgpu::util::DeviceExt;
 use wgpu::{
     BindGroup, BindGroupLayout, Buffer, BufferUsages, ColorTargetState, ColorWrites, Device,
@@ -294,7 +294,7 @@ impl FaultRenderer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sf_core::domain::surface::Mesh;
+    use seisly_core::domain::surface::Mesh;
 
     #[test]
     fn test_fault_uniforms() {

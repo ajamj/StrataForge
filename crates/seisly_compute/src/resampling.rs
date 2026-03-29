@@ -1,6 +1,6 @@
 //! Trajectory resampling utilities
 
-use sf_core::domain::trajectory::{Station, Trajectory};
+use seisly_core::domain::trajectory::{Station, Trajectory};
 
 /// Resample trajectory to uniform MD intervals
 ///
@@ -61,7 +61,7 @@ pub fn interpolate_station(traj: &Trajectory, md: f64) -> Station {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sf_core::EntityId;
+    use seisly_core::EntityId;
 
     #[test]
     fn test_resample_uniform() {

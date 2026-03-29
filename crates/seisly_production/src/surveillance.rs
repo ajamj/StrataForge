@@ -1,6 +1,6 @@
 //! Reservoir Surveillance
 
-use sf_4d::{TimeLapseAnalysis, ProductionTimeline};
+use seisly_4d::{TimeLapseAnalysis, ProductionTimeline};
 
 /// Reservoir Surveillance - monitor reservoir performance
 pub struct ReservoirSurveillance {
@@ -155,7 +155,7 @@ pub struct FourDSummary {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sf_4d::ProductionData;
+    use seisly_4d::ProductionData;
 
     #[test]
     fn test_surveillance_creation() {

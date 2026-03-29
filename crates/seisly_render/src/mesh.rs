@@ -1,6 +1,6 @@
 //! Mesh rendering utilities
 
-use sf_core::domain::surface::Mesh;
+use seisly_core::domain::surface::Mesh;
 use wgpu::util::DeviceExt;
 use wgpu::{Buffer, BufferUsages, Device};
 
@@ -74,7 +74,7 @@ impl MeshRenderer {
 
 #[cfg(test)]
 mod tests {
-    use sf_core::domain::surface::Mesh;
+    use seisly_core::domain::surface::Mesh;
 
     #[test]
     fn test_mesh_center_calculation() {

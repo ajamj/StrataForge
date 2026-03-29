@@ -1,12 +1,12 @@
 //! SEG-Y reader integration tests
 
-use sf_io::segy::{IoError, SegyReader};
+use seisly_io::segy::{IoError, SegyReader};
 use tempfile::TempDir;
 
 #[test]
 fn test_segy_reader_open_and_read() {
     // Test with SegyWriter - create a file and read it back
-    use sf_io::segy::SegyWriter;
+    use seisly_io::segy::SegyWriter;
     
     let temp_dir = TempDir::new().unwrap();
     let test_file = temp_dir.path().join("test.segy");

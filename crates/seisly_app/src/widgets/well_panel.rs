@@ -142,7 +142,7 @@ impl WellPanel {
     }
 
     fn create_demo_well(&mut self, well_state: &mut WellState) {
-        use sf_core::domain::well::Well;
+        use seisly_core::domain::well::Well;
 
         // Create a demo well
         let mut well = Well::new(

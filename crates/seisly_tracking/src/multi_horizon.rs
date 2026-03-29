@@ -1,7 +1,7 @@
 //! Multi-Horizon Tracking
 
-use sf_core::domain::surface::Surface;
-use sf_ml::AutoTracker;
+use seisly_core::domain::surface::Surface;
+use seisly_ml::AutoTracker;
 
 /// Multi-Horizon Tracker - track multiple horizons simultaneously
 pub struct MultiHorizonTracker {

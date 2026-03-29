@@ -1,7 +1,7 @@
 //! Integration tests for the training pipeline
 
-use sf_ml::synthetic::{SyntheticConfig, SyntheticTrainer};
-use sf_ml::training::{TrainingConfig, Trainer};
+use seisly_ml::synthetic::{SyntheticConfig, SyntheticTrainer};
+use seisly_ml::training::{TrainingConfig, Trainer};
 
 #[test]
 fn test_synthetic_data_generation() {
