@@ -11,6 +11,7 @@ members = [
   "crates/sf_app",
   "crates/sf_ml",
   "crates/sf_plugin",
+  "crates/sf_attributes",
 ]
 
 [workspace.package]
@@ -31,6 +32,7 @@ sf_cli = { path = "crates/sf_cli" }
 sf_app = { path = "crates/sf_app" }
 sf_ml = { path = "crates/sf_ml" }
 sf_plugin = { path = "crates/sf_plugin" }
+sf_attributes = { path = "crates/sf_attributes" }
 
 # Serialization
 serde = { version = "1.0", features = ["derive"] }
