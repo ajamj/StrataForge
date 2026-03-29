@@ -28,54 +28,58 @@ impl WellPanel {
         ui.heading("Wells");
         ui.separator();
 
-        // Well list
-        ui.collapsing("Well List", |ui| {
-            ui.vertical(|ui| {
-                for well in &mut well_state.wells {
-                    let is_active = well_state.active_well_id == Some(well.id);
+        // Well list with scroll support
+        egui::ScrollArea::vertical()
+            .max_height(300.0)
+            .show(ui, |ui| {
+                ui.collapsing("Well List", |ui| {
+                    ui.vertical(|ui| {
+                        for well in &mut well_state.wells {
+                            let is_active = well_state.active_well_id == Some(well.id);
 
-                    ui.horizontal(|ui| {
-                        // Visibility checkbox
-                        if ui.checkbox(&mut well.is_visible, "").changed() {
-                            // Visibility toggled
+                            ui.horizontal(|ui| {
+                                // Visibility checkbox
+                                if ui.checkbox(&mut well.is_visible, "").changed() {
+                                    // Visibility toggled
+                                }
+
+                                // Well symbol as colored box
+                                let color = if is_active {
+                                    egui::Color32::YELLOW
+                                } else {
+                                    egui::Color32::GRAY
+                                };
+
+                                let symbol_rect =
+                                    ui.allocate_response(egui::vec2(20.0, 20.0), egui::Sense::click());
+                                ui.painter().rect_filled(symbol_rect.rect, 2.0, color);
+
+                                // Well name (selectable)
+                                let response = ui.selectable_label(is_active, &well.name);
+                                if response.clicked() {
+                                    well_state.active_well_id = Some(well.id);
+                                }
+
+                                // Well symbol
+                                ui.label(format!("[{}]", well.symbol));
+
+                                // Tops count
+                                ui.label(format!("({} tops)", well.tops.len()));
+                            });
                         }
 
-                        // Well symbol as colored box
-                        let color = if is_active {
-                            egui::Color32::YELLOW
-                        } else {
-                            egui::Color32::GRAY
-                        };
+                        // Import well button
+                        ui.separator();
 
-                        let symbol_rect =
-                            ui.allocate_response(egui::vec2(20.0, 20.0), egui::Sense::click());
-                        ui.painter().rect_filled(symbol_rect.rect, 2.0, color);
-
-                        // Well name (selectable)
-                        let response = ui.selectable_label(is_active, &well.name);
-                        if response.clicked() {
-                            well_state.active_well_id = Some(well.id);
-                        }
-
-                        // Well symbol
-                        ui.label(format!("[{}]", well.symbol));
-
-                        // Tops count
-                        ui.label(format!("({} tops)", well.tops.len()));
+                        ui.horizontal(|ui| {
+                            if ui.button("📂 Import Well (LAS)").clicked() {
+                                // For now, create a demo well
+                                self.create_demo_well(well_state);
+                            }
+                        });
                     });
-                }
-
-                // Import well button
-                ui.separator();
-
-                ui.horizontal(|ui| {
-                    if ui.button("📂 Import Well (LAS)").clicked() {
-                        // For now, create a demo well
-                        self.create_demo_well(well_state);
-                    }
                 });
             });
-        });
 
         ui.separator();
 

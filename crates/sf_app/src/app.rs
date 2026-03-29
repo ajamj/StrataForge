@@ -65,10 +65,14 @@ pub struct StrataForgeApp {
 impl StrataForgeApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         let theme_manager = ThemeManager::new();
+        
+        // Setup egui with proper icon support
+        let mut fonts = egui::FontDefinitions::default();
+        egui_extras::install_image_loaders(&cc.egui_ctx);
+        
         // Apply theme
         ui_styles::apply_theme(&cc.egui_ctx, theme_manager.current_theme);
-
-        egui_extras::install_image_loaders(&cc.egui_ctx);
+        
         let mut interpretation = InterpretationState::new();
 
         let target_format = cc.wgpu_render_state.as_ref().map(|rs| rs.target_format);
