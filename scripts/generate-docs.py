@@ -248,6 +248,14 @@ def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
     
+    # Copy style.css to output
+    import shutil
+    css_source = REPO_ROOT / "style.css"
+    css_dest = OUTPUT_DIR / "style.css"
+    if css_source.exists():
+        shutil.copy2(css_source, css_dest)
+        print(f"✅ Copied: style.css")
+    
     # Generate index.html
     print("📄 Generating index.html...")
     index_html = generate_index_html()
