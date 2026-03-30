@@ -7,21 +7,10 @@ description: The fastest, most accessible seismic interpretation platform
 baseurl: ""
 url: "https://ajamj.github.io/seisly"
 
-# Theme
-theme: just-the-docs
+# Theme - Minima (default, most stable)
+theme: minima
 
 # Build settings
 markdown: kramdown
 highlighter: rouge
 permalink: pretty
-
-# Search
-search_enabled: true
-
-# Color scheme
-color_scheme: blue
-
-# Aux links
-aux_links:
-  "GitHub":
-    - "https://github.com/ajamj/seisly"
