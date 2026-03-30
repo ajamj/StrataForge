@@ -3,10 +3,10 @@ name: Deploy GitHub Pages
 on:
   push:
     branches:
-      - gh-pages
+      - main  # Deploy from main branch!
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# Permissions for GitHub Actions
 permissions:
   contents: read
   pages: write
@@ -18,18 +18,27 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build-and-deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    # Only deploy if triggered by gh-pages push (not manual from main)
-    if: github.ref == 'refs/heads/gh-pages' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: gh-pages
+          ref: main  # Checkout main branch
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate Documentation
+        run: |
+          echo "🔧 Generating documentation..."
+          python scripts/generate-docs.py
+          echo "✅ Documentation generated!"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -37,7 +46,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire gh-pages branch root
+          # Upload entire main branch root (including generated HTML)
           path: '.'
 
       - name: Deploy to GitHub Pages
