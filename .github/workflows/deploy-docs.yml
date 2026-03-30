@@ -25,15 +25,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          python-version: '3.11'
+          ruby-version: '3.2'
+          bundler-cache: true
 
-      - name: Generate HTML docs
-        run: |
-          echo "🔧 Generating documentation..."
-          python scripts/generate-docs.py
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Build with Jekyll
+        run: bundle exec jekyll build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -41,7 +43,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: ./_site
 
       - name: Deploy to GitHub Pages
         id: deployment

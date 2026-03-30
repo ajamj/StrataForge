@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-# Just the Docs theme for GitHub Pages
+# Jekyll theme for documentation
 gem "just-the-docs"
 
 # GitHub Pages compatible Jekyll
