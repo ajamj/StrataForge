@@ -4417,6 +4417,242 @@ dependencies = [
 ]
 
 [[package]]
+name = "seisly_4d"
+version = "0.3.0"
+dependencies = [
+ "nalgebra",
+ "rayon",
+ "seisly_attributes",
+ "seisly_compute",
+ "seisly_core",
+]
+
+[[package]]
+name = "seisly_app"
+version = "0.3.0"
+dependencies = [
+ "anyhow",
+ "eframe",
+ "egui 0.26.2",
+ "egui_extras",
+ "prost",
+ "seisly_compute",
+ "seisly_core",
+ "seisly_io",
+ "seisly_render",
+ "seisly_storage",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "tokio",
+ "tonic",
+ "tonic-build",
+ "uuid",
+ "winit",
+]
+
+[[package]]
+name = "seisly_attributes"
+version = "0.3.0"
+dependencies = [
+ "nalgebra",
+ "num-complex",
+ "rayon",
+ "rustfft",
+ "seisly_compute",
+ "seisly_core",
+]
+
+[[package]]
+name = "seisly_attributes_gpu"
+version = "0.3.0"
+dependencies = [
+ "bytemuck",
+ "criterion",
+ "seisly_attributes",
+ "thiserror 1.0.69",
+ "tokio",
+ "wgpu",
+]
+
+[[package]]
+name = "seisly_cli"
+version = "0.3.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "seisly_compute",
+ "seisly_core",
+ "seisly_io",
+ "seisly_storage",
+ "tokio",
+ "uuid",
+]
+
+[[package]]
+name = "seisly_compute"
+version = "0.3.0"
+dependencies = [
+ "nalgebra",
+ "rand",
+ "seisly_core",
+ "seisly_io",
+ "spade",
+ "tempfile",
+ "thiserror 1.0.69",
+ "uuid",
+]
+
+[[package]]
+name = "seisly_core"
+version = "0.3.0"
+dependencies = [
+ "chrono",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror 1.0.69",
+ "uuid",
+]
+
+[[package]]
+name = "seisly_crs"
+version = "0.3.0"
+dependencies = [
+ "proj",
+ "seisly_core",
+ "tempfile",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "seisly_fwi"
+version = "0.3.0"
+dependencies = [
+ "nalgebra",
+ "ndarray",
+ "rayon",
+ "seisly_compute",
+ "seisly_core",
+ "seisly_io",
+]
+
+[[package]]
+name = "seisly_io"
+version = "0.3.0"
+dependencies = [
+ "anyhow",
+ "giga-segy-in",
+ "giga-segy-out",
+ "memmap2",
+ "seisly_core",
+ "serde_json",
+ "tempfile",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "seisly_ml"
+version = "0.3.0"
+dependencies = [
+ "candle-core",
+ "candle-nn",
+ "half",
+ "ndarray",
+ "rand",
+ "rand_distr",
+ "seisly_compute",
+ "seisly_core",
+ "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "seisly_ml_deep"
+version = "0.3.0"
+dependencies = [
+ "candle-core",
+ "candle-nn",
+ "candle-transformers",
+ "rand",
+ "seisly_compute",
+ "seisly_core",
+ "seisly_ml",
+]
+
+[[package]]
+name = "seisly_plugin"
+version = "0.3.0"
+dependencies = [
+ "pyo3",
+ "seisly_core",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "seisly_production"
+version = "0.3.0"
+dependencies = [
+ "nalgebra",
+ "ndarray",
+ "seisly_compute",
+ "seisly_core",
+ "seisly_io",
+ "seisly_qi",
+]
+
+[[package]]
+name = "seisly_qi"
+version = "0.3.0"
+dependencies = [
+ "nalgebra",
+ "rayon",
+ "seisly_attributes",
+ "seisly_compute",
+ "seisly_core",
+]
+
+[[package]]
+name = "seisly_render"
+version = "0.3.0"
+dependencies = [
+ "bytemuck",
+ "nalgebra",
+ "seisly_compute",
+ "seisly_core",
+ "wgpu",
+]
+
+[[package]]
+name = "seisly_storage"
+version = "0.3.0"
+dependencies = [
+ "anyhow",
+ "blake3",
+ "chrono",
+ "rusqlite",
+ "seisly_core",
+ "serde",
+ "serde_yaml",
+ "tempfile",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "seisly_tracking"
+version = "0.3.0"
+dependencies = [
+ "nalgebra",
+ "rayon",
+ "seisly_compute",
+ "seisly_core",
+ "seisly_ml",
+ "seisly_ml_deep",
+]
+
+[[package]]
 name = "semver"
 version = "1.0.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4502,242 +4738,6 @@ dependencies = [
  "ryu",
  "serde",
  "unsafe-libyaml",
-]
-
-[[package]]
-name = "sf_4d"
-version = "0.3.0"
-dependencies = [
- "nalgebra",
- "rayon",
- "sf_attributes",
- "sf_compute",
- "sf_core",
-]
-
-[[package]]
-name = "sf_app"
-version = "0.3.0"
-dependencies = [
- "anyhow",
- "eframe",
- "egui 0.26.2",
- "egui_extras",
- "prost",
- "serde",
- "serde_json",
- "sf_compute",
- "sf_core",
- "sf_io",
- "sf_render",
- "sf_storage",
- "tempfile",
- "tokio",
- "tonic",
- "tonic-build",
- "uuid",
- "winit",
-]
-
-[[package]]
-name = "sf_attributes"
-version = "0.3.0"
-dependencies = [
- "nalgebra",
- "num-complex",
- "rayon",
- "rustfft",
- "sf_compute",
- "sf_core",
-]
-
-[[package]]
-name = "sf_attributes_gpu"
-version = "0.3.0"
-dependencies = [
- "bytemuck",
- "criterion",
- "sf_attributes",
- "thiserror 1.0.69",
- "tokio",
- "wgpu",
-]
-
-[[package]]
-name = "sf_cli"
-version = "0.3.0"
-dependencies = [
- "anyhow",
- "clap",
- "sf_compute",
- "sf_core",
- "sf_io",
- "sf_storage",
- "tokio",
- "uuid",
-]
-
-[[package]]
-name = "sf_compute"
-version = "0.3.0"
-dependencies = [
- "nalgebra",
- "rand",
- "sf_core",
- "sf_io",
- "spade",
- "tempfile",
- "thiserror 1.0.69",
- "uuid",
-]
-
-[[package]]
-name = "sf_core"
-version = "0.3.0"
-dependencies = [
- "chrono",
- "serde",
- "serde_json",
- "tempfile",
- "thiserror 1.0.69",
- "uuid",
-]
-
-[[package]]
-name = "sf_crs"
-version = "0.3.0"
-dependencies = [
- "proj",
- "sf_core",
- "tempfile",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "sf_fwi"
-version = "0.3.0"
-dependencies = [
- "nalgebra",
- "ndarray",
- "rayon",
- "sf_compute",
- "sf_core",
- "sf_io",
-]
-
-[[package]]
-name = "sf_io"
-version = "0.3.0"
-dependencies = [
- "anyhow",
- "giga-segy-in",
- "giga-segy-out",
- "memmap2",
- "serde_json",
- "sf_core",
- "tempfile",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "sf_ml"
-version = "0.3.0"
-dependencies = [
- "candle-core",
- "candle-nn",
- "half",
- "ndarray",
- "rand",
- "rand_distr",
- "serde",
- "sf_compute",
- "sf_core",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "sf_ml_deep"
-version = "0.3.0"
-dependencies = [
- "candle-core",
- "candle-nn",
- "candle-transformers",
- "rand",
- "sf_compute",
- "sf_core",
- "sf_ml",
-]
-
-[[package]]
-name = "sf_plugin"
-version = "0.3.0"
-dependencies = [
- "pyo3",
- "serde",
- "serde_json",
- "sf_core",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "sf_production"
-version = "0.3.0"
-dependencies = [
- "nalgebra",
- "ndarray",
- "sf_compute",
- "sf_core",
- "sf_io",
- "sf_qi",
-]
-
-[[package]]
-name = "sf_qi"
-version = "0.3.0"
-dependencies = [
- "nalgebra",
- "rayon",
- "sf_attributes",
- "sf_compute",
- "sf_core",
-]
-
-[[package]]
-name = "sf_render"
-version = "0.3.0"
-dependencies = [
- "bytemuck",
- "nalgebra",
- "sf_compute",
- "sf_core",
- "wgpu",
-]
-
-[[package]]
-name = "sf_storage"
-version = "0.3.0"
-dependencies = [
- "anyhow",
- "blake3",
- "chrono",
- "rusqlite",
- "serde",
- "serde_yaml",
- "sf_core",
- "tempfile",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "sf_tracking"
-version = "0.3.0"
-dependencies = [
- "nalgebra",
- "rayon",
- "sf_compute",
- "sf_core",
- "sf_ml",
- "sf_ml_deep",
 ]
 
 [[package]]
