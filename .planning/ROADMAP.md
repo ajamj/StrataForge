@@ -8,33 +8,31 @@
 | v04-phase-c | Structural Rendering (3D) | ✅ Complete | 2026-03-28 | 2026-03-28 |
 | v05-phase-a | Horizon Interpretation | ✅ Complete | 2026-03-28 | 2026-03-28 |
 | v05-phase-b | Velocity & Depth Modeling | ✅ Complete | 2026-03-28 | 2026-03-28 |
-| v06 | Advanced Features (ML, Wells) | ⏳ Pending | - | - |
-| v1.0 | Production Release | ⏳ Pending | - | - |
+| v06 | Advanced Features (ML, Wells) | ✅ Complete | 2026-03-30 | 2026-03-31 |
+| v1.0 | Production Release | ⏳ In Progress | 2026-03-31 | - |
 
-## Current Sprint: COMPLETED
+## Current Phase: v1.0 Production Release
 
-**v05-phase-b-velocity-depth** - ✅ Complete
+**Goal:** Reach production-grade stability, security, and performance.
 
-**Accomplishments:**
-- Created VelocityPanel UI for velocity model configuration
-- Supports Constant and Gradient velocity models
-- Real-time velocity preview table
-- Depth mode toggle integrated with viewport
-- Reused existing LinearVelocityModel for robust conversion
+**Requirements:** R8.1, R8.2, R8.3, SEC-01, UI-01, ERR-01
 
-## Next Sprint: v06-advanced-features
+**Plans:** 5 plans
+- [ ] v1.0-01-PLAN.md — Branding, Docs & Quality Audit (R8.2)
+- [ ] v1.0-02-PLAN.md — Performance & Robustness (R8.1, ERR-01)
+- [ ] v1.0-03-PLAN.md — Secure Plugin Architecture (SEC-01)
+- [ ] v1.0-04-PLAN.md — Professional UI/UX (UI-01)
+- [ ] v1.0-05-PLAN.md — Distribution & Release (R8.3)
 
-**Goal:** Implement advanced features for production use
+---
 
-**Dependencies:** v05-phase-b complete ✅
+## Completed Phases
 
-**Status:** Ready to start
-
-**Potential Features:**
-- Well integration (well tops, logs)
-- Advanced velocity analysis
-- Auto-tracking enhancement
-- Export to industry formats
+**v06-advanced-features** - ✅ Complete
+- Integrated Plugin Manager UI.
+- High-performance zero-copy data bridge to NumPy.
+- PythonPlugin implementation with dynamic sys.path management.
+- Embedded Python interpreter using PyO3.
 
 ---
 
@@ -42,10 +40,12 @@
 
 | Item | Original Phase | Reason | Target Phase |
 |------|----------------|--------|--------------|
-| Task 2: Transparent Surface Rendering | v04-phase-b | Skipped to prioritize Task 3 | v04-phase-c |
+| (None) | - | - | - |
 
 ## Key Decisions Log
 
+- **2026-03-31:** Switch to process-isolated Python worker model for plugin security (v1.0-03).
+- **2026-03-31:** Adopt `cargo-dist` for multi-platform distribution (v1.0-05).
 - **2026-03-28:** Project-per-database architecture (no multi-project single-db)
-- **2026-03-28:** PCA-based RBF for 3D fault modeling (supports vertical planes)
-- **2026-03-28:** Click-and-drag sketch mode for fault picking (egui-based)
+- **2026-03-28:** PCA-based RBF for 3D fault modeling
+- **2026-03-28:** Click-and-drag sketch mode for fault picking
