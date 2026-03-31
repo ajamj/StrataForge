@@ -2,9 +2,17 @@
 name = "seisly_cli"
 version.workspace = true
 edition.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[package.metadata.wix]
+upgrade-guid = "6B2394D1-E17A-4769-A157-264BE025C860"
+path-guid = "67886372-3B7A-4803-8B5B-2722C8C71956"
+license = false
+eula = false
 
 [[bin]]
-name = "sf"
+name = "seisly-cli"
 path = "src/main.rs"
 
 [dependencies]

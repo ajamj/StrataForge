@@ -3,7 +3,7 @@
 ## Quick Start
 
 ```rust
-use sf_4d::{TimeLapseMonitor, BaseMonitorPair};
+use seisly_4d::{TimeLapseMonitor, BaseMonitorPair};
 
 // Load base and monitor surveys
 let base = load_seismic("base_survey.segy");
@@ -47,7 +47,7 @@ println!("NRMS: {:.2}%", nrms);
 The most basic 4D attribute is the simple amplitude difference:
 
 ```rust
-use sf_4d::TimeLapseMonitor;
+use seisly_4d::TimeLapseMonitor;
 
 let monitor_4d = TimeLapseMonitor::new(&base, &monitor);
 let difference = monitor_4d.compute_difference();
@@ -60,7 +60,7 @@ let difference = monitor_4d.compute_difference();
 Compute difference within a time window:
 
 ```rust
-use sf_4d::{TimeLapseMonitor, WindowConfig};
+use seisly_4d::{TimeLapseMonitor, WindowConfig};
 
 let config = WindowConfig {
     top_ms: 1000.0,
@@ -77,7 +77,7 @@ let windowed_diff = monitor_4d.compute_windowed_difference(&config);
 Root Mean Square of the difference measures the energy of change:
 
 ```rust
-use sf_4d::TimeLapseMonitor;
+use seisly_4d::TimeLapseMonitor;
 
 let monitor_4d = TimeLapseMonitor::new(&base, &monitor);
 let rms_diff = monitor_4d.compute_rms_difference();
@@ -108,7 +108,7 @@ NRMS = 200 × RMS(Monitor - Base) / (RMS(Monitor) + RMS(Base))
 ```
 
 ```rust
-use sf_4d::TimeLapseMonitor;
+use seisly_4d::TimeLapseMonitor;
 
 let monitor_4d = TimeLapseMonitor::new(&base, &monitor);
 let nrms = monitor_4d.compute_nrms();
@@ -132,7 +132,7 @@ if nrms < 10.0 {
 Time shifts detect velocity changes between surveys:
 
 ```rust
-use sf_4d::{TimeLapseMonitor, TimeShiftConfig};
+use seisly_4d::{TimeLapseMonitor, TimeShiftConfig};
 
 let config = TimeShiftConfig {
     window_length_ms: 100.0,
@@ -150,7 +150,7 @@ let time_shifts = monitor_4d.compute_time_shifts(&config);
 Time shifts are computed using cross-correlation:
 
 ```rust
-use sf_4d::CrossCorrelation;
+use seisly_4d::CrossCorrelation;
 
 let cc = CrossCorrelation::new(&base_trace, &monitor_trace);
 let lag = cc.find_peak_lag();
@@ -165,7 +165,7 @@ println!("Correlation: {:.3}", correlation_coefficient);
 Correlate 4D response with production data:
 
 ```rust
-use sf_4d::{ProductionData, WellCorrelation};
+use seisly_4d::{ProductionData, WellCorrelation};
 
 // Load production data
 let prod_data = ProductionData::from_csv("production.csv");
@@ -187,7 +187,7 @@ if correlation.p_value < 0.05 {
 ### Production Attributes
 
 ```rust
-use sf_4d::ProductionData;
+use seisly_4d::ProductionData;
 
 let prod = ProductionData::new();
 prod.add_well("Well-A", vec![
@@ -208,7 +208,7 @@ let avg_rate = prod.average_rate("Well-A");
 ### Basic 4D Analysis
 
 ```rust
-use sf_4d::{TimeLapseMonitor, WindowConfig, TimeShiftConfig};
+use seisly_4d::{TimeLapseMonitor, WindowConfig, TimeShiftConfig};
 
 fn basic_4d_analysis(base: &[f64], monitor: &[f64]) {
     let monitor_4d = TimeLapseMonitor::new(base, monitor);
@@ -232,7 +232,7 @@ fn basic_4d_analysis(base: &[f64], monitor: &[f64]) {
 ### Advanced 4D with Production
 
 ```rust
-use sf_4d::{TimeLapseMonitor, ProductionData, WellCorrelation};
+use seisly_4d::{TimeLapseMonitor, ProductionData, WellCorrelation};
 
 fn advanced_4d_with_production(base: &[f64], monitor: &[f64],
                                 prod_file: &str) {
@@ -265,7 +265,7 @@ fn advanced_4d_with_production(base: &[f64], monitor: &[f64],
 ### Repeatability Assessment
 
 ```rust
-use sf_4d::RepeatabilityMetrics;
+use seisly_4d::RepeatabilityMetrics;
 
 let metrics = RepeatabilityMetrics::compute(&base, &monitor);
 
@@ -283,7 +283,7 @@ println!("Overall quality: {:?}", quality);
 ### Noise Estimation
 
 ```rust
-use sf_4d::NoiseEstimator;
+use seisly_4d::NoiseEstimator;
 
 let estimator = NoiseEstimator::new(&base, &monitor);
 let noise_level = estimator.estimate_outside_reservoir();
@@ -323,7 +323,7 @@ println!("Noise level (outside reservoir): {:.2}", noise_level);
 ## Example: Complete 4D Study
 
 ```rust
-use sf_4d::*;
+use seisly_4d::*;
 
 fn complete_4d_study(base_path: &str, monitor_path: &str, 
                      prod_path: &str) -> Result<(), Box<dyn std::error::Error>> {

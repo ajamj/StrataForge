@@ -1,6 +1,6 @@
 //! Phase 2 4D Integration Tests
 
-use sf_4d::{TimeLapseAnalysis, DifferenceMap, AnomalyDetector, ProductionTimeline, ProductionData};
+use seisly_4d::{TimeLapseAnalysis, DifferenceMap, AnomalyDetector, ProductionTimeline, ProductionData};
 
 #[test]
 fn test_full_4d_workflow() {

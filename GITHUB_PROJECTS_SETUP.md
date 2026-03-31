@@ -4,10 +4,10 @@
 
 ### Create New Project
 
-1. **Go to:** https://github.com/ajamj/StrataForge/projects
+1. **Go to:** https://github.com/ajamj/Seisly/projects
 2. **Click:** "New project" → "Start from scratch"
-3. **Name:** "StrataForge Development"
-4. **Description:** "Main development project board for StrataForge v0.1.1 release"
+3. **Name:** "Seisly Development"
+4. **Description:** "Main development project board for Seisly v0.1.1 release"
 
 ---
 
@@ -288,10 +288,10 @@ Create these labels for consistent categorization:
 
 ## 🔗 Useful Links
 
-- **Project Board:** https://github.com/ajamj/StrataForge/projects
-- **Issues:** https://github.com/ajamj/StrataForge/issues
-- **Milestones:** https://github.com/ajamj/StrataForge/milestones
-- **PR #1:** https://github.com/ajamj/StrataForge/pull/1
+- **Project Board:** https://github.com/ajamj/Seisly/projects
+- **Issues:** https://github.com/ajamj/Seisly/issues
+- **Milestones:** https://github.com/ajamj/Seisly/milestones
+- **PR #1:** https://github.com/ajamj/Seisly/pull/1
 
 ---
 

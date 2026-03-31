@@ -1,8 +1,8 @@
-# StrataForge Architecture
+# Seisly Architecture
 
 ## Overview
 
-StrataForge is a modern, open-source subsurface interpretation and modeling platform built in Rust. It provides geoscientists and engineers with tools to analyze subsurface data from exploration to production.
+Seisly (formerly Seisly) is a modern, open-source subsurface interpretation and modeling platform built in Rust. It provides geoscientists and engineers with tools to analyze subsurface data from exploration to production.
 
 ## Design Principles
 
@@ -17,10 +17,10 @@ StrataForge is a modern, open-source subsurface interpretation and modeling plat
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      Desktop App (sf_app)                        │
+│                      Desktop App (seisly_app)                      │
 │                    egui + wgpu + winit                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                         CLI (sf_cli)                             │
+│                         CLI (seisly_cli)                             │
 ├─────────────────────────────────────────────────────────────────┤
 │                      Backend Trait                               │
 │         ┌─────────────────────┬──────────────────────┐          │
@@ -28,9 +28,9 @@ StrataForge is a modern, open-source subsurface interpretation and modeling plat
 │         │   (SQLite + blobs)  │     (REST API)       │          │
 │         └─────────────────────┴──────────────────────┘          │
 ├─────────────────────────────────────────────────────────────────┤
-│  sf_core  │  sf_crs  │  sf_storage  │  sf_io  │  sf_compute    │
+│  seisly_core  │  seisly_crs  │  seisly_storage  │  seisly_io  │  seisly_compute    │
 ├─────────────────────────────────────────────────────────────────┤
-│                      Server (sf_server)                          │
+│                      Server (seisly_server)                          │
 │                    axum + REST API                               │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -39,19 +39,19 @@ StrataForge is a modern, open-source subsurface interpretation and modeling plat
 
 | Crate | Responsibility |
 |-------|----------------|
-| `sf_core` | Domain model: IDs, CRS, units, geometry types |
-| `sf_crs` | PROJ wrappers, CRS registry, transforms |
-| `sf_storage` | Project layout, SQLite schema, blob store |
-| `sf_io` | Import/export: LAS, CSV, XYZ, SEG-Y |
-| `sf_compute` | Gridding, triangulation, smoothing, resampling |
-| `sf_render` | wgpu rendering primitives |
-| `sf_cli` | CLI commands: init, import, list |
-| `sf_app` | egui desktop application |
-| `sf_server` | axum REST server + job runner |
+| `seisly_core` | Domain model: IDs, CRS, units, geometry types |
+| `seisly_crs` | PROJ wrappers, CRS registry, transforms |
+| `seisly_storage` | Project layout, SQLite schema, blob store |
+| `seisly_io` | Import/export: LAS, CSV, XYZ, SEG-Y |
+| `seisly_compute` | Gridding, triangulation, smoothing, resampling |
+| `seisly_render` | wgpu rendering primitives |
+| `seisly_cli` | CLI commands: init, import, list |
+| `seisly_app` | egui desktop application |
+| `seisly_server` | axum REST server + job runner |
 
 ## Project Format
 
-A StrataForge project is a folder:
+A Seisly project is a folder:
 
 ```
 MyField.sf/

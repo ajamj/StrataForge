@@ -1,4 +1,4 @@
-//! StrataForge Compute Module
+//! Seisly Compute Module
 //!
 //! Provides algorithms for triangulation, resampling, and other computations.
 

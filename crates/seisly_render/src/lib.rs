@@ -1,4 +1,4 @@
-//! StrataForge Render Module
+//! Seisly Render Module
 //!
 //! Provides wgpu-based rendering primitives for 3D visualization.
 //!

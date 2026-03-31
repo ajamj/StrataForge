@@ -1,4 +1,4 @@
-//! StrataForge CRS Module
+//! Seisly CRS Module
 //!
 //! Provides CRS transformation capabilities using PROJ library.
 

@@ -2,7 +2,7 @@
 name = "seisly_4d"
 version.workspace = true
 edition.workspace = true
-description = "4D Time-Lapse Seismic Monitoring for StrataForge"
+description = "4D Time-Lapse Seismic Monitoring for Seisly"
 
 [dependencies]
 seisly_core.workspace = true

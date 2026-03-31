@@ -1,4 +1,4 @@
-# StrataForge Roadmap
+# Seisly Roadmap
 
 ## v0.1 - Offline Wells + Surfaces (Completed)
 
@@ -93,7 +93,7 @@
   - [x] Multi-selection UI for horizon comparison
 - [x] Export Manager
   - [x] XYZ point cloud export for surfaces
-  - [x] StrataForge JSON interoperability export
+  - [x] Seisly JSON interoperability export
   - [x] Analysis reporting UI
 
 ---

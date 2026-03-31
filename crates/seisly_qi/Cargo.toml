@@ -2,7 +2,7 @@
 name = "seisly_qi"
 version.workspace = true
 edition.workspace = true
-description = "Quantitative Interpretation & AVO Analysis for StrataForge"
+description = "Quantitative Interpretation & AVO Analysis for Seisly"
 
 [dependencies]
 seisly_core.workspace = true

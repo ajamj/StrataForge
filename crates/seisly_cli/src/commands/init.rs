@@ -9,7 +9,7 @@ pub fn execute(name: String, path: Option<String>, crs: u32) -> anyhow::Result<(
         .unwrap_or_else(|| PathBuf::from(format!("{}.sf", name)));
 
     println!(
-        "Creating StrataForge project '{}' at {:?}",
+        "Creating Seisly project '{}' at {:?}",
         name, project_path
     );
 

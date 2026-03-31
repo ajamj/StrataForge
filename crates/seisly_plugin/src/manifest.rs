@@ -36,13 +36,13 @@ name: MockHorizon
 version: 0.1.0
 plugin_type: horizon
 entry_point: main.py
-author: StrataForge Team
+author: Seisly Team
 "#;
         let manifest = PluginManifest::from_yaml(yaml).unwrap();
         assert_eq!(manifest.name, "MockHorizon");
         assert_eq!(manifest.version, "0.1.0");
         assert_eq!(manifest.plugin_type, "horizon");
         assert_eq!(manifest.entry_point, "main.py");
-        assert_eq!(manifest.author.unwrap(), "StrataForge Team");
+        assert_eq!(manifest.author.unwrap(), "Seisly Team");
     }
 }

@@ -2,7 +2,7 @@ mod ai_client;
 mod app;
 mod interpretation;
 mod project;
-mod ui_styles;
+mod ui;
 mod widgets;
 use app::SeislyApp;
 
@@ -30,7 +30,7 @@ fn main() -> eframe::Result<()> {
         let error_msg = format!("Seisly encountered a fatal error and must close.\n\nError: {}{}\n\nA report has been prepared for our engineering team.", message, location);
         
         // Report to Sentry
-        sentry::panic::panic_handler(panic_info);
+        sentry::integrations::panic::panic_handler(panic_info);
 
         // Show native message dialog
         rfd::MessageDialog::new()

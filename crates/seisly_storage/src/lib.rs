@@ -1,4 +1,4 @@
-//! StrataForge Storage Module
+//! Seisly Storage Module
 //!
 //! Provides project format, SQLite storage, and blob store capabilities.
 

@@ -71,7 +71,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: strataforge-linux
+        name: Seisly-linux
         path: target/release/sf-app*
         if-no-files-found: ignore
 
@@ -128,7 +128,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: strataforge-windows
+        name: Seisly-windows
         path: target/x86_64-pc-windows-msvc/release/sf-app*
         if-no-files-found: ignore
 

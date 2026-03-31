@@ -24,7 +24,7 @@ Last updated: $(date)
 EOF
 
 # List all crates
-for crate_dir in crates/sf_*; do
+for crate_dir in crates/seisly_*; do
     crate_name=$(basename "$crate_dir")
     echo "### $crate_name" >> docs/AUTO_GENERATED_FEATURES.md
     echo "" >> docs/AUTO_GENERATED_FEATURES.md

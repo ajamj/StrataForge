@@ -2,7 +2,7 @@
 name = "seisly_tracking"
 version.workspace = true
 edition.workspace = true
-description = "Enhanced Auto-Tracking for StrataForge"
+description = "Enhanced Auto-Tracking for Seisly"
 
 [dependencies]
 seisly_core.workspace = true

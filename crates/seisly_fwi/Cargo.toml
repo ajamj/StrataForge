@@ -2,7 +2,7 @@
 name = "seisly_fwi"
 version.workspace = true
 edition.workspace = true
-description = "Full Waveform Inversion for StrataForge"
+description = "Full Waveform Inversion for Seisly"
 
 [dependencies]
 seisly_core.workspace = true

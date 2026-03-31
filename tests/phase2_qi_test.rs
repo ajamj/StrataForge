@@ -1,6 +1,6 @@
 //! Phase 2 Integration Tests
 
-use sf_qi::{AvoAnalysis, VpVsRatio, PoissonsRatio, Dhi, Gassmann, FluidFactor};
+use seisly_qi::{AvoAnalysis, VpVsRatio, PoissonsRatio, Dhi, Gassmann, FluidFactor};
 
 #[test]
 fn test_full_qi_workflow() {
@@ -22,7 +22,7 @@ fn test_full_qi_workflow() {
     // DHI scoring
     let dhi_score = Dhi::score(vp_vs, poisson, intercept, gradient);
     
-    assert_eq!(class, sf_qi::AvoClass::Class1);
+    assert_eq!(class, seisly_qi::AvoClass::Class1);
     assert!(vp_vs > 2.0, "Gas sand should have high Vp/Vs");
     assert!(dhi_score > 0.5, "Should detect DHI");
 }

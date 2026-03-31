@@ -1,19 +1,19 @@
 ---
 phase: v05-phase-a-horizon-picking
 plan: 2026-03-28-v05-phase-a-horizon-picking.md
-subsystem: [sf_app, sf_render]
+subsystem: [seisly_app, seisly_render]
 tags: [horizon, interpretation, picking, UI, visualization]
 dependency_graph:
   requires: [v04-phase-c-structural-rendering]
   provides: [Horizon interpretation UI, enhanced visual feedback]
-  affects: [sf_app]
+  affects: [seisly_app]
 tech_stack:
   added: []
   patterns: [Property Panel, Layer Management, Visual Feedback]
 key_files:
-  - crates/sf_app/src/widgets/horizon_properties_panel.rs
-  - crates/sf_app/src/widgets/viewport.rs
-  - crates/sf_app/src/app.rs
+  - crates/seisly_app/src/widgets/horizon_properties_panel.rs
+  - crates/seisly_app/src/widgets/viewport.rs
+  - crates/seisly_app/src/app.rs
 decisions:
   - Reused FaultRenderer for horizon rendering (same transparency pipeline)
   - Enhanced 2D overlay visualization as primary feedback mechanism
@@ -49,15 +49,15 @@ Implemented comprehensive horizon interpretation workflow with enhanced UI for p
     - Transparency slider (0.0 - 1.0)
     - Visibility checkbox
     - Delete button (red, with confirmation logic)
-- Integrated panel into right sidebar of StrataForgeApp
+- Integrated panel into right sidebar of SeislyApp
 - Positioned above Fault Properties Panel for better workflow
 
 **Files Created:**
-- `crates/sf_app/src/widgets/horizon_properties_panel.rs` - Full widget implementation
+- `crates/seisly_app/src/widgets/horizon_properties_panel.rs` - Full widget implementation
 
 **Files Modified:**
-- `crates/sf_app/src/widgets/mod.rs` - Exported new widget
-- `crates/sf_app/src/app.rs` - Integrated panel into UI
+- `crates/seisly_app/src/widgets/mod.rs` - Exported new widget
+- `crates/seisly_app/src/app.rs` - Integrated panel into UI
 
 **Unit Tests Added:**
 - `test_horizon_properties_panel_creation` - Verifies panel initialization
@@ -125,7 +125,7 @@ After:
 ```
 
 **Files Modified:**
-- `crates/sf_app/src/widgets/viewport.rs` - Enhanced overlay rendering
+- `crates/seisly_app/src/widgets/viewport.rs` - Enhanced overlay rendering
 
 **Commit:** `TODO` - feat(v05-phase-a): enhance horizon picking visual feedback
 
@@ -147,7 +147,7 @@ After:
   - **RGBA Color Support:** Full transparency in fault visualization
 
 **Files Modified:**
-- `crates/sf_app/src/widgets/viewport.rs`
+- `crates/seisly_app/src/widgets/viewport.rs`
 
 **Commit:** `TODO` - feat(v05-phase-a): enhance fault sketch visualization
 
@@ -201,7 +201,7 @@ Original plan called for dedicated `HorizonRenderer`. However:
 
 **Compilation:**
 ```
-cargo check -p sf_render -p sf_app
+cargo check -p seisly_render -p seisly_app
 Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.22s
 ```
 

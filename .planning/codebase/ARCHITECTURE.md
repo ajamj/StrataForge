@@ -60,7 +60,7 @@
 5. **UI Update:** `seisly_app` refreshes its internal state and triggers a re-render in `seisly_render`.
 
 **State Management:**
-- **App State:** Managed in `crates/seisly_app/src/app.rs` via the `StrataForgeApp` struct, holding active selections and loaded datasets.
+- **App State:** Managed in `crates/seisly_app/src/app.rs` via the `SeislyApp` struct, holding active selections and loaded datasets.
 - **Persistence State:** Managed via `crates/seisly_storage/src/project.rs`, which tracks the on-disk state of the project.
 - **Undo/Redo:** Handled by `HistoryManager` in `crates/seisly_app/src/interpretation/mod.rs`.
 

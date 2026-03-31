@@ -1,4 +1,4 @@
--- StrataForge SQLite Schema v1
+-- Seisly SQLite Schema v1
 -- Common datasets table
 CREATE TABLE IF NOT EXISTS datasets (
     id TEXT PRIMARY KEY,

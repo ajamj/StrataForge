@@ -1,4 +1,4 @@
-//! StrataForge Plugin System
+//! Seisly Plugin System
 //!
 //! Extensible plugin architecture for custom workflows.
 
@@ -14,6 +14,8 @@ pub mod interpreter;
 pub mod bridge;
 #[cfg(feature = "python")]
 pub mod python_plugin;
+#[cfg(feature = "python")]
+pub mod ipc;
 
 pub use api::{Plugin, PluginContext, PluginCommand, PluginError, Result};
 pub use manager::PluginManager;

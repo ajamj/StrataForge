@@ -28,10 +28,10 @@
 
 ## 📚 Documentation
 
-- **[📖 Main Documentation](https://ajamj.github.io/StrataForge)** - Complete guides and tutorials
-- **[📊 API Reference](https://ajamj.github.io/StrataForge/docs/api/)** - Auto-generated API docs
-- **[🚀 Quick Start](QUICKSTART.md)** - Get started in 5 minutes
-- **[📋 Blueprint](docs/blueprint.md)** - Strategic roadmap 2026-2028
+- **[📖 Main Documentation](https://ajamj.github.io/seisly)** - Complete guides and tutorials
+- **[📊 API Reference](https://ajamj.github.io/seisly/docs/api/)** - Auto-generated API docs
+- **[🚀 Quick Start](docs/getting-started/quickstart.md)** - Get started in 5 minutes
+- **[📋 Blueprint](docs/roadmap/blueprint.md)** - Strategic roadmap 2026-2028
 
 ## ✨ Features
 
@@ -94,14 +94,14 @@ brew install openssl pkg-config
 
 ```bash
 # Clone repository
-git clone https://github.com/ajamj/StrataForge.git
-cd StrataForge
+git clone https://github.com/ajamj/seisly.git
+cd seisly
 
 # Build release version
 cargo build --release
 
 # Run application
-cargo run --release --bin sf-app
+cargo run --release --bin seisly-app
 ```
 
 ## 🎯 Quick Start
@@ -109,7 +109,7 @@ cargo run --release --bin sf-app
 ### 1. Launch Application
 
 ```bash
-cargo run --release --bin sf-app
+cargo run --release --bin seisly-app
 ```
 
 ### 2. Generate Synthetic Data (Optional)
@@ -117,7 +117,7 @@ cargo run --release --bin sf-app
 For testing without real data:
 
 ```rust
-use sf_compute::synthetic::*;
+use seisly_compute::synthetic::*;
 
 // Generate synthetic seismic
 let seismic = SyntheticSeismic::new(500, 500, 512);
@@ -148,7 +148,7 @@ let (_depths, gr) = well.generate_gr();
 
 ## 📚 Documentation
 
-- **[Quick Start Guide](QUICKSTART.md)** - User tutorial
+- **[Quick Start Guide](docs/getting-started/quickstart.md)** - User tutorial
 - **[GitHub Setup](GITHUB_SETUP.md)** - Repository setup
 - **[Development Kickoff](DEVELOPMENT_KICKOFF.md)** - Sprint planning
 - **[Production Readiness](PRODUCTION_READINESS.md)** - Feature status
@@ -156,18 +156,18 @@ let (_depths, gr) = well.generate_gr();
 ## 🏗️ Architecture
 
 ```
-StrataForge
-├── sf_core      - Domain models, types
-├── sf_io        - File I/O (SEG-Y, LAS, CSV)
-├── sf_compute   - Algorithms (RBF, tracking, volumetrics)
-├── sf_storage   - SQLite, blob storage
-├── sf_render    - 3D rendering (wgpu)
-├── sf_app       - Desktop application (eframe/egui)
-├── sf_cli       - Command-line tools
-├── sf_ml        - Machine learning (auto-tracking)
-├── sf_plugin    - Plugin system
-├── sf_attributes - Seismic attribute computation (CPU)
-└── sf_attributes_gpu - GPU-accelerated attributes (wgpu)
+Seisly
+├── seisly_core      - Domain models, types
+├── seisly_io        - File I/O (SEG-Y, LAS, CSV)
+├── seisly_compute   - Algorithms (RBF, tracking, volumetrics)
+├── seisly_storage   - SQLite, blob storage
+├── seisly_render    - 3D rendering (wgpu)
+├── seisly_app       - Desktop application (eframe/egui)
+├── seisly_cli       - Command-line tools
+├── seisly_ml        - Machine learning (auto-tracking)
+├── seisly_plugin    - Plugin system
+├── seisly_attributes - Seismic attribute computation (CPU)
+└── seisly_attributes_gpu - GPU-accelerated attributes (wgpu)
 ```
 
 ## 🧪 Testing
@@ -219,9 +219,9 @@ We welcome contributions! See our [Development Guide](DEVELOPMENT_KICKOFF.md) fo
 
 ## 📞 Support
 
-- **Issues:** https://github.com/ajamj/StrataForge/issues
-- **Discussions:** https://github.com/ajamj/StrataForge/discussions
-- **Actions:** https://github.com/ajamj/StrataForge/actions
+- **Issues:** https://github.com/ajamj/seisly/issues
+- **Discussions:** https://github.com/ajamj/seisly/discussions
+- **Actions:** https://github.com/ajamj/seisly/actions
 
 ## 📄 License
 
@@ -251,7 +251,7 @@ brew install proj
 ### Installation
 
 ```bash
-cargo install --path crates/sf_cli
+cargo install --path crates/seisly_cli
 ```
 
 ### Create a project
@@ -264,19 +264,19 @@ sf init --name "MyField" --crs 32648
 
 ```bash
 # Import well logs
-sf import --project MyField.sf las --well "Well-1" well1.las
+seisly import --project MyField.sf las --well "Well-1" well1.las
 
 # Import trajectory
-sf import --project MyField.sf trajectory --well "Well-1" traj.csv
+seisly import --project MyField.sf trajectory --well "Well-1" traj.csv
 
 # Import surface
-sf import --project MyField.sf surface --name "Top1" surface.xyz
+seisly import --project MyField.sf surface --name "Top1" surface.xyz
 ```
 
 ### List project contents
 
 ```bash
-sf list --project MyField.sf
+seisly list --project MyField.sf
 ```
 
 ## Architecture
@@ -285,7 +285,7 @@ See [docs/architecture.md](docs/architecture.md) for detailed architecture overv
 
 ## Project Structure
 
-A StrataForge project is a folder with this structure:
+A Seisly project is a folder with this structure:
 
 ```
 MyField.sf/
@@ -299,7 +299,7 @@ MyField.sf/
 
 ## Roadmap
 
-See [docs/roadmap.md](docs/roadmap.md) for development milestones.
+See [docs/roadmap/roadmap.md](docs/roadmap/roadmap.md) for development milestones.
 
 ### v0.1 - Current
 - Offline wells + surfaces

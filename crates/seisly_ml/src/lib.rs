@@ -1,4 +1,4 @@
-//! StrataForge Machine Learning Module
+//! Seisly Machine Learning Module
 //!
 //! CNN-based auto-tracking for horizon interpretation.
 

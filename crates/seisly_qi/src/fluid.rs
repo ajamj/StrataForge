@@ -31,7 +31,7 @@ impl Gassmann {
     
     /// Compute Vp after fluid substitution
     pub fn vp_after_substitution(
-        vp_brine: f32,
+        _vp_brine: f32,
         vs_brine: f32,
         rho_brine: f32,
         k_brine: f32,
@@ -58,7 +58,7 @@ pub struct BrightSpot;
 impl BrightSpot {
     /// Compute bright spot probability from AVO attributes
     pub fn probability(intercept: f32, gradient: f32, avo_class: super::AvoClass) -> f32 {
-        let mut prob = 0.0;
+        let mut prob: f32 = 0.0;
         
         // Class 3 AVO = high probability
         if avo_class == super::AvoClass::Class3 {
@@ -90,7 +90,7 @@ impl Dhi {
         intercept: f32,
         gradient: f32,
     ) -> f32 {
-        let mut score = 0.0;
+        let mut score: f32 = 0.0;
         
         // High Vp/Vs = possible gas
         if vp_vs > 2.0 {

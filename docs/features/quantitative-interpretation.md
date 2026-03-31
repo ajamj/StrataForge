@@ -3,7 +3,7 @@
 ## Quick Start
 
 ```rust
-use sf_qi::{AvoAnalysis, VpVsRatio, PoissonsRatio};
+use seisly_qi::{AvoAnalysis, VpVsRatio, PoissonsRatio};
 
 // AVO Analysis
 let angles = vec![0.0, 10.0, 20.0, 30.0, 40.0];
@@ -49,7 +49,7 @@ where:
 ### Usage
 
 ```rust
-use sf_qi::AvoAnalysis;
+use seisly_qi::AvoAnalysis;
 
 // Input data
 let angles = vec![0.0, 10.0, 20.0, 30.0, 40.0];  // degrees
@@ -80,17 +80,17 @@ AVO responses are classified into four categories based on intercept and gradien
 | **4** | Negative (-) | Positive (+) | Increasing amplitude with offset | Hard over soft (non-hydrocarbon) |
 
 ```rust
-use sf_qi::AvoAnalysis;
+use seisly_qi::AvoAnalysis;
 
 let avo = AvoAnalysis::new(angles, amplitudes);
 let class = avo.classify();
 
 match class {
-    sf_qi::AvoClass::Class1 => println!("Class 1: Potential gas sand"),
-    sf_qi::AvoClass::Class2 => println!("Class 2: Soft sand indicator"),
-    sf_qi::AvoClass::Class3 => println!("Class 3: Bright spot - strong gas indicator"),
-    sf_qi::AvoClass::Class4 => println!("Class 4: Hard over soft - likely non-hydrocarbon"),
-    sf_qi::AvoClass::Unclassified => println!("Unable to classify"),
+    seisly_qi::AvoClass::Class1 => println!("Class 1: Potential gas sand"),
+    seisly_qi::AvoClass::Class2 => println!("Class 2: Soft sand indicator"),
+    seisly_qi::AvoClass::Class3 => println!("Class 3: Bright spot - strong gas indicator"),
+    seisly_qi::AvoClass::Class4 => println!("Class 4: Hard over soft - likely non-hydrocarbon"),
+    seisly_qi::AvoClass::Unclassified => println!("Unable to classify"),
 }
 ```
 
@@ -99,7 +99,7 @@ match class {
 Visualize intercept vs gradient for classification:
 
 ```rust
-use sf_qi::{AvoAnalysis, AvoCrossplot};
+use seisly_qi::{AvoAnalysis, AvoCrossplot};
 
 let mut crossplot = AvoCrossplot::new();
 
@@ -121,7 +121,7 @@ crossplot.save("avo_crossplot.png")?;
 The ratio of compressional to shear wave velocity is a key lithology and fluid indicator.
 
 ```rust
-use sf_qi::VpVsRatio;
+use seisly_qi::VpVsRatio;
 
 // From Vp and Vs
 let vp = 2500.0;  // m/s
@@ -148,7 +148,7 @@ Poisson's ratio measures the lateral strain response to axial loading. It's deri
 ```
 
 ```rust
-use sf_qi::PoissonsRatio;
+use seisly_qi::PoissonsRatio;
 
 // From Vp and Vs
 let vp = 2500.0;
@@ -176,7 +176,7 @@ if poisson < 0.1 {
 Incompressibility (λρ) and rigidity (μρ) are valuable fluid and lithology indicators:
 
 ```rust
-use sf_qi::{LambdaRho, MuRho};
+use seisly_qi::{LambdaRho, MuRho};
 
 let vp = 2500.0;  // m/s
 let vs = 1200.0;  // m/s
@@ -204,7 +204,7 @@ The fluid factor highlights deviations from the background Vp-Vs trend, often in
 ### Computation
 
 ```rust
-use sf_qi::FluidFactor;
+use seisly_qi::FluidFactor;
 
 // Background trend (from wet sands/shales)
 let background_vp = 3000.0;
@@ -234,7 +234,7 @@ if fluid_factor < -0.1 {
 ### Fluid Factor from AVO
 
 ```rust
-use sf_qi::{AvoAnalysis, FluidFactor};
+use seisly_qi::{AvoAnalysis, FluidFactor};
 
 let avo = AvoAnalysis::new(&angles, &amplitudes);
 let fluid_factor = FluidFactor::from_avo(&avo);
@@ -251,7 +251,7 @@ Gassmann's equations model the effect of fluid substitution on elastic propertie
 ### Fluid Replacement
 
 ```rust
-use sf_qi::{GassmannSubstitution, FluidProperties};
+use seisly_qi::{GassmannSubstitution, FluidProperties};
 
 // Rock frame properties
 let vp_matrix = 5500.0;  // m/s (quartz)
@@ -289,7 +289,7 @@ println!("Vp reduction: {:.1}%",
 ### Saturation Modeling
 
 ```rust
-use sf_qi::{GassmannSubstitution, SaturationRange};
+use seisly_qi::{GassmannSubstitution, SaturationRange};
 
 let gassmann = GassmannSubstitution::new(/* ... */);
 
@@ -318,11 +318,11 @@ Direct Hydrocarbon Indicator (DHI) scoring combines multiple QI attributes into 
 ### Multi-Attribute DHI
 
 ```rust
-use sf_qi::{DhiScore, DhiAttributes};
+use seisly_qi::{DhiScore, DhiAttributes};
 
 // Gather QI attributes at a location
 let attributes = DhiAttributes {
-    avo_class: sf_qi::AvoClass::Class3,
+    avo_class: seisly_qi::AvoClass::Class3,
     fluid_factor: -0.15,
     vp_vs_ratio: 1.45,
     poisson_ratio: 0.18,
@@ -349,7 +349,7 @@ if dhi.score > 0.8 {
 ### Weighted DHI
 
 ```rust
-use sf_qi::{DhiScore, DhiWeights};
+use seisly_qi::{DhiScore, DhiWeights};
 
 // Custom weights for your play
 let weights = DhiWeights {
@@ -371,7 +371,7 @@ println!("Weighted DHI Score: {:.2}", dhi.score);
 ### Basic AVO Workflow
 
 ```rust
-use sf_qi::{AvoAnalysis, AvoClass};
+use seisly_qi::{AvoAnalysis, AvoClass};
 
 fn avo_workflow(segy_path: &str) -> Result<(), Box<dyn std::error::Error>> {
     // Load angle gathers
@@ -408,7 +408,7 @@ fn avo_workflow(segy_path: &str) -> Result<(), Box<dyn std::error::Error>> {
 ### Elastic Parameter Inversion
 
 ```rust
-use sf_qi::{VpVsRatio, PoissonsRatio, LambdaRho, MuRho};
+use seisly_qi::{VpVsRatio, PoissonsRatio, LambdaRho, MuRho};
 
 fn elastic_inversion(vp_volume: &[f64], vs_volume: &[f64], 
                      rho_volume: &[f64]) -> Result<ElasticAttributes, Box<dyn std::error::Error>> {
@@ -431,7 +431,7 @@ fn elastic_inversion(vp_volume: &[f64], vs_volume: &[f64],
 ### DHI Mapping
 
 ```rust
-use sf_qi::{DhiScore, DhiAttributes, AvoClass};
+use seisly_qi::{DhiScore, DhiAttributes, AvoClass};
 
 fn dhi_mapping(avo_results: &[AvoResult], 
                elastic: &ElasticAttributes) -> Result<DhiMap, Box<dyn std::error::Error>> {
@@ -462,7 +462,7 @@ fn dhi_mapping(avo_results: &[AvoResult],
 ### AVO Fit Quality
 
 ```rust
-use sf_qi::AvoAnalysis;
+use seisly_qi::AvoAnalysis;
 
 let avo = AvoAnalysis::new(&angles, &amplitudes);
 
@@ -483,7 +483,7 @@ if max_residual > 0.5 {
 ### Outlier Detection
 
 ```rust
-use sf_qi::AvoOutlierDetector;
+use seisly_qi::AvoOutlierDetector;
 
 let mut detector = AvoOutlierDetector::new();
 
@@ -533,4 +533,4 @@ println!("Found {} outliers", outliers.len());
 - [Phase 2 Features Overview](PHASE_2_FEATURES.md)
 - [4D Monitoring Guide](4D_MONITORING.md)
 - [GPU Acceleration Guide](GPU_ACCELERATION.md)
-- [API Documentation](../api/sf_qi/)
+- [API Documentation](../api/seisly_qi/)

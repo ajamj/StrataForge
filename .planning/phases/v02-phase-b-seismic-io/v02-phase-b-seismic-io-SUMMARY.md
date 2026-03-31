@@ -1,12 +1,12 @@
 ---
 phase: "Phase B"
 plan: "Seismic Data Slicing & I/O Implementation Plan"
-subsystem: ["sf_io", "sf_compute"]
+subsystem: ["seisly_io", "seisly_compute"]
 tags: ["seismic", "io", "slicing"]
 tech-stack: ["Rust"]
 key-files:
-  - crates/sf_io/src/segy/parser.rs
-  - crates/sf_compute/src/seismic.rs
+  - crates/seisly_io/src/segy/parser.rs
+  - crates/seisly_compute/src/seismic.rs
 metrics:
   duration: "0:20"
   completed_date: "2026-03-28"
@@ -33,5 +33,5 @@ Implemented basic SEG-Y metadata parser scaffolding and a 3D seismic volume slic
 - [x] SUMMARY.md created
 
 ## Known Stubs
-- `sf_io/src/segy/parser.rs`: `parse_metadata` returns hardcoded placeholder data. This is an intentional skeleton as per Task 1 Step 2.
-- `sf_compute/src/seismic.rs`: `SeismicVolume` uses a `Vec<f32>` instead of memory-mapped access. The plan mentioned memory-mapped access for high performance, but the skeleton implementation in Task 2 Step 1 used `Vec<f32>`.
+- `seisly_io/src/segy/parser.rs`: `parse_metadata` returns hardcoded placeholder data. This is an intentional skeleton as per Task 1 Step 2.
+- `seisly_compute/src/seismic.rs`: `SeismicVolume` uses a `Vec<f32>` instead of memory-mapped access. The plan mentioned memory-mapped access for high performance, but the skeleton implementation in Task 2 Step 1 used `Vec<f32>`.

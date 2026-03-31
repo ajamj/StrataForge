@@ -1,5 +1,5 @@
 syntax = "proto3";
-package strataforge.analysis;
+package Seisly.analysis;
 
 service Detection {
   rpc DetectFaults (SliceRequest) returns (DetectionResponse);

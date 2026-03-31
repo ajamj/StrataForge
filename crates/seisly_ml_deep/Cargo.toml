@@ -2,7 +2,7 @@
 name = "seisly_ml_deep"
 version.workspace = true
 edition.workspace = true
-description = "Deep Learning for StrataForge - U-Net Auto-Tracking"
+description = "Deep Learning for Seisly - U-Net Auto-Tracking"
 
 [dependencies]
 seisly_core.workspace = true

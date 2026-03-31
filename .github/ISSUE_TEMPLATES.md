@@ -1,6 +1,6 @@
-# StrataForge GitHub Issues
+# Seisly GitHub Issues
 
-Collection of GitHub issues for StrataForge project development tracking.
+Collection of GitHub issues for Seisly project development tracking.
 
 ---
 
@@ -28,7 +28,7 @@ Setup GitHub repository dengan complete CI/CD pipeline untuk automated testing, 
 - [ ] Add repository to GitHub Projects board
 
 ### Acceptance Criteria
-- ✅ Repository accessible at https://github.com/strataforge/strataforge
+- ✅ Repository accessible at https://github.com/Seisly/Seisly
 - ✅ CI pipeline runs successfully on push
 - ✅ Tests pass on Windows, Linux, macOS
 - ✅ Coverage report visible on Codecov
@@ -56,7 +56,7 @@ Setup GitHub repository dengan complete CI/CD pipeline untuk automated testing, 
 Implement complete project save/load functionality dengan file dialogs dan menu integration untuk enable users save and load their interpretation work.
 
 ### Background
-Project management foundation sudah implemented di `crates/sf_app/src/project.rs` dengan:
+Project management foundation sudah implemented di `crates/seisly_app/src/project.rs` dengan:
 - ProjectData serialization structure
 - ProjectManager save/load methods
 - Snapshot types untuk interpretation state
@@ -106,7 +106,7 @@ use rfd::FileDialog;
 
 // Save Project
 if let Some(path) = FileDialog::new()
-    .add_filter("StrataForge Project", &["sfp"])
+    .add_filter("Seisly Project", &["sfp"])
     .set_file_name("project.sfp")
     .save_file()
 {
@@ -120,7 +120,7 @@ if let Some(path) = FileDialog::new()
 
 // Open Project
 if let Some(path) = FileDialog::new()
-    .add_filter("StrataForge Project", &["sfp"])
+    .add_filter("Seisly Project", &["sfp"])
     .pick_file()
 {
     let project = ProjectManager::load(&path)?;
@@ -158,8 +158,8 @@ Add Codecov coverage badge dan status indicators ke README.md setelah CI/CD setu
 - [ ] Verify coverage reports uploading
 - [ ] Add badges to README.md:
   ```markdown
-  [![Coverage Status](https://codecov.io/gh/strataforge/strataforge/branch/master/graph/badge.svg)](https://codecov.io/gh/strataforge/strataforge)
-  [![CI/CD](https://github.com/strataforge/strataforge/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/strataforge/strataforge/actions/workflows/ci-cd.yml)
+  [![Coverage Status](https://codecov.io/gh/Seisly/Seisly/branch/master/graph/badge.svg)](https://codecov.io/gh/Seisly/Seisly)
+  [![CI/CD](https://github.com/Seisly/Seisly/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/Seisly/Seisly/actions/workflows/ci-cd.yml)
   ```
 - [ ] Test badge rendering
 
@@ -222,7 +222,7 @@ Currently, errors ditampilkan di console atau status bar. Users perlu better fee
 │  expected value at line 1 column 2  │
 │                                     │
 │  Error Code: ERR-002                │
-│  Log: strataforge_2026-03-28.log   │
+│  Log: Seisly_2026-03-28.log   │
 │                                     │
 │         [Retry]      [OK] [Cancel]  │
 └─────────────────────────────────────┘
@@ -257,7 +257,7 @@ Target: 80%
 - [ ] Identify low-coverage modules
   - Run `cargo tarpaulin` untuk detailed report
   - Create coverage heatmap
-- [ ] Write tests for sf_app widgets
+- [ ] Write tests for seisly_app widgets
   - FaultPropertiesPanel
   - HorizonPropertiesPanel
   - VelocityPanel
@@ -279,15 +279,15 @@ Target: 80%
 
 ### Modules Priority
 1. **Critical** (must test):
-   - `sf_io::las::parser` - LAS parsing
-   - `sf_io::las::writer` - LAS export
-   - `sf_compute::synthetic` - Data generation
-   - `sf_app::project` - Project management
+   - `seisly_io::las::parser` - LAS parsing
+   - `seisly_io::las::writer` - LAS export
+   - `seisly_compute::synthetic` - Data generation
+   - `seisly_app::project` - Project management
 
 2. **Important** (should test):
-   - `sf_render::fault_renderer` - 3D rendering
-   - `sf_compute::interpolation` - RBF modeling
-   - `sf_app::widgets::viewport` - Main viewport
+   - `seisly_render::fault_renderer` - 3D rendering
+   - `seisly_compute::interpolation` - RBF modeling
+   - `seisly_app::widgets::viewport` - Main viewport
 
 3. **Nice to Have** (optional):
    - UI styling code

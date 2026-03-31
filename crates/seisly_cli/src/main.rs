@@ -1,6 +1,6 @@
-//! StrataForge CLI
+//! Seisly CLI
 //!
-//! Command-line interface for StrataForge subsurface data management.
+//! Command-line interface for Seisly subsurface data management.
 
 mod commands;
 
@@ -9,7 +9,7 @@ use commands::{import, init, list};
 
 #[derive(Parser)]
 #[command(name = "sf")]
-#[command(about = "StrataForge CLI - Subsurface Data Management", long_about = None)]
+#[command(about = "Seisly CLI - Subsurface Data Management", long_about = None)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -17,7 +17,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Initialize a new StrataForge project
+    /// Initialize a new Seisly project
     Init {
         /// Project name
         #[arg(short, long)]

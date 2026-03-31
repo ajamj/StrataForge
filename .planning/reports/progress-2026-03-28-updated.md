@@ -64,7 +64,7 @@ Unable to resolve action dtolnay/rust-action, repository not found
 - ✅ ISSUE_TEMPLATES.md - 7 issues + milestone
 
 ### GitHub Integration
-- ✅ Repository created: https://github.com/ajamj/StrataForge
+- ✅ Repository created: https://github.com/ajamj/Seisly
 - ✅ Code pushed (10+ commits)
 - ✅ CI/CD workflows configured
 - ✅ Issue templates created
@@ -119,7 +119,7 @@ Unable to resolve action dtolnay/rust-action, repository not found
 ## 📊 Next Actions
 
 ### Immediate (Today)
-1. ⏳ **Watch CI/CD status** - https://github.com/ajamj/StrataForge/actions
+1. ⏳ **Watch CI/CD status** - https://github.com/ajamj/Seisly/actions
 2. ✅ **Verify workflows passing** - All green checkmarks
 3. 📝 **Create GitHub Issues** - Import dari ISSUE_TEMPLATES.md
 4. 📋 **Setup Project Board** - Add issues to kanban
@@ -133,10 +133,10 @@ Unable to resolve action dtolnay/rust-action, repository not found
 
 ## 🔗 Key URLs
 
-- **Repository:** https://github.com/ajamj/StrataForge
-- **Actions:** https://github.com/ajamj/StrataForge/actions
-- **Issues:** https://github.com/ajamj/StrataForge/issues
-- **Projects:** https://github.com/ajamj/StrataForge/projects
+- **Repository:** https://github.com/ajamj/Seisly
+- **Actions:** https://github.com/ajamj/Seisly/actions
+- **Issues:** https://github.com/ajamj/Seisly/issues
+- **Projects:** https://github.com/ajamj/Seisly/projects
 
 ---
 

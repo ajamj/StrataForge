@@ -68,7 +68,7 @@ impl SurfaceParser {
         }
 
         // Create simple triangulation (for now, just connect all points as a fan)
-        // A proper implementation would use Delaunay triangulation from sf_compute
+        // A proper implementation would use Delaunay triangulation from seisly_compute
         let mut indices = Vec::new();
         for i in 1..(vertices.len() - 1) as u32 {
             indices.push(0);

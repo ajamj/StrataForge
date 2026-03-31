@@ -1,13 +1,13 @@
-# StrataForge - Quick Start Guide
+# Seisly - Quick Start Guide
 
 **Version:** 0.1.0  
 **Last Updated:** 2026-03-28
 
 ---
 
-## 🚀 What is StrataForge?
+## 🚀 What is Seisly?
 
-StrataForge is a modern, open-source 3D seismic interpretation application designed for geoscientists in oil & gas exploration.
+Seisly is a modern, open-source 3D seismic interpretation application designed for geoscientists in oil & gas exploration.
 
 ### **Key Features:**
 - ✅ Seismic volume visualization (inline, crossline, time slice)
@@ -32,8 +32,8 @@ StrataForge is a modern, open-source 3D seismic interpretation application desig
 
 ```bash
 # Clone repository
-git clone https://github.com/your-org/strataforge.git
-cd strataforge
+git clone https://github.com/ajamj/seisly.git
+cd seisly
 
 # Build release version
 cargo build --release
@@ -66,7 +66,7 @@ For testing without real data, generate synthetic data:
 
 ```rust
 // In Rust REPL or test script
-use sf_compute::synthetic::*;
+use seisly_compute::synthetic::*;
 
 // Generate synthetic seismic
 let seismic = SyntheticSeismic::new(500, 500, 512);
@@ -206,7 +206,7 @@ rustc --version  # Should be 1.70+
 - **Design Spec:** `docs/superpowers/specs/2026-03-28-well-integration-design.md`
 - **Implementation Plan:** `docs/superpowers/plans/2026-03-28-well-integration.md`
 - **UI Redesign Spec:** `docs/ui-redesign-spec.md`
-- **Synthetic Data Docs:** `crates/sf_compute/src/synthetic.rs` (module docs)
+- **Synthetic Data Docs:** `crates/seisly_compute/src/synthetic.rs` (module docs)
 
 ---
 
@@ -224,7 +224,7 @@ Contributions welcome! Please:
 
 - **Issues:** GitHub Issues
 - **Discussions:** GitHub Discussions
-- **Email:** support@strataforge.example.com
+- **Email:** support@Seisly.example.com
 
 ---
 

@@ -1,6 +1,6 @@
-# StrataForge Project Format
+# Seisly Project Format
 
-A StrataForge project is a folder that contains all data, metadata, and derived products for a subsurface interpretation project.
+A Seisly project is a folder that contains all data, metadata, and derived products for a subsurface interpretation project.
 
 ## Folder Structure
 
@@ -44,7 +44,7 @@ datasets: []
 | `name` | string | Project display name |
 | `default_crs` | string | Default CRS (EPSG code recommended) |
 | `created_at` | string | ISO 8601 timestamp |
-| `version` | string | StrataForge format version |
+| `version` | string | Seisly format version |
 | `datasets` | array | Optional dataset list (authoritative index is in SQLite) |
 
 ## metadata.sqlite
@@ -144,7 +144,7 @@ Workflow execution records for reproducibility:
 
 ## Portability
 
-A StrataForge project folder is fully portable:
+A Seisly project folder is fully portable:
 
 1. **Copy:** Copy entire folder to move project
 2. **Archive:** Zip/tar for backup or transfer
@@ -160,7 +160,7 @@ Creates single-file archive with optional compression.
 
 ## Version Compatibility
 
-| StrataForge Version | Format Version |
+| Seisly Version | Format Version |
 |---------------------|--------------|
 | 0.1.x | 0.1.0 |
 | 0.2.x | 0.2.0 (TBD) |

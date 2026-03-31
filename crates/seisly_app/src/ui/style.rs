@@ -1,4 +1,4 @@
-//! StrataForge UI Styles and Constants
+//! Seisly UI Styles and Constants
 //!
 //! Modern design system with consistent colors, spacing, and typography.
 

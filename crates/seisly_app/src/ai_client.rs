@@ -1,14 +1,14 @@
 use anyhow::Result;
 use tonic::transport::Channel;
 
-pub mod strataforge {
+pub mod Seisly {
     pub mod analysis {
-        tonic::include_proto!("strataforge.analysis");
+        tonic::include_proto!("Seisly.analysis");
     }
 }
 
-use strataforge::analysis::detection_client::DetectionClient;
-use strataforge::analysis::SliceRequest;
+use Seisly::analysis::detection_client::DetectionClient;
+use Seisly::analysis::SliceRequest;
 
 // AI Client - reserved for future ML integration
 #[allow(dead_code)]

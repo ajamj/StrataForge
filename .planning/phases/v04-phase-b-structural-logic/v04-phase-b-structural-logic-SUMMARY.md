@@ -1,20 +1,20 @@
 ---
 phase: v04-phase-b-structural-logic
 plan: 2026-03-28-v04-phase-b-structural-logic.md
-subsystem: sf_app
+subsystem: seisly_app
 tags: [RBF, 3D, Fault Modeling, Interactive Picking, Sketch Mode]
 dependency_graph:
-  requires: [sf_compute, sf_render, egui]
+  requires: [seisly_compute, seisly_render, egui]
   provides: [Interactive Fault Picking]
-  affects: [sf_app]
+  affects: [seisly_app]
 tech_stack:
   added: []
   patterns: [Click-and-Drag Sketching for Fault Sticks]
 key_files:
-  - crates/sf_compute/src/interpolation.rs
-  - crates/sf_app/src/interpretation/mod.rs
-  - crates/sf_app/src/widgets/viewport.rs
-  - crates/sf_app/src/app.rs
+  - crates/seisly_compute/src/interpolation.rs
+  - crates/seisly_app/src/interpretation/mod.rs
+  - crates/seisly_app/src/widgets/viewport.rs
+  - crates/seisly_app/src/app.rs
 decisions:
   - Used PCA (SVD) to find the best-fitting plane of 3D point clouds.
   - Performed RBF interpolation in the local (u, v, n) coordinate system to support vertical and high-angle planes.

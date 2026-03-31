@@ -2,7 +2,7 @@
 name = "seisly_attributes"
 version.workspace = true
 edition.workspace = true
-description = "Seismic attributes for StrataForge"
+description = "Seismic attributes for Seisly"
 
 [dependencies]
 seisly_core.workspace = true

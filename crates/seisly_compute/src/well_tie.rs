@@ -1,6 +1,6 @@
 //! Well-seismic tie computation
 //!
-//! Uses existing LinearVelocityModel (V0 + kZ) from sf_compute::velocity
+//! Uses existing LinearVelocityModel (V0 + kZ) from seisly_compute::velocity
 //! for accurate time-depth conversion.
 //!
 //! Formula: TWT = (2/k) * ln((v0 + k*depth) / v0)

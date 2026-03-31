@@ -52,7 +52,7 @@ pub fn execute(project_path: String, import_type: ImportType) -> anyhow::Result<
     Ok(())
 }
 
-fn serialize_mesh(mesh: &sf_core::domain::surface::Mesh) -> Vec<u8> {
+fn serialize_mesh(mesh: &seisly_core::domain::surface::Mesh) -> Vec<u8> {
     // Simple binary serialization
     let mut bytes = Vec::new();
 

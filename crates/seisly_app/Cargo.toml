@@ -2,6 +2,14 @@
 name = "seisly_app"
 version.workspace = true
 edition.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[package.metadata.wix]
+upgrade-guid = "9867F5A6-B15B-4598-89D4-7061DA0A6A5E"
+path-guid = "7D9BAA60-E2D3-40FA-B011-62310F039C36"
+license = false
+eula = false
 
 [[bin]]
 name = "seisly-app"

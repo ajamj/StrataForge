@@ -11,7 +11,7 @@
 
 ## Reporting a Vulnerability
 
-We take the security of StrataForge seriously. If you believe you have found a security vulnerability, please report it to us as described below.
+We take the security of Seisly seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
 ### How to Report
 
@@ -19,8 +19,8 @@ We take the security of StrataForge seriously. If you believe you have found a s
 
 Instead, please report them via:
 1. **GitHub Private Vulnerability Reporting** (Preferred)
-   - Go to: https://github.com/ajamj/StrataForge/security/advisories/new
-2. **Email**: security@strataforge.example.com (if available)
+   - Go to: https://github.com/ajamj/Seisly/security/advisories/new
+2. **Email**: security@seisly.example.com (if available)
 
 ### What to Include
 
@@ -106,7 +106,7 @@ We use the following security tools:
 ## Contact
 
 For security-related questions or concerns:
-- **GitHub Security Advisories**: https://github.com/ajamj/StrataForge/security/advisories
+- **GitHub Security Advisories**: https://github.com/ajamj/Seisly/security/advisories
 - **Email**: (TBD)
 
 ---

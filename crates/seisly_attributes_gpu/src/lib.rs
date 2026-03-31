@@ -1,4 +1,4 @@
-//! GPU-Accelerated Seismic Attributes for StrataForge
+//! GPU-Accelerated Seismic Attributes for Seisly
 //!
 //! Provides GPU compute pipelines for seismic attribute computation
 //! using wgpu for cross-platform GPU acceleration.

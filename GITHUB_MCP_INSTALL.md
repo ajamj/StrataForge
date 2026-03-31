@@ -270,7 +270,7 @@ Show my GitHub issues
 
 **In Cursor:**
 ```
-Search GitHub for StrataForge
+Search GitHub for Seisly
 ```
 
 ---

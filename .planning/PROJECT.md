@@ -1,7 +1,7 @@
 # Project Vision
 
 ## What We're Building
-**StrataForge** - A high-performance 3D seismic interpretation and structural modeling tool for geoscientists.
+**Seisly** - A high-performance 3D seismic interpretation and structural modeling tool for geoscientists.
 
 ## Target User
 - Geophysicists and geologists in oil & gas exploration
@@ -9,7 +9,7 @@
 - Research institutions working on subsurface characterization
 
 ## Problem Statement
-Current seismic interpretation tools are expensive, require proprietary licenses, and lack modern real-time 3D visualization capabilities. StrataForge provides an open-source alternative with interactive fault modeling, horizon picking, and structural analysis.
+Current seismic interpretation tools are expensive, require proprietary licenses, and lack modern real-time 3D visualization capabilities. Seisly provides an open-source alternative with interactive fault modeling, horizon picking, and structural analysis.
 
 ## Tech Stack
 - **Language:** Rust
@@ -30,13 +30,13 @@ Current seismic interpretation tools are expensive, require proprietary licenses
 ## Architecture Overview
 ```
 ┌─────────────────────────────────────────────────────┐
-│                    StrataForge App                   │
+│                    Seisly App                   │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │
-│  │  sf_app     │  │  sf_render  │  │  sf_compute │  │
+│  │  seisly_app     │  │  seisly_render  │  │  seisly_compute │  │
 │  │  (egui UI)  │  │  (wgpu 3D)  │  │  (RBF, ML)  │  │
 │  └─────────────┘  └─────────────┘  └─────────────┘  │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │
-│  │  sf_io      │  │  sf_storage │  │  sf_core    │  │
+│  │  seisly_io      │  │  seisly_storage │  │  seisly_core    │  │
 │  │  (SEG-Y)    │  │  (SQLite)   │  │  (Types)    │  │
 │  └─────────────┘  └─────────────┘  └─────────────┘  │
 └─────────────────────────────────────────────────────┘

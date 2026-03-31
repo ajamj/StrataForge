@@ -1,19 +1,19 @@
 ---
 phase: v04-phase-c-structural-rendering-integration
 plan: 2026-03-28-v04-phase-c-integration.md
-subsystem: [sf_render, sf_app]
+subsystem: [seisly_render, seisly_app]
 tags: [3D, rendering, wgpu, MVP, integration]
 dependency_graph:
   requires: [v04-phase-c-structural-rendering]
   provides: [3D fault rendering infrastructure]
-  affects: [sf_app, sf_render]
+  affects: [seisly_app, seisly_render]
 tech_stack:
   added: [wgpu MVP uniforms, FaultRenderData]
   patterns: [Two-phase rendering (prepare + render)]
 key_files:
-  - crates/sf_render/src/fault_renderer.rs
-  - crates/sf_render/src/shaders/fault.wgsl
-  - crates/sf_app/src/widgets/viewport.rs
+  - crates/seisly_render/src/fault_renderer.rs
+  - crates/seisly_render/src/shaders/fault.wgsl
+  - crates/seisly_app/src/widgets/viewport.rs
 decisions:
   - Split rendering into prepare (CPU) and render (GPU) phases
   - Use 2D overlay fallback for immediate visualization while 3D infrastructure is ready
@@ -41,7 +41,7 @@ Completed the technical infrastructure for 3D fault surface rendering with MVP (
 - Integrated with existing rendering pipeline
 
 **Files Modified:**
-- `crates/sf_app/src/widgets/viewport.rs`
+- `crates/seisly_app/src/widgets/viewport.rs`
   - Added `FaultRenderer` import
   - Modified `ViewportCallback::prepare()` to initialize FaultRenderer
   - Added comments documenting full 3D requirements
@@ -70,7 +70,7 @@ Completed the technical infrastructure for 3D fault surface rendering with MVP (
   ```
 
 **Files Modified:**
-- `crates/sf_render/src/shaders/fault.wgsl` - Full MVP support
+- `crates/seisly_render/src/shaders/fault.wgsl` - Full MVP support
 
 **Technical Notes:**
 - Matrix multiplication order: Projection × View × Model (standard OpenGL/DirectX convention)
@@ -102,7 +102,7 @@ Completed the technical infrastructure for 3D fault surface rendering with MVP (
 - Better resource management (buffer lifetime tied to render data)
 
 **Files Modified:**
-- `crates/sf_render/src/fault_renderer.rs`
+- `crates/seisly_render/src/fault_renderer.rs`
   - Added `FaultRenderData` struct
   - Replaced old `render()` with two-phase API
   - Removed stateful `uniform_buffer` and `bind_group` from `FaultRenderer`
@@ -131,7 +131,7 @@ fault_renderer.render(&mut render_pass, &fault_mesh, &render_data);
 
 **Verification:**
 ```bash
-cargo check -p sf_render -p sf_app
+cargo check -p seisly_render -p seisly_app
 Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.05s
 ```
 
@@ -219,7 +219,7 @@ Original plan called for full 3D rendering immediately. However, this requires:
 
 **Compilation:**
 ```
-cargo check -p sf_render -p sf_app
+cargo check -p seisly_render -p seisly_app
 Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.05s
 ```
 

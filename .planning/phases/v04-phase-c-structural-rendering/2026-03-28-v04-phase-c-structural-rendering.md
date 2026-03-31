@@ -1,20 +1,20 @@
 ---
 phase: v04-phase-c-structural-rendering
 plan: 2026-03-28-v04-phase-c-structural-rendering.md
-subsystem: [sf_render, sf_app]
+subsystem: [seisly_render, seisly_app]
 tags: [3D, rendering, wgpu, transparency, UI]
 dependency_graph:
-  requires: [v04-phase-b-structural-logic, sf_render, sf_compute]
+  requires: [v04-phase-b-structural-logic, seisly_render, seisly_compute]
   provides: [3D fault visualization, fault properties UI]
-  affects: [sf_app, sf_render]
+  affects: [seisly_app, seisly_render]
 tech_stack:
   added: []
   patterns: [Transparent Rendering, Property Panel Pattern]
 key_files:
-  - crates/sf_render/src/fault_renderer.rs
-  - crates/sf_app/src/widgets/fault_properties_panel.rs
-  - crates/sf_app/src/interpretation/mod.rs
-  - crates/sf_app/src/widgets/viewport.rs
+  - crates/seisly_render/src/fault_renderer.rs
+  - crates/seisly_app/src/widgets/fault_properties_panel.rs
+  - crates/seisly_app/src/interpretation/mod.rs
+  - crates/seisly_app/src/widgets/viewport.rs
 decisions: []
 metrics:
   duration: 45m
@@ -47,8 +47,8 @@ Complete the deferred transparent surface rendering task and build a comprehensi
 - [ ] Unit test for fault color initialization
 
 **Files to Create/Modify:**
-- `crates/sf_compute/src/interpolation.rs` - Add color field to Fault
-- `crates/sf_render/src/fault_renderer.rs` - Create new renderer
+- `crates/seisly_compute/src/interpolation.rs` - Add color field to Fault
+- `crates/seisly_render/src/fault_renderer.rs` - Create new renderer
 
 **Implementation Steps:**
 1. Add `color` and `visible` fields to `Fault` struct
@@ -70,9 +70,9 @@ Complete the deferred transparent surface rendering task and build a comprehensi
 - [ ] `cargo check --workspace` passes
 
 **Files to Create/Modify:**
-- `crates/sf_render/src/fault_renderer.rs` - Implement render logic
-- `crates/sf_app/src/widgets/viewport.rs` - Integrate fault renderer
-- `crates/sf_render/src/lib.rs` - Export FaultRenderer
+- `crates/seisly_render/src/fault_renderer.rs` - Implement render logic
+- `crates/seisly_app/src/widgets/viewport.rs` - Integrate fault renderer
+- `crates/seisly_render/src/lib.rs` - Export FaultRenderer
 
 **Implementation Steps:**
 1. Create wgpu render pipeline for transparent triangles
@@ -103,10 +103,10 @@ Complete the deferred transparent surface rendering task and build a comprehensi
 - [ ] Unit tests for property changes
 
 **Files to Create/Modify:**
-- `crates/sf_app/src/widgets/fault_properties_panel.rs` - Create new widget
-- `crates/sf_app/src/interpretation/mod.rs` - Add property edit methods
-- `crates/sf_storage/src/sqlite/mod.rs` - Add update fault query
-- `crates/sf_app/src/app.rs` - Integrate properties panel in UI
+- `crates/seisly_app/src/widgets/fault_properties_panel.rs` - Create new widget
+- `crates/seisly_app/src/interpretation/mod.rs` - Add property edit methods
+- `crates/seisly_storage/src/sqlite/mod.rs` - Add update fault query
+- `crates/seisly_app/src/app.rs` - Integrate properties panel in UI
 
 **Implementation Steps:**
 1. Create `FaultPropertiesPanel` widget
@@ -123,7 +123,7 @@ Complete the deferred transparent surface rendering task and build a comprehensi
    - `update_fault_name(fault_id, name)`
    - `toggle_fault_visibility(fault_id)`
    - `delete_fault(fault_id)`
-4. Add SQLite update queries in `sf_storage`
+4. Add SQLite update queries in `seisly_storage`
 5. Wire up UI callbacks to state changes
 6. Add unit tests
 
@@ -166,8 +166,8 @@ Complete the deferred transparent surface rendering task and build a comprehensi
 
 **Requires:**
 - v04-phase-b-structural-logic (RBF interpolation, fault picking)
-- sf_render crate (wgpu infrastructure)
-- egui integration in sf_app
+- seisly_render crate (wgpu infrastructure)
+- egui integration in seisly_app
 
 **Provides:**
 - Complete 3D fault visualization

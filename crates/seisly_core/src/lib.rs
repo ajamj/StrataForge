@@ -1,6 +1,6 @@
-//! StrataForge Core Domain Model
+//! Seisly Core Domain Model
 //!
-//! This crate contains the core domain types for StrataForge,
+//! This crate contains the core domain types for Seisly,
 //! including CRS definitions, entity IDs, and domain entities
 //! like wells, trajectories, logs, and surfaces.
 

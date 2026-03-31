@@ -137,8 +137,8 @@ fn create_default_text_header() -> String {
     let mut header = String::with_capacity(3200);
 
     // Line 1: Client and company identification
-    header.push_str(&format!("{:<80}", "CLIENT: STRATAFORGE PRO"));
-    header.push_str(&format!("{:<80}", "COMPANY: STRATAFORGE"));
+    header.push_str(&format!("{:<80}", "CLIENT: Seisly PRO"));
+    header.push_str(&format!("{:<80}", "COMPANY: Seisly"));
 
     // Line 3: File identification
     header.push_str(&format!("{:<80}", "FILE: SEG-Y REV 2.0"));

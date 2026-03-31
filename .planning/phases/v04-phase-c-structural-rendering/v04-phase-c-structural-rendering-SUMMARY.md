@@ -1,21 +1,21 @@
 ---
 phase: v04-phase-c-structural-rendering
 plan: 2026-03-28-v04-phase-c-structural-rendering.md
-subsystem: [sf_render, sf_app]
+subsystem: [seisly_render, seisly_app]
 tags: [3D, rendering, wgpu, transparency, UI]
 dependency_graph:
-  requires: [v04-phase-b-structural-logic, sf_render, sf_compute]
+  requires: [v04-phase-b-structural-logic, seisly_render, seisly_compute]
   provides: [3D fault visualization, fault properties UI]
-  affects: [sf_app, sf_render]
+  affects: [seisly_app, seisly_render]
 tech_stack:
   added: []
   patterns: [Transparent Rendering, Property Panel Pattern]
 key_files:
-  - crates/sf_render/src/fault_renderer.rs
-  - crates/sf_render/src/shaders/fault.wgsl
-  - crates/sf_app/src/widgets/fault_properties_panel.rs
-  - crates/sf_app/src/interpretation/mod.rs
-  - crates/sf_app/src/app.rs
+  - crates/seisly_render/src/fault_renderer.rs
+  - crates/seisly_render/src/shaders/fault.wgsl
+  - crates/seisly_app/src/widgets/fault_properties_panel.rs
+  - crates/seisly_app/src/interpretation/mod.rs
+  - crates/seisly_app/src/app.rs
 decisions:
   - Changed Fault and Horizon color from RGB [f32; 3] to RGBA [f32; 4] for transparency support
   - Created dedicated FaultRenderer with separate shader for transparent surface rendering
@@ -44,15 +44,15 @@ Successfully implemented transparent 3D fault surface rendering with interactive
   - `set_color(&mut self, color: [f32; 4])`
   - `set_visible(&mut self, visible: bool)`
   - `set_name(&mut self, name: String)`
-- Created `FaultRenderer` struct in `sf_render` crate
+- Created `FaultRenderer` struct in `seisly_render` crate
 - Created `FaultMesh` struct for GPU vertex/index buffers
 - Default fault color: `[1.0, 0.0, 0.0, 0.5]` (red with 50% transparency)
 - Default horizon color: `[0.0, 1.0, 0.0, 0.7]` (green with 70% transparency)
 
 **Files Modified:**
-- `crates/sf_app/src/interpretation/mod.rs` - Updated Fault and Horizon structs
-- `crates/sf_app/src/app.rs` - Updated default colors to RGBA
-- `crates/sf_render/src/fault_renderer.rs` - Created new renderer
+- `crates/seisly_app/src/interpretation/mod.rs` - Updated Fault and Horizon structs
+- `crates/seisly_app/src/app.rs` - Updated default colors to RGBA
+- `crates/seisly_render/src/fault_renderer.rs` - Created new renderer
 
 **Unit Tests Added:**
 - `test_fault_color_rgba` - Verifies color initialization and updates
@@ -89,11 +89,11 @@ Successfully implemented transparent 3D fault surface rendering with interactive
 - Depth sorting handled by renderer (back-to-front for transparent objects)
 
 **Files Created:**
-- `crates/sf_render/src/fault_renderer.rs` - Main renderer implementation
-- `crates/sf_render/src/shaders/fault.wgsl` - WGSL shader
+- `crates/seisly_render/src/fault_renderer.rs` - Main renderer implementation
+- `crates/seisly_render/src/shaders/fault.wgsl` - WGSL shader
 
 **Files Modified:**
-- `crates/sf_render/src/lib.rs` - Exported FaultRenderer and FaultMesh
+- `crates/seisly_render/src/lib.rs` - Exported FaultRenderer and FaultMesh
 
 **Unit Tests Added:**
 - `test_fault_uniforms` - Verifies uniform buffer structure
@@ -120,7 +120,7 @@ Successfully implemented transparent 3D fault surface rendering with interactive
     - Transparency slider (0.0 - 1.0)
     - Visibility checkbox
     - Delete button (red, with confirmation logic)
-- Integrated panel into right sidebar of StrataForgeApp
+- Integrated panel into right sidebar of SeislyApp
 - Added `FaultPropertiesPanel` to widget module exports
 
 **UI Layout:**
@@ -140,11 +140,11 @@ Successfully implemented transparent 3D fault surface rendering with interactive
 ```
 
 **Files Created:**
-- `crates/sf_app/src/widgets/fault_properties_panel.rs` - Full widget implementation
+- `crates/seisly_app/src/widgets/fault_properties_panel.rs` - Full widget implementation
 
 **Files Modified:**
-- `crates/sf_app/src/widgets/mod.rs` - Exported new widget
-- `crates/sf_app/src/app.rs` - Integrated panel into UI
+- `crates/seisly_app/src/widgets/mod.rs` - Exported new widget
+- `crates/seisly_app/src/app.rs` - Integrated panel into UI
 
 **Unit Tests Added:**
 - `test_fault_properties_panel_creation` - Verifies panel initialization
@@ -165,7 +165,7 @@ All tasks completed as planned. No significant deviations.
 - [x] Each task committed individually
 - [x] All deviations documented
 - [x] SUMMARY.md created
-- [x] `cargo check --workspace` passes (for sf_render, sf_app, sf_compute, sf_core)
+- [x] `cargo check --workspace` passes (for seisly_render, seisly_app, seisly_compute, seisly_core)
 - [x] Unit tests added and passing
 
 ---
@@ -178,7 +178,7 @@ All tasks completed as planned. No significant deviations.
    - Adding render pass for faults
 
 2. **Persistence:** Fault property changes are not yet persisted to SQLite. Need to:
-   - Add UPDATE queries in `sf_storage`
+   - Add UPDATE queries in `seisly_storage`
    - Wire up property changes to database
 
 3. **3D Rendering:** Current shader uses simple projection. For proper 3D:
@@ -191,7 +191,7 @@ All tasks completed as planned. No significant deviations.
 
 **Compilation:**
 ```
-cargo check -p sf_render -p sf_app -p sf_compute -p sf_core
+cargo check -p seisly_render -p seisly_app -p seisly_compute -p seisly_core
 Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.39s
 ```
 

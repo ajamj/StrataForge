@@ -1,8 +1,8 @@
 //! Phase 1 Benchmarks - ML & Attributes
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use sf_ml::SyntheticTrainer;
-use sf_attributes::{RmsAmplitude, MeanAmplitude, SeismicAttribute};
+use seisly_ml::SyntheticTrainer;
+use seisly_attributes::{RmsAmplitude, MeanAmplitude, SeismicAttribute};
 
 fn bench_ml_synthetic_data(c: &mut Criterion) {
     let mut trainer = SyntheticTrainer::new(42);
@@ -43,7 +43,7 @@ fn bench_mean_amplitude(c: &mut Criterion) {
 }
 
 fn bench_all_amplitude_attributes(c: &mut Criterion) {
-    let attrs = sf_attributes::all_amplitude_attributes();
+    let attrs = seisly_attributes::all_amplitude_attributes();
     let trace = vec![1.0; 512];
     
     c.bench_function("all_10_amplitude_attributes", |b| {

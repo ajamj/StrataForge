@@ -1,20 +1,20 @@
 ---
 phase: v05-phase-a-horizon-picking
 plan: 2026-03-28-v05-phase-a-horizon-picking.md
-subsystem: [sf_app, sf_render, sf_compute]
+subsystem: [seisly_app, seisly_render, seisly_compute]
 tags: [horizon, interpretation, picking, 3D, surface]
 dependency_graph:
-  requires: [v04-phase-c-structural-rendering, sf_compute, sf_render]
+  requires: [v04-phase-c-structural-rendering, seisly_compute, seisly_render]
   provides: [Horizon interpretation workflow, surface visualization]
-  affects: [sf_app, sf_render]
+  affects: [seisly_app, seisly_render]
 tech_stack:
   added: []
   patterns: [Horizon Picking, Surface Generation, Layer Management]
 key_files:
-  - crates/sf_app/src/widgets/horizon_properties_panel.rs
-  - crates/sf_app/src/widgets/viewport.rs
-  - crates/sf_app/src/interpretation/mod.rs
-  - crates/sf_render/src/horizon_renderer.rs
+  - crates/seisly_app/src/widgets/horizon_properties_panel.rs
+  - crates/seisly_app/src/widgets/viewport.rs
+  - crates/seisly_app/src/interpretation/mod.rs
+  - crates/seisly_render/src/horizon_renderer.rs
 decisions: []
 metrics:
   duration: 1h
@@ -49,9 +49,9 @@ Implement comprehensive horizon interpretation workflow including manual picking
 - [ ] Unit tests for property changes
 
 **Files to Create/Modify:**
-- `crates/sf_app/src/widgets/horizon_properties_panel.rs` - Create new widget
-- `crates/sf_app/src/interpretation/mod.rs` - Add property edit methods
-- `crates/sf_app/src/app.rs` - Integrate properties panel in UI
+- `crates/seisly_app/src/widgets/horizon_properties_panel.rs` - Create new widget
+- `crates/seisly_app/src/interpretation/mod.rs` - Add property edit methods
+- `crates/seisly_app/src/app.rs` - Integrate properties panel in UI
 
 **Implementation Steps:**
 1. Create `HorizonPropertiesPanel` widget (similar to FaultPropertiesPanel)
@@ -96,10 +96,10 @@ Implement comprehensive horizon interpretation workflow including manual picking
 - [ ] `cargo check --workspace` passes
 
 **Files to Create/Modify:**
-- `crates/sf_render/src/horizon_renderer.rs` - Create new renderer
-- `crates/sf_render/src/shaders/horizon.wgsl` - Create shader
-- `crates/sf_render/src/lib.rs` - Export HorizonRenderer
-- `crates/sf_app/src/widgets/viewport.rs` - Integrate renderer
+- `crates/seisly_render/src/horizon_renderer.rs` - Create new renderer
+- `crates/seisly_render/src/shaders/horizon.wgsl` - Create shader
+- `crates/seisly_render/src/lib.rs` - Export HorizonRenderer
+- `crates/seisly_app/src/widgets/viewport.rs` - Integrate renderer
 
 **Implementation Steps:**
 1. Create `horizon.wgsl` shader (can reuse fault.wgsl as template)
@@ -134,8 +134,8 @@ Implement comprehensive horizon interpretation workflow including manual picking
 - [ ] Unit tests for picking logic
 
 **Files to Modify:**
-- `crates/sf_app/src/widgets/viewport.rs` - Enhance overlay rendering
-- `crates/sf_app/src/interpretation/mod.rs` - Add pick management methods
+- `crates/seisly_app/src/widgets/viewport.rs` - Enhance overlay rendering
+- `crates/seisly_app/src/interpretation/mod.rs` - Add pick management methods
 
 **Implementation Steps:**
 1. Enhance `draw_overlays()` method
@@ -160,8 +160,8 @@ Implement comprehensive horizon interpretation workflow including manual picking
 - [ ] Unit tests for tracking logic
 
 **Files to Modify:**
-- `crates/sf_app/src/widgets/viewport.rs` - Add progress indicator
-- `crates/sf_compute/src/tracking.rs` - Add progress callback
+- `crates/seisly_app/src/widgets/viewport.rs` - Add progress indicator
+- `crates/seisly_compute/src/tracking.rs` - Add progress callback
 
 **Implementation Steps:**
 1. Add tracking progress state
@@ -183,8 +183,8 @@ Implement comprehensive horizon interpretation workflow including manual picking
 - [ ] Unit tests for multi-horizon rendering
 
 **Files to Modify:**
-- `crates/sf_app/src/widgets/viewport.rs` - Multi-horizon render loop
-- `crates/sf_render/src/horizon_renderer.rs` - Batch rendering support
+- `crates/seisly_app/src/widgets/viewport.rs` - Multi-horizon render loop
+- `crates/seisly_render/src/horizon_renderer.rs` - Batch rendering support
 
 **Implementation Steps:**
 1. Iterate through all visible horizons
@@ -217,8 +217,8 @@ Implement comprehensive horizon interpretation workflow including manual picking
 
 **Requires:**
 - v04-phase-c-structural-rendering (Fault rendering infrastructure)
-- sf_render crate (wgpu infrastructure)
-- sf_compute (RBF interpolation, auto-tracking)
+- seisly_render crate (wgpu infrastructure)
+- seisly_compute (RBF interpolation, auto-tracking)
 
 **Provides:**
 - Complete horizon interpretation workflow

@@ -121,7 +121,7 @@ What MCP servers are available?
 ✅ System-wide availability  
 
 ### **Workspace-Specific (Previous)**
-❌ Only available in StrataForge workspace  
+❌ Only available in Seisly workspace  
 ❌ Need to setup for each project  
 ✅ Project-specific configuration  
 

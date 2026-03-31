@@ -6,13 +6,13 @@ tags: [sqlite, schema, structural]
 dependency_graph:
   requires: [v03-phase-b-picking-interpolation]
   provides: [fault-storage]
-  affects: [sf_storage]
+  affects: [seisly_storage]
 tech_stack:
   added: []
   patterns: [sqlite-schema-extension]
 key_files:
   created: []
-  modified: [schemas/sqlite/0001_init.sql, crates/sf_storage/src/sqlite/mod.rs]
+  modified: [schemas/sqlite/0001_init.sql, crates/seisly_storage/src/sqlite/mod.rs]
 decisions:
   - Removed project_id from faults table as it's redundant in project-specific databases.
 metrics:
@@ -29,7 +29,7 @@ Added the foundational SQLite schema for structural interpretation (Faults and F
 
 ### Task 1: Persistent Structural Schema
 - Added `faults` and `fault_sticks` tables to `0001_init.sql`.
-- Added TDD integration test `test_structural_schema` in `sf_storage`.
+- Added TDD integration test `test_structural_schema` in `seisly_storage`.
 - Verified schema initialization.
 - **Commit:** `a1ff44a`: feat(v04-phase-a-structural-foundations): add faults and sticks to SQLite schema
 

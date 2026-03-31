@@ -1,19 +1,19 @@
 ---
 phase: v05-phase-b-velocity-depth
 plan: 2026-03-28-v05-phase-b-velocity-depth.md
-subsystem: [sf_app, sf_compute]
+subsystem: [seisly_app, seisly_compute]
 tags: [velocity, depth, time-to-depth, conversion, UI]
 dependency_graph:
   requires: [v05-phase-a-horizon-picking]
   provides: [Velocity modeling UI, depth conversion, depth mode visualization]
-  affects: [sf_app, sf_compute]
+  affects: [seisly_app, seisly_compute]
 tech_stack:
   added: [VelocityPanel widget, depth mode toggle]
   patterns: [Velocity Modeling, Time-Depth Conversion]
 key_files:
-  - crates/sf_app/src/widgets/velocity_panel.rs
-  - crates/sf_compute/src/velocity.rs
-  - crates/sf_app/src/app.rs
+  - crates/seisly_app/src/widgets/velocity_panel.rs
+  - crates/seisly_compute/src/velocity.rs
+  - crates/seisly_app/src/app.rs
 decisions:
   - Reused existing LinearVelocityModel for depth conversion (already robust)
   - Depth mode integrated into existing viewport rendering
@@ -48,11 +48,11 @@ Implemented velocity modeling and time-to-depth conversion capabilities with UI 
 - Real-time parameter updates on Enter key
 
 **Files Created:**
-- `crates/sf_app/src/widgets/velocity_panel.rs` - Full widget implementation
+- `crates/seisly_app/src/widgets/velocity_panel.rs` - Full widget implementation
 
 **Files Modified:**
-- `crates/sf_app/src/widgets/mod.rs` - Exported VelocityPanel
-- `crates/sf_app/src/app.rs` - Integrated panel into UI
+- `crates/seisly_app/src/widgets/mod.rs` - Exported VelocityPanel
+- `crates/seisly_app/src/app.rs` - Integrated panel into UI
 
 **Unit Tests Added:**
 - `test_velocity_panel_creation` - Verifies panel initialization
@@ -89,7 +89,7 @@ Implemented velocity modeling and time-to-depth conversion capabilities with UI 
 **Status:** Already implemented in `LinearVelocityModel`
 
 **Existing Implementation:**
-- `LinearVelocityModel` in `crates/sf_compute/src/velocity.rs`
+- `LinearVelocityModel` in `crates/seisly_compute/src/velocity.rs`
 - Supports:
   - **Constant velocity:** `depth = v0 * twt / 2`
   - **Gradient velocity:** `depth = (v0/k) * (exp(k * twt / 2) - 1)`
@@ -101,7 +101,7 @@ Implemented velocity modeling and time-to-depth conversion capabilities with UI 
 **Decision:** Reuse existing robust implementation rather than creating new conversion engine.
 
 **Files:**
-- `crates/sf_compute/src/velocity.rs` - Already complete
+- `crates/seisly_compute/src/velocity.rs` - Already complete
 
 **Existing Tests:**
 - `test_constant_velocity` - Validates constant velocity conversion
@@ -136,8 +136,8 @@ Y-axis: TWT (ms)              Y-axis: Depth (m)
 - Viewport reads this flag for coordinate projection
 
 **Files:**
-- `crates/sf_app/src/widgets/viewport.rs` - Already has depth mode support
-- `crates/sf_app/src/app.rs` - Velocity state passed to viewport
+- `crates/seisly_app/src/widgets/viewport.rs` - Already has depth mode support
+- `crates/seisly_app/src/app.rs` - Velocity state passed to viewport
 
 ---
 
@@ -193,7 +193,7 @@ Original plan called for new conversion engine. However:
 
 **Compilation:**
 ```
-cargo check -p sf_render -p sf_app
+cargo check -p seisly_render -p seisly_app
 Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.11s
 ```
 

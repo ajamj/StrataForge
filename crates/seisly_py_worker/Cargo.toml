@@ -2,7 +2,15 @@
 name = "seisly_py_worker"
 version.workspace = true
 edition.workspace = true
+repository.workspace = true
+authors.workspace = true
 description = "Process-isolated Python worker for Seisly plugins"
+
+[package.metadata.wix]
+upgrade-guid = "B864ADF0-C979-4E55-844A-882B237978F8"
+path-guid = "D512162A-F63C-4C7E-978B-A66F51CBC3F3"
+license = false
+eula = false
 
 [dependencies]
 seisly_core.workspace = true

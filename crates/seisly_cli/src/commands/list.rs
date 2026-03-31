@@ -6,7 +6,7 @@ use std::path::PathBuf;
 pub fn execute(project_path: String, filter: Option<String>) -> anyhow::Result<()> {
     let project = Project::open(PathBuf::from(&project_path))?;
 
-    println!("StrataForge Project: {}", project.manifest.name);
+    println!("Seisly Project: {}", project.manifest.name);
     println!("Default CRS: {}", project.manifest.default_crs);
     println!("Version: {}", project.manifest.version);
     println!();

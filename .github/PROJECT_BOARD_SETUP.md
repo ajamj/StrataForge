@@ -2,7 +2,7 @@
 
 ## Create Project Board
 
-1. Navigate to: https://github.com/ajamj/StrataForge/projects
+1. Navigate to: https://github.com/ajamj/Seisly/projects
 2. Click **"New project"**
 3. Select **"Project board"** template (Kanban style)
 4. Name: **"Phase 0 - v0.2.0 Foundation"**
@@ -26,20 +26,20 @@ Create the following issues (copy-paste templates below):
 ### Issue 1: FormationTop Domain Model
 ```markdown
 ## Task
-Implement FormationTop domain model in sf_core crate.
+Implement FormationTop domain model in seisly_core crate.
 
 ## Acceptance Criteria
 - [ ] FormationTop struct with id, well_id, name, depth_md fields
 - [ ] Support for optional formation name and comments
 - [ ] Serialization via serde (JSON, YAML)
 - [ ] Unit tests for creation and serialization
-- [ ] Module exported in sf_core::domain
+- [ ] Module exported in seisly_core::domain
 
 ## Files to Create
-- `crates/sf_core/src/domain/formation_top.rs`
+- `crates/seisly_core/src/domain/formation_top.rs`
 
 ## Files to Modify
-- `crates/sf_core/src/domain.rs` - Export new module
+- `crates/seisly_core/src/domain.rs` - Export new module
 
 ## Implementation Plan
 See: `docs/superpowers/plans/2026-03-29-phase-0-foundation.md#task-1
@@ -52,7 +52,7 @@ See: `docs/superpowers/plans/2026-03-29-phase-0-foundation.md#task-1
 
 ## Labels
 - enhancement
-- sf_core
+- seisly_core
 - good first issue
 ```
 
@@ -69,11 +69,11 @@ Implement complete SEG-Y reader with memory-mapped access.
 - [ ] Integration tests
 
 ## Files to Create
-- `crates/sf_io/src/segy/reader.rs`
+- `crates/seisly_io/src/segy/reader.rs`
 
 ## Files to Modify
-- `crates/sf_io/src/segy/mod.rs`
-- `crates/sf_io/Cargo.toml` - Add segy-rs dependency
+- `crates/seisly_io/src/segy/mod.rs`
+- `crates/seisly_io/Cargo.toml` - Add segy-rs dependency
 
 ## Implementation Plan
 See: `docs/superpowers/plans/2026-03-29-phase-0-foundation.md#task-2
@@ -86,7 +86,7 @@ See: `docs/superpowers/plans/2026-03-29-phase-0-foundation.md#task-2
 
 ## Labels
 - enhancement
-- sf_io
+- seisly_io
 - segy
 ```
 
@@ -102,8 +102,8 @@ Implement complete SEG-Y writer.
 - [ ] Round-trip test with SegyReader
 
 ## Files to Create
-- `crates/sf_io/src/segy/writer.rs`
-- `crates/sf_io/tests/segy_writer_test.rs`
+- `crates/seisly_io/src/segy/writer.rs`
+- `crates/seisly_io/tests/segy_writer_test.rs`
 
 ## Implementation Plan
 See: `docs/superpowers/plans/2026-03-29-phase-0-foundation.md#task-3
@@ -116,7 +116,7 @@ See: `docs/superpowers/plans/2026-03-29-phase-0-foundation.md#task-3
 
 ## Labels
 - enhancement
-- sf_io
+- seisly_io
 - segy
 ```
 
@@ -132,10 +132,10 @@ Add LAS 3.0 parser support.
 - [ ] Unit tests
 
 ## Files to Create
-- `crates/sf_io/src/las/v3.rs`
+- `crates/seisly_io/src/las/v3.rs`
 
 ## Files to Modify
-- `crates/sf_io/src/las/mod.rs`
+- `crates/seisly_io/src/las/mod.rs`
 
 ## Implementation Plan
 See: `docs/superpowers/plans/2026-03-29-phase-0-foundation.md#task-4
@@ -148,7 +148,7 @@ See: `docs/superpowers/plans/2026-03-29-phase-0-foundation.md#task-4
 
 ## Labels
 - enhancement
-- sf_io
+- seisly_io
 - las
 ```
 
@@ -164,8 +164,8 @@ Implement well-seismic tie computation module.
 - [ ] Unit tests for accuracy
 
 ## Files to Create
-- `crates/sf_compute/src/well_tie.rs`
-- `crates/sf_compute/tests/well_tie_test.rs`
+- `crates/seisly_compute/src/well_tie.rs`
+- `crates/seisly_compute/tests/well_tie_test.rs`
 
 ## Implementation Plan
 See: `docs/superpowers/plans/2026-03-29-phase-0-foundation.md#task-5
@@ -178,7 +178,7 @@ See: `docs/superpowers/plans/2026-03-29-phase-0-foundation.md#task-5
 
 ## Labels
 - enhancement
-- sf_compute
+- seisly_compute
 - well-tie
 ```
 
@@ -224,7 +224,7 @@ Create comprehensive integration tests for Phase 0.
 - [ ] All tests passing on CI
 
 ## Files to Create
-- `crates/sf_io/tests/integration_test.rs`
+- `crates/seisly_io/tests/integration_test.rs`
 
 ## Implementation Plan
 See: `docs/superpowers/plans/2026-03-29-phase-0-foundation.md#task-7
@@ -237,13 +237,13 @@ See: `docs/superpowers/plans/2026-03-29-phase-0-foundation.md#task-7
 
 ## Labels
 - testing
-- sf_io
-- sf_compute
+- seisly_io
+- seisly_compute
 ```
 
 ## Create Milestone
 
-1. Go to: https://github.com/ajamj/StrataForge/milestones
+1. Go to: https://github.com/ajamj/Seisly/milestones
 2. Click **"New milestone"**
 3. Name: **"v0.2.0 - Phase 0 Foundation"**
 4. Description: "Complete well-seismic workflow: SEG-Y, LAS 3.0, well tie, formation tops"

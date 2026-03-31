@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"Seisly\" --include=\"*.md\" --include=\"*.rs\" --include=\"*.toml\" --include=\"*.yml\" . 2>/dev/null | head -20)",
+      "Bash(cargo clippy:*)",
+      "Bash(ls -la *.md)",
+      "Bash(cargo test:*)"
+    ]
+  }
+}

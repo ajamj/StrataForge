@@ -1,9 +1,9 @@
 //! Phase 1 Integration Tests
 //! Test all Phase 1 components working together
 
-use sf_ml::{HorizonCNN, AutoTracker, SyntheticTrainer, Trainer, TrainingConfig};
-use sf_attributes::{RmsAmplitude, MeanAmplitude, InstantaneousFrequency, SeismicAttribute, all_amplitude_attributes, all_frequency_attributes};
-use sf_plugin::{PluginManager, Plugin, PluginContext, PluginCommand, Result as PluginResult};
+use seisly_ml::{HorizonCNN, AutoTracker, SyntheticTrainer, Trainer, TrainingConfig};
+use seisly_attributes::{RmsAmplitude, MeanAmplitude, InstantaneousFrequency, SeismicAttribute, all_amplitude_attributes, all_frequency_attributes};
+use seisly_plugin::{PluginManager, Plugin, PluginContext, PluginCommand, Result as PluginResult};
 use serde_json::Value;
 
 #[test]
@@ -88,7 +88,7 @@ fn test_plugin_with_custom_plugin() {
                 let rms: f32 = (trace.iter().map(|x| x * x).sum::<f32>() / trace.len() as f32).sqrt();
                 Ok(Value::Number(serde_json::Number::from_f64(rms as f64).unwrap()))
             } else {
-                Err(sf_plugin::api::PluginError::ExecutionError("Unknown command".to_string()))
+                Err(seisly_plugin::api::PluginError::ExecutionError("Unknown command".to_string()))
             }
         }
     }

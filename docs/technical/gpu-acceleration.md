@@ -3,7 +3,7 @@
 ## Quick Start
 
 ```rust
-use sf_attributes_gpu::GpuAccelerator;
+use seisly_attributes_gpu::GpuAccelerator;
 
 // Initialize GPU
 let gpu = GpuAccelerator::new()?;
@@ -17,7 +17,7 @@ println!("GPU RMS computed in {:?}", rms.elapsed_time);
 
 ## Overview
 
-The `sf_attributes_gpu` crate provides GPU-accelerated seismic attribute computation using the `wgpu` compute pipeline. GPU acceleration can provide **10x or greater speedup** for large datasets.
+The `seisly_attributes_gpu` crate provides GPU-accelerated seismic attribute computation using the `wgpu` compute pipeline. GPU acceleration can provide **10x or greater speedup** for large datasets.
 
 ## Requirements
 
@@ -47,7 +47,7 @@ The `sf_attributes_gpu` crate provides GPU-accelerated seismic attribute computa
 
 ```toml
 [dependencies]
-sf_attributes_gpu = "0.4.0"
+seisly_attributes_gpu = "0.4.0"
 wgpu = "0.18"
 ```
 
@@ -76,7 +76,7 @@ wgpu = "0.18"
 ### Initialize GPU
 
 ```rust
-use sf_attributes_gpu::GpuAccelerator;
+use seisly_attributes_gpu::GpuAccelerator;
 
 // Auto-select best available GPU
 let gpu = GpuAccelerator::new()?;
@@ -89,7 +89,7 @@ let gpu = GpuAccelerator::with_adapter(adapter)?;
 ### Compute Attributes
 
 ```rust
-use sf_attributes_gpu::GpuAccelerator;
+use seisly_attributes_gpu::GpuAccelerator;
 
 let gpu = GpuAccelerator::new()?;
 let data = vec![1.0, 2.0, 3.0, 4.0, 5.0];
@@ -110,7 +110,7 @@ println!("Energy: {:.3}", energy.value);
 ### Batch Processing
 
 ```rust
-use sf_attributes_gpu::{GpuAccelerator, BatchConfig};
+use seisly_attributes_gpu::{GpuAccelerator, BatchConfig};
 
 let gpu = GpuAccelerator::new()?;
 
@@ -154,7 +154,7 @@ All benchmarks on Intel i7-12700K with NVIDIA RTX 3080:
 ### Custom Compute Shaders
 
 ```rust
-use sf_attributes_gpu::{GpuAccelerator, ComputePipeline};
+use seisly_attributes_gpu::{GpuAccelerator, ComputePipeline};
 
 let gpu = GpuAccelerator::new()?;
 
@@ -178,7 +178,7 @@ let output = pipeline.execute(&input)?;
 ### Memory Management
 
 ```rust
-use sf_attributes_gpu::{GpuAccelerator, GpuBuffer};
+use seisly_attributes_gpu::{GpuAccelerator, GpuBuffer};
 
 let gpu = GpuAccelerator::new()?;
 
@@ -198,7 +198,7 @@ let result = buffer.download()?;
 ### Async Execution
 
 ```rust
-use sf_attributes_gpu::GpuAccelerator;
+use seisly_attributes_gpu::GpuAccelerator;
 
 async fn process_async() -> Result<(), Box<dyn std::error::Error>> {
     let gpu = GpuAccelerator::new()?;
@@ -221,7 +221,7 @@ async fn process_async() -> Result<(), Box<dyn std::error::Error>> {
 ### GPU Initialization Errors
 
 ```rust
-use sf_attributes_gpu::{GpuAccelerator, GpuError};
+use seisly_attributes_gpu::{GpuAccelerator, GpuError};
 
 match GpuAccelerator::new() {
     Ok(gpu) => {
@@ -244,7 +244,7 @@ match GpuAccelerator::new() {
 ### Compute Errors
 
 ```rust
-use sf_attributes_gpu::{GpuAccelerator, ComputeError};
+use seisly_attributes_gpu::{GpuAccelerator, ComputeError};
 
 let gpu = GpuAccelerator::new()?;
 
@@ -265,7 +265,7 @@ match gpu.compute_rms(&data) {
 The library automatically falls back to CPU if GPU is unavailable:
 
 ```rust
-use sf_attributes_gpu::GpuAccelerator;
+use seisly_attributes_gpu::GpuAccelerator;
 
 let gpu = GpuAccelerator::new_with_fallback();
 
@@ -279,7 +279,7 @@ println!("Backend: {:?}", gpu.backend()); // Gpu or Cpu
 ## Multi-GPU Support
 
 ```rust
-use sf_attributes_gpu::{GpuAccelerator, MultiGpuConfig};
+use seisly_attributes_gpu::{GpuAccelerator, MultiGpuConfig};
 
 // List available GPUs
 let adapters = GpuAccelerator::list_adapters();
@@ -288,7 +288,7 @@ println!("Found {} GPU(s)", adapters.len());
 // Configure multi-GPU
 let config = MultiGpuConfig {
     adapters: adapters.clone(),
-    distribution: sf_attributes_gpu::Distribution::DataParallel,
+    distribution: seisly_attributes_gpu::Distribution::DataParallel,
 };
 
 let multi_gpu = GpuAccelerator::new_multi_gpu(config)?;
@@ -299,11 +299,11 @@ let results = multi_gpu.compute_rms_distributed(&large_dataset)?;
 
 ## Integration with Existing Code
 
-### With sf_attributes
+### With seisly_attributes
 
 ```rust
-use sf_attributes::Attributes;
-use sf_attributes_gpu::GpuAccelerator;
+use seisly_attributes::Attributes;
+use seisly_attributes_gpu::GpuAccelerator;
 
 let data = load_seismic("survey.segy")?;
 
@@ -319,11 +319,11 @@ let rms_gpu = gpu.compute_rms(&data)?;
 assert!((rms_cpu - rms_gpu.value).abs() < 1e-6);
 ```
 
-### With sf_qi
+### With seisly_qi
 
 ```rust
-use sf_qi::AvoAnalysis;
-use sf_attributes_gpu::GpuAccelerator;
+use seisly_qi::AvoAnalysis;
+use seisly_attributes_gpu::GpuAccelerator;
 
 let gpu = GpuAccelerator::new()?;
 
@@ -336,11 +336,11 @@ let avo = AvoAnalysis::new(&angles, &rms.values);
 let class = avo.classify();
 ```
 
-### With sf_4d
+### With seisly_4d
 
 ```rust
-use sf_4d::TimeLapseMonitor;
-use sf_attributes_gpu::GpuAccelerator;
+use seisly_4d::TimeLapseMonitor;
+use seisly_attributes_gpu::GpuAccelerator;
 
 let gpu = GpuAccelerator::new()?;
 
@@ -367,7 +367,7 @@ let nrms = monitor_4d.compute_nrms();
 ### Debug Mode
 
 ```rust
-use sf_attributes_gpu::{GpuAccelerator, DebugConfig};
+use seisly_attributes_gpu::{GpuAccelerator, DebugConfig};
 
 let debug_config = DebugConfig {
     enable_validation: true,
@@ -389,7 +389,7 @@ let gpu = GpuAccelerator::new_with_debug(debug_config)?;
 ## Example: Complete GPU Workflow
 
 ```rust
-use sf_attributes_gpu::{GpuAccelerator, BatchConfig, GpuResult};
+use seisly_attributes_gpu::{GpuAccelerator, BatchConfig, GpuResult};
 
 fn gpu_seismic_processing(segy_path: &str) -> Result<GpuResult, Box<dyn std::error::Error>> {
     // Initialize GPU
@@ -437,4 +437,4 @@ fn gpu_seismic_processing(segy_path: &str) -> Result<GpuResult, Box<dyn std::err
 - [Phase 2 Features Overview](PHASE_2_FEATURES.md)
 - [QI & AVO Guide](QI_GUIDE.md)
 - [4D Monitoring Guide](4D_MONITORING.md)
-- [API Documentation](../api/sf_attributes_gpu/)
+- [API Documentation](../api/seisly_attributes_gpu/)

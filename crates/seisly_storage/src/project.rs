@@ -68,7 +68,7 @@ impl ProjectManifest {
     }
 }
 
-/// Represents an open StrataForge project
+/// Represents an open Seisly project
 pub struct Project {
     pub path: PathBuf,
     pub manifest: ProjectManifest,

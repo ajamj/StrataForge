@@ -1,4 +1,4 @@
-//! Seismic Attributes for StrataForge
+//! Seismic Attributes for Seisly
 //!
 //! Amplitude and frequency-based attributes for seismic interpretation.
 

@@ -1,8 +1,8 @@
 //! Phase 2 Benchmarks - QI, 4D, GPU
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use sf_qi::{AvoAnalysis, VpVsRatio, PoissonsRatio, Dhi, Gassmann};
-use sf_4d::TimeLapseAnalysis;
+use seisly_qi::{AvoAnalysis, VpVsRatio, PoissonsRatio, Dhi, Gassmann};
+use seisly_4d::TimeLapseAnalysis;
 
 fn bench_avo_gradient_intercept(c: &mut Criterion) {
     let angles = vec![0.0, 10.0, 20.0, 30.0, 40.0];

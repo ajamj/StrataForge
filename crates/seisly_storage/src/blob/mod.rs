@@ -102,7 +102,7 @@ mod tests {
         let temp_dir = TempDir::new().unwrap();
         let store = BlobStore::new(temp_dir.path().to_path_buf());
 
-        let content = b"Hello, StrataForge!";
+        let content = b"Hello, Seisly!";
         let hash = store.store(content).unwrap();
 
         let retrieved = store.retrieve(&hash).unwrap();

@@ -12,7 +12,7 @@ Phase 2 adds advanced quantitative interpretation (QI), 4D time-lapse monitoring
 
 ## New Features
 
-### 1. Quantitative Interpretation (`sf_qi`)
+### 1. Quantitative Interpretation (`seisly_qi`)
 
 Advanced rock physics and AVO analysis for reservoir characterization.
 
@@ -33,13 +33,13 @@ Advanced rock physics and AVO analysis for reservoir characterization.
 - **Gassmann Substitution**: Fluid replacement modeling
 - **DHI Scoring**: Direct Hydrocarbon Indicator probability
 
-**Module**: `sf_qi`  
+**Module**: `seisly_qi`  
 **Status**: Stable  
 **GPU Support**: No (CPU-optimized)
 
 ---
 
-### 2. 4D Time-Lapse Monitoring (`sf_4d`)
+### 2. 4D Time-Lapse Monitoring (`seisly_4d`)
 
 Seismic monitoring for production and injection tracking.
 
@@ -58,13 +58,13 @@ Seismic monitoring for production and injection tracking.
 - **Statistical Analysis**: Correlation coefficients, p-values
 - **Quality Control**: Repeatability metrics
 
-**Module**: `sf_4d`  
+**Module**: `seisly_4d`  
 **Status**: Stable  
 **GPU Support**: Partial (RMS computation)
 
 ---
 
-### 3. GPU Acceleration (`sf_attributes_gpu`)
+### 3. GPU Acceleration (`seisly_attributes_gpu`)
 
 High-performance seismic attribute computation using wgpu.
 
@@ -87,7 +87,7 @@ High-performance seismic attribute computation using wgpu.
 | Linux | Vulkan | ✓ |
 | macOS | Metal | ✓ |
 
-**Module**: `sf_attributes_gpu`  
+**Module**: `seisly_attributes_gpu`  
 **Status**: Stable  
 **GPU Required**: Optional (auto-fallback to CPU)
 
@@ -147,17 +147,17 @@ rustup update stable
 ```toml
 [dependencies]
 myfield = "0.4.0"
-sf_qi = "0.4.0"
-sf_4d = "0.4.0"
-sf_attributes_gpu = "0.4.0"
+seisly_qi = "0.4.0"
+seisly_4d = "0.4.0"
+seisly_attributes_gpu = "0.4.0"
 ```
 
 ### Verify Installation
 
 ```rust
-use sf_qi::AvoAnalysis;
-use sf_4d::TimeLapseMonitor;
-use sf_attributes_gpu::GpuAccelerator;
+use seisly_qi::AvoAnalysis;
+use seisly_4d::TimeLapseMonitor;
+use seisly_attributes_gpu::GpuAccelerator;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Test QI
@@ -183,7 +183,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ### AVO Analysis
 
 ```rust
-use sf_qi::{AvoAnalysis, VpVsRatio, PoissonsRatio};
+use seisly_qi::{AvoAnalysis, VpVsRatio, PoissonsRatio};
 
 // AVO Analysis
 let angles = vec![0.0, 10.0, 20.0, 30.0, 40.0];
@@ -209,7 +209,7 @@ println!("Vp/Vs: {:.2}, Poisson's Ratio: {:.3}", vp_vs, poisson);
 ### 4D Monitoring
 
 ```rust
-use sf_4d::{TimeLapseMonitor, ProductionData};
+use seisly_4d::{TimeLapseMonitor, ProductionData};
 
 // Load base and monitor surveys
 let base = load_seismic("base_survey.segy")?;
@@ -236,7 +236,7 @@ println!("Correlation: {:.3} (p={:.4})", correlation.r, correlation.p);
 ### GPU Acceleration
 
 ```rust
-use sf_attributes_gpu::GpuAccelerator;
+use seisly_attributes_gpu::GpuAccelerator;
 
 // Initialize GPU
 let gpu = GpuAccelerator::new()?;
@@ -263,17 +263,17 @@ println!("Energy: {:.3}", energy.value);
 
 ```
 myfield (core)
-├── sf_qi (Quantitative Interpretation)
+├── seisly_qi (Quantitative Interpretation)
 │   ├── avo_analysis.rs
 │   ├── elastic_params.rs
 │   ├── fluid_factor.rs
 │   └── dhi_scoring.rs
-├── sf_4d (Time-Lapse Monitoring)
+├── seisly_4d (Time-Lapse Monitoring)
 │   ├── difference.rs
 │   ├── nrms.rs
 │   ├── time_shift.rs
 │   └── production.rs
-└── sf_attributes_gpu (GPU Acceleration)
+└── seisly_attributes_gpu (GPU Acceleration)
     ├── accelerator.rs
     ├── compute_pipeline.rs
     ├── shaders/
@@ -292,7 +292,7 @@ Seismic Data → Preprocessing → [GPU Acceleration] → Attributes → [QI Ana
 
 ## API Reference
 
-### sf_qi
+### seisly_qi
 
 | Type/Function | Description |
 |---------------|-------------|
@@ -303,7 +303,7 @@ Seismic Data → Preprocessing → [GPU Acceleration] → Attributes → [QI Ana
 | `GassmannSubstitution` | Fluid replacement modeling |
 | `DhiScore` | Direct Hydrocarbon Indicator scoring |
 
-### sf_4d
+### seisly_4d
 
 | Type/Function | Description |
 |---------------|-------------|
@@ -314,7 +314,7 @@ Seismic Data → Preprocessing → [GPU Acceleration] → Attributes → [QI Ana
 | `WellCorrelation` | Well-to-4D correlation |
 | `TimeShiftConfig` | Time shift computation config |
 
-### sf_attributes_gpu
+### seisly_attributes_gpu
 
 | Type/Function | Description |
 |---------------|-------------|
@@ -333,22 +333,22 @@ Seismic Data → Preprocessing → [GPU Acceleration] → Attributes → [QI Ana
 
 ```rust
 // Old (v0.3.x) - Basic attributes only
-use sf_attributes::Attributes;
+use seisly_attributes::Attributes;
 let attrs = Attributes::new(&data);
 let rms = attrs.rms();
 
 // New (v0.4.0) - GPU acceleration available
-use sf_attributes_gpu::GpuAccelerator;
+use seisly_attributes_gpu::GpuAccelerator;
 let gpu = GpuAccelerator::new()?;
 let rms = gpu.compute_rms(&data)?; // 10x faster!
 
 // New (v0.4.0) - QI analysis
-use sf_qi::AvoAnalysis;
+use seisly_qi::AvoAnalysis;
 let avo = AvoAnalysis::new(&angles, &amplitudes);
 let class = avo.classify();
 
 // New (v0.4.0) - 4D monitoring
-use sf_4d::TimeLapseMonitor;
+use seisly_4d::TimeLapseMonitor;
 let monitor_4d = TimeLapseMonitor::new(&base, &monitor);
 let nrms = monitor_4d.compute_nrms();
 ```
@@ -372,9 +372,9 @@ let nrms = monitor_4d.compute_nrms();
 ### v0.4.0 (Phase 2)
 
 **Added**
-- `sf_qi` crate for quantitative interpretation
-- `sf_4d` crate for time-lapse monitoring
-- `sf_attributes_gpu` crate for GPU acceleration
+- `seisly_qi` crate for quantitative interpretation
+- `seisly_4d` crate for time-lapse monitoring
+- `seisly_attributes_gpu` crate for GPU acceleration
 - AVO classification (Class 1-4)
 - Elastic parameter computation
 - NRMS and time shift analysis

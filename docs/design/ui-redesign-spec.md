@@ -1,4 +1,4 @@
-# StrataForge UI Redesign Specification
+# Seisly UI Redesign Specification
 
 ## Overview
 Modern hybrid UI design combining ribbon-style efficiency with minimalist aesthetics.
@@ -15,7 +15,7 @@ Modern hybrid UI design combining ribbon-style efficiency with minimalist aesthe
 ### Top Ribbon (60px height)
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  StrataForge  [Quick Access]    File  Edit  View  Tools  ?  │
+│  Seisly  [Quick Access]    File  Edit  View  Tools  ?  │
 ├─────────────────────────────────────────────────────────────┤
 │  [New] [Open] [Save] │ [Pick] [Track] [Sketch] │ [Depth]    │
 └─────────────────────────────────────────────────────────────┘

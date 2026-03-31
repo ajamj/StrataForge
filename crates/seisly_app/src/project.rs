@@ -1,4 +1,4 @@
-//! Project management for StrataForge
+//! Project management for Seisly
 
 use serde::{Deserialize, Serialize};
 use std::path::Path;
@@ -103,7 +103,7 @@ impl ProjectManager {
 
     /// Get project file extension
     #[allow(dead_code)]
-    pub const EXTENSION: &'static str = "sfp"; // StrataForge Project
+    pub const EXTENSION: &'static str = "sfp"; // Seisly Project
 }
 
 // Conversion methods (to be implemented as needed)

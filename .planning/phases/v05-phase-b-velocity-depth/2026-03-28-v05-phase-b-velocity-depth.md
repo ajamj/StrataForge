@@ -1,19 +1,19 @@
 ---
 phase: v05-phase-b-velocity-depth
 plan: 2026-03-28-v05-phase-b-velocity-depth.md
-subsystem: [sf_app, sf_compute]
+subsystem: [seisly_app, seisly_compute]
 tags: [velocity, depth, time-to-depth, conversion, modeling]
 dependency_graph:
-  requires: [v05-phase-a-horizon-picking, sf_compute]
+  requires: [v05-phase-a-horizon-picking, seisly_compute]
   provides: [Velocity modeling, depth conversion, depth domain visualization]
-  affects: [sf_app, sf_compute]
+  affects: [seisly_app, seisly_compute]
 tech_stack:
   added: [velocity model UI, depth conversion engine]
   patterns: [Velocity Modeling, Time-Depth Conversion]
 key_files:
-  - crates/sf_app/src/widgets/velocity_panel.rs
-  - crates/sf_compute/src/velocity/depth_conversion.rs
-  - crates/sf_app/src/widgets/viewport.rs
+  - crates/seisly_app/src/widgets/velocity_panel.rs
+  - crates/seisly_compute/src/velocity/depth_conversion.rs
+  - crates/seisly_app/src/widgets/viewport.rs
 decisions: []
 metrics:
   duration: 1h
@@ -50,9 +50,9 @@ Implement velocity modeling and time-to-depth conversion capabilities for seismi
 - [ ] Unit tests for UI components
 
 **Files to Create/Modify:**
-- `crates/sf_app/src/widgets/velocity_panel.rs` - Create new widget
-- `crates/sf_compute/src/velocity/model.rs` - Extend velocity model types
-- `crates/sf_app/src/app.rs` - Integrate velocity panel
+- `crates/seisly_app/src/widgets/velocity_panel.rs` - Create new widget
+- `crates/seisly_compute/src/velocity/model.rs` - Extend velocity model types
+- `crates/seisly_app/src/app.rs` - Integrate velocity panel
 
 **Implementation Steps:**
 1. Create `VelocityPanel` widget
@@ -100,8 +100,8 @@ Implement velocity modeling and time-to-depth conversion capabilities for seismi
 - [ ] Edge case handling (negative values, zero velocity)
 
 **Files to Create/Modify:**
-- `crates/sf_compute/src/velocity/depth_conversion.rs` - Create conversion engine
-- `crates/sf_compute/src/velocity/model.rs` - Define model types
+- `crates/seisly_compute/src/velocity/depth_conversion.rs` - Create conversion engine
+- `crates/seisly_compute/src/velocity/model.rs` - Define model types
 
 **Implementation Steps:**
 1. Define velocity model enum:
@@ -139,8 +139,8 @@ Implement velocity modeling and time-to-depth conversion capabilities for seismi
 - [ ] Unit tests for depth projection
 
 **Files to Modify:**
-- `crates/sf_app/src/widgets/viewport.rs` - Add depth mode rendering
-- `crates/sf_app/src/interpretation/mod.rs` - Store picks in both domains
+- `crates/seisly_app/src/widgets/viewport.rs` - Add depth mode rendering
+- `crates/seisly_app/src/interpretation/mod.rs` - Store picks in both domains
 
 **Implementation Steps:**
 1. Add `is_depth_mode` flag to ViewportWidget
@@ -174,8 +174,8 @@ Y-axis: TWT (ms)    Y-axis: Depth (m)
 - [ ] Unit tests for analysis tools
 
 **Files to Create/Modify:**
-- `crates/sf_app/src/widgets/velocity_analysis.rs` - Analysis tools
-- `crates/sf_compute/src/velocity/analysis.rs` - Analysis algorithms
+- `crates/seisly_app/src/widgets/velocity_analysis.rs` - Analysis tools
+- `crates/seisly_compute/src/velocity/analysis.rs` - Analysis algorithms
 
 **Implementation Steps:**
 1. Create velocity scan widget
@@ -211,7 +211,7 @@ Y-axis: TWT (ms)    Y-axis: Depth (m)
 
 **Requires:**
 - v05-phase-a-horizon-picking (horizon interpretation)
-- sf_compute (RBF interpolation foundation)
+- seisly_compute (RBF interpolation foundation)
 
 **Provides:**
 - Depth-converted horizons
