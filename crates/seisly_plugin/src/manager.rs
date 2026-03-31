@@ -83,7 +83,14 @@ impl PluginManager {
                 if manifest_path.exists() {
                     match PluginManifest::from_file(&manifest_path) {
                         Ok(manifest) => {
-                            self.register(Box::new(PlaceholderPlugin::new(manifest)));
+                            #[cfg(feature = "python")]
+                            {
+                                self.register(Box::new(crate::python_plugin::PythonPlugin::new(manifest, manifest_path)));
+                            }
+                            #[cfg(not(feature = "python"))]
+                            {
+                                self.register(Box::new(PlaceholderPlugin::new(manifest)));
+                            }
                         }
                         Err(e) => {
                             eprintln!("Failed to parse manifest at {:?}: {}", manifest_path, e);

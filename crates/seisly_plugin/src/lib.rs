@@ -10,6 +10,10 @@ pub mod manifest;
 pub mod python;
 #[cfg(feature = "python")]
 pub mod interpreter;
+#[cfg(feature = "python")]
+pub mod bridge;
+#[cfg(feature = "python")]
+pub mod python_plugin;
 
 pub use api::{Plugin, PluginContext, PluginCommand, PluginError, Result};
 pub use manager::PluginManager;
