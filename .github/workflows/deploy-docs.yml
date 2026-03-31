@@ -37,6 +37,9 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Build Workspace (ensure build artifacts exist)
+        run: cargo build --workspace --features python
+
       - name: Build API Documentation (cargo doc)
         run: |
           cargo doc --workspace --no-deps --features python
