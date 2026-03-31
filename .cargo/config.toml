@@ -4,3 +4,7 @@ rustflags = [
     "-L", "C:\\Users\\Thinkpad\\scoop\\apps\\gcc\\current\\x86_64-w64-mingw32\\lib",
     "-L", "C:\\Users\\Thinkpad\\scoop\\apps\\gcc\\current\\lib\\gcc\\x86_64-w64-mingw32\\15.2.0"
 ]
+
+[env]
+PYO3_USE_ABI3_FORWARD_COMPATIBILITY = "1"
+CMAKE_GENERATOR = "Ninja"

@@ -1,4 +1,4 @@
-use crate::api::{Plugin, PluginContext, PluginCommand, PluginError, Result};
+use crate::api::{Plugin, PluginCommand, PluginError, Result};
 use crate::manifest::PluginManifest;
 use std::collections::HashMap;
 use std::path::Path;

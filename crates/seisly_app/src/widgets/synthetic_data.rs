@@ -3,8 +3,8 @@
 //! Provides UI for generating synthetic seismic, wells, and horizons.
 
 use eframe::egui;
-use seisly_compute::synthetic::{SyntheticSeismic, SyntheticWellLog};
-use seisly_core::domain::well::{Well, WellLog};
+use seisly_compute::synthetic::SyntheticSeismic;
+use seisly_core::domain::well::Well;
 
 /// Widget for synthetic data generation
 pub struct SyntheticDataWidget {

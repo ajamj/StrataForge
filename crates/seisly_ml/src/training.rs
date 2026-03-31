@@ -93,7 +93,7 @@ impl Trainer {
     /// - horizon_labels: Target horizon depths (num_traces, num_horizons)
     pub fn train(&mut self, seismic_data: &Tensor, horizon_labels: &Tensor) -> Result<&TrainingStats> {
         let start_time = std::time::Instant::now();
-        let device = seismic_data.device();
+        let _device = seismic_data.device();
 
         let mut optimizer = candle_nn::AdamW::new(
             self.varmap.all_vars(),

@@ -1,6 +1,5 @@
 //! Fluid Discrimination & Substitution
 
-use crate::elastic::{PoissonsRatio, VpVsRatio};
 
 /// Gassmann Fluid Substitution
 pub struct Gassmann;

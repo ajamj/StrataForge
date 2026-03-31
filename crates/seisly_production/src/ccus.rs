@@ -1,6 +1,5 @@
 //! CCUS (Carbon Capture, Utilization, and Storage) Monitoring
 
-use seisly_core::domain::surface::Surface;
 use seisly_4d::TimeLapseAnalysis;
 
 /// CCUS Monitor - CO2 plume tracking and storage verification
@@ -85,7 +84,7 @@ impl CCUSMonitor {
     }
     
     /// Monitor for leakage
-    pub fn detect_leakage(&self, plume_map: &PlumeMap) -> LeakageReport {
+    pub fn detect_leakage(&self, _plume_map: &PlumeMap) -> LeakageReport {
         // Check if plume extends beyond reservoir bounds
         // In production: implement proper leakage detection
         

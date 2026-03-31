@@ -122,7 +122,7 @@ impl ViewportWidget {
                     }
                 }
             }
-            if response.drag_released() {
+            if response.drag_stopped() {
                 if !self.sketch_points.is_empty() {
                     if let Some(fault) = interpretation.active_fault_mut() {
                         fault.add_stick(crate::interpretation::FaultStick::new(

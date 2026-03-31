@@ -2,8 +2,8 @@
 //!
 //! Generates synthetic seismic-like data for training the horizon tracker.
 
-use candle_core::{DType, Device, Result, Tensor};
-use rand::{Rng, SeedableRng};
+use candle_core::{Device, Result, Tensor};
+use rand::SeedableRng;
 use rand_distr::{Distribution, Normal};
 
 /// Configuration for synthetic data generation

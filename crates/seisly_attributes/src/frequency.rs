@@ -14,7 +14,7 @@
 
 use crate::trait_def::SeismicAttribute;
 use num_complex::Complex;
-use rustfft::{FftPlanner, Fft};
+use rustfft::FftPlanner;
 
 /// Instantaneous Frequency (using Hilbert transform)
 pub struct InstantaneousFrequency;

@@ -44,9 +44,10 @@ impl MisfitFunction for TravelTimeMisfit {
         0.5 * (t_pred - t_obs).powi(2)
     }
     
-    fn gradient(&self, _predicted: &Array2<f32>, _observed: &Array2<f32>) -> Array2<f32> {
-        // TODO: Implement travel-time gradient
-        Array2::zeros((1, 1))
+    fn gradient(&self, predicted: &Array2<f32>, _observed: &Array2<f32>) -> Array2<f32> {
+        // TODO: Implement proper travel-time sensitivity kernel
+        // For now, return zero gradient with correct dimensions to avoid panics
+        Array2::zeros(predicted.dim())
     }
 }
 
@@ -67,14 +68,14 @@ impl TravelTimeMisfit {
 pub struct PhaseMisfit;
 
 impl MisfitFunction for PhaseMisfit {
-    fn compute(&self, predicted: &Array2<f32>, observed: &Array2<f32>) -> f32 {
+    fn compute(&self, _predicted: &Array2<f32>, _observed: &Array2<f32>) -> f32 {
         // Compute instantaneous phase using Hilbert transform
         // Simplified for now
         0.0
     }
     
-    fn gradient(&self, _predicted: &Array2<f32>, _observed: &Array2<f32>) -> Array2<f32> {
-        Array2::zeros((1, 1))
+    fn gradient(&self, predicted: &Array2<f32>, _observed: &Array2<f32>) -> Array2<f32> {
+        Array2::zeros(predicted.dim())
     }
 }
 
@@ -146,8 +147,8 @@ mod tests {
 
     #[test]
     fn test_l2_misfit() {
-        let predicted = Array2::from_vec(vec![1.0, 2.0, 3.0, 4.0]);
-        let observed = Array2::from_vec(vec![1.1, 2.1, 3.1, 4.1]);
+        let predicted = Array2::from_shape_vec((4, 1), vec![1.0, 2.0, 3.0, 4.0]).unwrap();
+        let observed = Array2::from_shape_vec((4, 1), vec![1.1, 2.1, 3.1, 4.1]).unwrap();
         
         let misfit = L2Misfit;
         let value = misfit.compute(&predicted, &observed);
@@ -158,8 +159,8 @@ mod tests {
 
     #[test]
     fn test_l2_gradient() {
-        let predicted = Array2::from_vec(vec![1.0, 2.0, 3.0]);
-        let observed = Array2::from_vec(vec![0.0, 0.0, 0.0]);
+        let predicted = Array2::from_shape_vec((3, 1), vec![1.0, 2.0, 3.0]).unwrap();
+        let observed = Array2::from_shape_vec((3, 1), vec![0.0, 0.0, 0.0]).unwrap();
         
         let misfit = L2Misfit;
         let grad = misfit.gradient(&predicted, &observed);
@@ -170,8 +171,8 @@ mod tests {
 
     #[test]
     fn test_envelope_misfit() {
-        let predicted = Array2::from_vec(vec![1.0, -2.0, 3.0]);
-        let observed = Array2::from_vec(vec![1.0, -2.0, 3.0]);
+        let predicted = Array2::from_shape_vec((3, 1), vec![1.0, -2.0, 3.0]).unwrap();
+        let observed = Array2::from_shape_vec((3, 1), vec![1.0, -2.0, 3.0]).unwrap();
         
         let misfit = EnvelopeMisfit;
         let value = misfit.compute(&predicted, &observed);
@@ -181,8 +182,8 @@ mod tests {
 
     #[test]
     fn test_multi_misfit() {
-        let predicted = Array2::from_vec(vec![1.0, 2.0, 3.0]);
-        let observed = Array2::from_vec(vec![1.1, 2.1, 3.1]);
+        let predicted = Array2::from_shape_vec((3, 1), vec![1.0, 2.0, 3.0]).unwrap();
+        let observed = Array2::from_shape_vec((3, 1), vec![1.1, 2.1, 3.1]).unwrap();
         
         let misfit = MultiMisfit::new(1.0, 0.1, 0.1);
         let value = misfit.compute(&predicted, &observed);

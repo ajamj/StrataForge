@@ -109,6 +109,7 @@ tempfile = "3.9"
 
 # IPC
 shared_memory = "0.12"
+bytemuck = "1.14"
 
 # SEG-Y I/O
 giga-segy-in = "0.5"

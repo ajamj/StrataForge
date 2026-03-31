@@ -26,7 +26,7 @@ fn test_elastic_parameters() {
     // Typical gas sand: Vp=2500, Vs=1200, Rho=2.2
     let vp = 2500.0;
     let vs = 1200.0;
-    let rho = 2.2;
+    let _rho = 2.2;
     
     let vp_vs = VpVsRatio::compute(vp, vs);
     let poisson = PoissonsRatio::from_vp_vs(vp, vs);
@@ -84,7 +84,7 @@ fn test_qi_multi_well_analysis() {
         ("Well-3", 3000.0, 1600.0, 2.4),
     ];
     
-    for (name, vp, vs, rho) in wells {
+    for (name, vp, vs, _rho) in wells {
         let vp_vs = VpVsRatio::compute(vp, vs);
         let poisson = PoissonsRatio::from_vp_vs(vp, vs);
         

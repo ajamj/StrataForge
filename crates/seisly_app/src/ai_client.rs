@@ -1,14 +1,14 @@
 use anyhow::Result;
 use tonic::transport::Channel;
 
-pub mod Seisly {
+pub mod seisly {
     pub mod analysis {
         tonic::include_proto!("Seisly.analysis");
     }
 }
 
-use Seisly::analysis::detection_client::DetectionClient;
-use Seisly::analysis::SliceRequest;
+use seisly::analysis::detection_client::DetectionClient;
+use seisly::analysis::SliceRequest;
 
 // AI Client - reserved for future ML integration
 #[allow(dead_code)]

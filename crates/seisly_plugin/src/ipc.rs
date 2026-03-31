@@ -3,6 +3,7 @@ use std::io::{BufReader, BufRead, Write};
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
 use anyhow::{Result, anyhow};
+use seisly_core::ipc::ShmSegment;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Request {
@@ -70,7 +71,7 @@ impl IpcBridge {
 
     pub fn execute(&self, method: &str, params: serde_json::Value) -> Result<serde_json::Value> {
         self.ensure_worker()?;
-        
+
         let id = {
             let mut id_guard = self.next_id.lock().unwrap();
             let id = *id_guard;
@@ -85,14 +86,44 @@ impl IpcBridge {
         };
 
         let result = self.execute_internal(req);
-        
+
         if result.is_err() {
             // Communication error or worker crash, clear instance to force restart next time
             let mut inner_guard = self.inner.lock().unwrap();
             *inner_guard = None;
         }
-        
+
         result
+    }
+
+    /// Transfers data via Shared Memory for high-performance seismic data transfer.
+    /// 
+    /// This method:
+    /// 1. Creates a SHM segment and writes data to it
+    /// 2. Sends the SHM ID to the worker via JSON-RPC
+    /// 3. Worker reads the data and returns a result
+    /// 4. Returns the worker's result
+    pub fn transfer_shm(&self, data: &[f32], shape: Vec<usize>) -> Result<serde_json::Value> {
+        // Create SHM segment
+        let size = data.len() * std::mem::size_of::<f32>();
+        let mut shm = ShmSegment::create(size)?;
+        let shm_id = shm.id().to_string();
+        
+        // Write data to SHM
+        let data_bytes: &[u8] = bytemuck::cast_slice(data);
+        shm.write_data(data_bytes);
+        
+        // Send SHM ID to worker
+        let params = serde_json::json!({
+            "shm_id": shm_id,
+            "shape": shape,
+            "dtype": "f32"
+        });
+        
+        let result = self.execute("load_shm", params)?;
+        
+        // SHM segment will be cleaned up when dropped
+        Ok(result)
     }
 
     fn execute_internal(&self, req: Request) -> Result<serde_json::Value> {

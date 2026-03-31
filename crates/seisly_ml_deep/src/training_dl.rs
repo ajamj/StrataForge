@@ -36,7 +36,6 @@ pub struct DLBatch {
 pub struct DLTrainer {
     model: HorizonUNet,
     optimizer: AdamW,
-    config: DLTrainingConfig,
     varmap: VarMap,
 }
 
@@ -59,7 +58,6 @@ impl DLTrainer {
         Ok(Self {
             model,
             optimizer,
-            config,
             varmap,
         })
     }
@@ -105,7 +103,7 @@ impl DLTrainer {
         let loss_x = ddx.sqr()?.mean_all()?;
         let loss_y = ddy.sqr()?.mean_all()?;
         
-        (&loss_x + &loss_y)
+        &loss_x + &loss_y
     }
     
     /// Predict horizon from seismic
