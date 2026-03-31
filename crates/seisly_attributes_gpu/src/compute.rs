@@ -74,6 +74,8 @@ impl GpuAttributeComputer {
             layout: Some(&pipeline_layout),
             module: &shader,
             entry_point: "compute_rms",
+            cache: None,
+            compilation_options: Default::default(),
         });
         
         Ok(Self {
