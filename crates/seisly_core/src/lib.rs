@@ -7,6 +7,7 @@
 pub mod crs;
 pub mod domain;
 pub mod types;
+pub mod ipc;
 
 pub use crs::Crs;
 pub use domain::{formation_top, log, surface, trajectory, well};
