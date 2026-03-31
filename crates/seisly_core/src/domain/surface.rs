@@ -30,10 +30,54 @@ impl Mesh {
         }
     }
 
-    /// Compute face normals (placeholder implementation)
+    /// Compute vertex normals by averaging face normals.
     pub fn compute_normals(&mut self) {
-        // TODO: Implement proper normal calculation
-        self.normals = Some(vec![[0.0, 1.0, 0.0]; self.vertices.len()]);
+        let mut normals = vec![[0.0, 0.0, 0.0]; self.vertices.len()];
+
+        // Iterate through each triangle
+        for chunk in self.indices.chunks_exact(3) {
+            let i0 = chunk[0] as usize;
+            let i1 = chunk[1] as usize;
+            let i2 = chunk[2] as usize;
+
+            let v0 = self.vertices[i0];
+            let v1 = self.vertices[i1];
+            let v2 = self.vertices[i2];
+
+            // Edge vectors
+            let e1 = [v1[0] - v0[0], v1[1] - v0[1], v1[2] - v0[2]];
+            let e2 = [v2[0] - v0[0], v2[1] - v0[1], v2[2] - v0[2]];
+
+            // Cross product (e1 x e2)
+            let face_normal = [
+                e1[1] * e2[2] - e1[2] * e2[1],
+                e1[2] * e2[0] - e1[0] * e2[2],
+                e1[0] * e2[1] - e1[1] * e2[0],
+            ];
+
+            // Accumulate face normal into each vertex normal
+            for &idx in chunk {
+                let n = &mut normals[idx as usize];
+                n[0] += face_normal[0];
+                n[1] += face_normal[1];
+                n[2] += face_normal[2];
+            }
+        }
+
+        // Normalize each vertex normal
+        for n in &mut normals {
+            let length = (n[0] * n[0] + n[1] * n[1] + n[2] * n[2]).sqrt();
+            if length > 1e-6 {
+                n[0] /= length;
+                n[1] /= length;
+                n[2] /= length;
+            } else {
+                // Fallback for zero-length normal
+                *n = [0.0, 1.0, 0.0];
+            }
+        }
+
+        self.normals = Some(normals);
     }
 }
 
@@ -97,5 +141,25 @@ mod tests {
         assert_eq!(surface.metadata.name, "Top Reservoir");
         assert_eq!(surface.meshes.len(), 1);
         assert_eq!(surface.intersection_lines.len(), 0);
+    }
+
+    #[test]
+    fn test_compute_normals() {
+        // Triangle in XY plane (pointing up in Z)
+        let vertices = vec![[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]];
+        let indices = vec![0, 1, 2];
+        let mut mesh = Mesh::new(vertices, indices);
+        
+        mesh.compute_normals();
+        
+        let normals = mesh.normals.expect("Normals should be computed");
+        assert_eq!(normals.len(), 3);
+        
+        // Each vertex normal should be [0, 0, 1]
+        for n in normals {
+            assert!(n[0].abs() < 1e-6);
+            assert!(n[1].abs() < 1e-6);
+            assert!((n[2] - 1.0).abs() < 1e-6);
+        }
     }
 }
