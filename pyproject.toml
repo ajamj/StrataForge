@@ -3,9 +3,9 @@ requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "stratforge"
+name = "seisly"
 version = "0.3.0"
-description = "Python bindings for StrataForge seismic interpretation platform"
+description = "Python bindings for Seisly seismic interpretation platform"
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
@@ -20,4 +20,4 @@ classifiers = [
 [tool.maturin]
 features = ["pyo3/extension-module"]
 python-source = "python"
-module-name = "stratforge.stratforge"
+module-name = "seisly.seisly"

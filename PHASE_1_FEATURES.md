@@ -45,7 +45,7 @@ CNN-based horizon auto-tracking with synthetic training data generation and mode
 
 **Quick Start:**
 ```rust
-use sf_ml::{AutoTracker, HorizonCNN, TrackerConfig};
+use seisly_ml::{AutoTracker, HorizonCNN, TrackerConfig};
 
 // Load model
 let model = HorizonCNN::pretrained()?;
@@ -103,8 +103,8 @@ surface.to_xyz("horizon.xyz")?;
 
 **Quick Start:**
 ```rust
-use sf_attributes::amplitude::RmsAmplitude;
-use sf_attributes::frequency::InstantaneousFrequency;
+use seisly_attributes::amplitude::RmsAmplitude;
+use seisly_attributes::frequency::InstantaneousFrequency;
 
 // Amplitude attribute
 let rms = RmsAmplitude.compute(trace, window_size=50)?;
@@ -140,7 +140,7 @@ Plugin System
 
 **Quick Start:**
 ```rust
-use sf_plugins::PluginManager;
+use seisly_plugins::PluginManager;
 
 // Create manager
 let manager = PluginManager::new();
@@ -159,7 +159,7 @@ let result = manager.execute("my_plugin", "command", args)?;
 
 **Python:**
 ```python
-from stratforge import PluginManager
+from seisly import PluginManager
 
 manager = PluginManager()
 manager.load("my_plugin")
@@ -180,25 +180,25 @@ result = manager.execute("my_plugin", "command", {
 ```bash
 # Add to Cargo.toml
 [dependencies]
-sf_ml = "0.3.0"
-sf_attributes = "0.3.0"
-sf_plugins = "0.3.0"
+seisly_ml = "0.3.0"
+seisly_attributes = "0.3.0"
+seisly_plugins = "0.3.0"
 ```
 
 ### Python Installation
 
 ```bash
-pip install stratforge-ml
-pip install stratforge-attributes
-pip install stratforge-plugins
+pip install seisly-ml
+pip install seisly-attributes
+pip install seisly-plugins
 ```
 
 ### Quick Example
 
 ```rust
-use sf_ml::{AutoTracker, HorizonCNN};
-use sf_attributes::amplitude::RmsAmplitude;
-use sf_plugins::PluginManager;
+use seisly_ml::{AutoTracker, HorizonCNN};
+use seisly_attributes::amplitude::RmsAmplitude;
+use seisly_plugins::PluginManager;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Load seismic data
@@ -240,18 +240,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 1. **Update dependencies:**
 ```toml
 [dependencies]
-sf_ml = "0.3.0"
-sf_attributes = "0.3.0"
-sf_plugins = "0.3.0"
+seisly_ml = "0.3.0"
+seisly_attributes = "0.3.0"
+seisly_plugins = "0.3.0"
 ```
 
 2. **Update imports:**
 ```rust
 // Old
-use sf_ml::HorizonTracker;
+use seisly_ml::HorizonTracker;
 
 // New
-use sf_ml::AutoTracker;
+use seisly_ml::AutoTracker;
 ```
 
 3. **Update attribute usage:**
@@ -260,7 +260,7 @@ use sf_ml::AutoTracker;
 let rms = compute_rms(trace, 50);
 
 // New
-use sf_attributes::amplitude::RmsAmplitude;
+use seisly_attributes::amplitude::RmsAmplitude;
 let rms = RmsAmplitude.compute(trace, 50)?;
 ```
 
@@ -296,17 +296,17 @@ let rms = RmsAmplitude.compute(trace, 50)?;
 
 | Crate | Description | Docs |
 |-------|-------------|------|
-| `sf_ml` | Machine learning | [Docs](ml_auto_tracking.md) |
-| `sf_attributes` | Seismic attributes | [Docs](seismic_attributes.md) |
-| `sf_plugins` | Plugin system | [Docs](plugin_development.md) |
+| `seisly_ml` | Machine learning | [Docs](ml_auto_tracking.md) |
+| `seisly_attributes` | Seismic attributes | [Docs](seismic_attributes.md) |
+| `seisly_plugins` | Plugin system | [Docs](plugin_development.md) |
 
 ### Python Packages
 
 | Package | Description | PyPI |
 |---------|-------------|------|
-| `stratforge-ml` | ML auto-tracking | Coming soon |
-| `stratforge-attributes` | Seismic attributes | Coming soon |
-| `stratforge-plugins` | Plugin system | Coming soon |
+| `seisly-ml` | ML auto-tracking | Coming soon |
+| `seisly-attributes` | Seismic attributes | Coming soon |
+| `seisly-plugins` | Plugin system | Coming soon |
 
 ---
 

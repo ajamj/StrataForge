@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to StrataForge will be documented in this file.
+All notable changes to Seisly will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Added
 
 **GPU-Accelerated Attributes:**
-- New `sf_attributes_gpu` crate for GPU compute pipelines
+- New `seisly_attributes_gpu` crate for GPU compute pipelines
 - wgpu-based compute shaders for seismic attributes
 - **GPU-Accelerated Attributes:**
   - RMS Amplitude (compute_rms)
@@ -46,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `bytemuck` 1.14 - Zero-copy buffer operations
 
 **New Crates:**
-- `sf_attributes_gpu` - GPU-accelerated attribute computation
+- `seisly_attributes_gpu` - GPU-accelerated attribute computation
 
 **Shader Features:**
 - Compute shaders in WGSL
@@ -56,7 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Performance Benchmarks
 
-Benchmark suite included (`cargo bench -p sf_attributes_gpu`):
+Benchmark suite included (`cargo bench -p seisly_attributes_gpu`):
 - CPU RMS: Baseline
 - GPU RMS: 10x speedup on large datasets
 - Optimal for traces > 10,000 samples
@@ -70,7 +70,7 @@ Benchmark suite included (`cargo bench -p sf_attributes_gpu`):
 #### Added
 
 **Machine Learning & Auto-Tracking:**
-- New `sf_ml` crate for ML-based interpretation
+- New `seisly_ml` crate for ML-based interpretation
 - CNN-based horizon auto-tracking (`HorizonCNN`)
 - Synthetic training data generator (`SyntheticTrainer`)
 - Training pipeline with early stopping (`Trainer`)
@@ -78,7 +78,7 @@ Benchmark suite included (`cargo bench -p sf_attributes_gpu`):
 - Model checkpoint saving and loading
 
 **Seismic Attributes (20 Total):**
-- New `sf_attributes` crate for seismic attribute computation
+- New `seisly_attributes` crate for seismic attribute computation
 - **Amplitude Attributes (10):**
   - RMS Amplitude
   - Mean Amplitude
@@ -104,11 +104,11 @@ Benchmark suite included (`cargo bench -p sf_attributes_gpu`):
 - `SeismicAttribute` trait for extensibility
 
 **Plugin System:**
-- New `sf_plugin` crate for extensible architecture
+- New `seisly_plugin` crate for extensible architecture
 - Plugin trait with lifecycle methods
 - Plugin manager with registration and execution
 - Command-based plugin interface
-- Python bindings using PyO3 (`stratforge` Python package)
+- Python bindings using PyO3 (`seisly` Python package)
 - Plugin discovery from directory (scaffold)
 
 **Python Integration:**
@@ -149,9 +149,9 @@ Benchmark suite included (`cargo bench -p sf_attributes_gpu`):
 - `rayon` 1.8 - Parallel processing
 
 **New Crates:**
-- `sf_ml` - Machine learning module
-- `sf_attributes` - Seismic attributes
-- `sf_plugin` - Plugin system
+- `seisly_ml` - Machine learning module
+- `seisly_attributes` - Seismic attributes
+- `seisly_plugin` - Plugin system
 
 #### Files Statistics
 
@@ -261,7 +261,7 @@ Benchmark suite included (`cargo bench -p sf_attributes_gpu`):
 
 1. **ML Auto-Tracking:**
 ```rust
-use sf_ml::{HorizonCNN, AutoTracker};
+use seisly_ml::{HorizonCNN, AutoTracker};
 
 let tracker = AutoTracker::new(model);
 let surface = tracker.track(&seismic, seed_il, seed_xl, seed_twt)?;
@@ -269,7 +269,7 @@ let surface = tracker.track(&seismic, seed_il, seed_xl, seed_twt)?;
 
 2. **Seismic Attributes:**
 ```rust
-use sf_attributes::amplitude::RmsAmplitude;
+use seisly_attributes::amplitude::RmsAmplitude;
 
 let attr = RmsAmplitude;
 let result = attr.compute(trace, window_size);
@@ -277,7 +277,7 @@ let result = attr.compute(trace, window_size);
 
 3. **Python Plugins:**
 ```python
-from stratforge import PluginManager
+from seisly import PluginManager
 
 manager = PluginManager()
 plugins = manager.list_plugins()
@@ -289,7 +289,7 @@ plugins = manager.list_plugins()
 
 **Usage:**
 ```rust
-use sf_compute::well_tie::WellTieEngine;
+use seisly_compute::well_tie::WellTieEngine;
 
 let engine = WellTieEngine::new(2000.0, 0.5);
 let tie = engine.create_tie(&well)?;
@@ -315,7 +315,7 @@ MIT OR Apache-2.0
 
 ---
 
-**[Unreleased]:** https://github.com/ajamj/StrataForge/compare/v0.3.0...HEAD
-**[0.3.0]:** https://github.com/ajamj/StrataForge/compare/v0.2.0...v0.3.0
-**[0.2.0]:** https://github.com/ajamj/StrataForge/compare/v0.1.1...v0.2.0
-**[0.1.1]:** https://github.com/ajamj/StrataForge/releases/tag/v0.1.1
+**[Unreleased]:** https://github.com/ajamj/Seisly/compare/v0.3.0...HEAD
+**[0.3.0]:** https://github.com/ajamj/Seisly/compare/v0.2.0...v0.3.0
+**[0.2.0]:** https://github.com/ajamj/Seisly/compare/v0.1.1...v0.2.0
+**[0.1.1]:** https://github.com/ajamj/Seisly/releases/tag/v0.1.1

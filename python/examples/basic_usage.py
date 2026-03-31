@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Basic usage example for StrataForge Python bindings"""
+"""Basic usage example for Seisly Python bindings"""
 
-from stratforge import PluginManager
+from seisly import PluginManager
 
 def main():
-    print("StrataForge Python Example")
+    print("Seisly Python Example")
     print("=" * 40)
     
     # Create plugin manager

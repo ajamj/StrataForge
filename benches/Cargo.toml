@@ -1,15 +1,15 @@
 [package]
-name = "stratforge-benches"
+name = "seisly-benches"
 version = "0.4.0"
 edition = "2021"
 publish = false
 
 [dependencies]
 criterion = "0.5"
-sf_ml = { path = "../crates/sf_ml" }
-sf_attributes = { path = "../crates/sf_attributes" }
-sf_qi = { path = "../crates/sf_qi" }
-sf_4d = { path = "../crates/sf_4d" }
+seisly_ml = { path = "../crates/seisly_ml" }
+seisly_attributes = { path = "../crates/seisly_attributes" }
+seisly_qi = { path = "../crates/seisly_qi" }
+seisly_4d = { path = "../crates/seisly_4d" }
 
 [[bench]]
 name = "phase1_benchmarks"

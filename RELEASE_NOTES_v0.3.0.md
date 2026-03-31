@@ -4,7 +4,7 @@
 
 ---
 
-## 🎉 StrataForge v0.3.0 - Phase 1 Complete!
+## 🎉 Seisly v0.3.0 - Phase 1 Complete!
 
 ### Major Features
 
@@ -33,7 +33,7 @@
 - Plugin manager
 
 #### 🐍 Python Integration
-- Full Python package (`stratforge`)
+- Full Python package (`seisly`)
 - maturin build system
 - Example scripts included
 
@@ -47,7 +47,7 @@
 
 #### Rust (Cargo)
 ```bash
-cargo install --path crates/sf_cli
+cargo install --path crates/seisly_cli
 ```
 
 #### Python (pip - development)
@@ -71,9 +71,10 @@ maturin develop
 ### Contributors
 - @ajamj
 
-**Full Changelog:** https://github.com/ajamj/StrataForge/compare/v0.2.0...v0.3.0
+**Full Changelog:** https://github.com/ajamj/Seisly/compare/v0.2.0...v0.3.0
 
 ---
 
 ## Release URL setelah dibuat:
-https://github.com/ajamj/StrataForge/releases/tag/v0.3.0
+https://github.com/ajamj/Seisly/releases/tag/v0.3.0
+eleases/tag/v0.3.0

@@ -1,4 +1,4 @@
-//! Python Bindings for StrataForge Plugin System
+//! Python Bindings for Seisly Plugin System
 
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
@@ -61,7 +61,7 @@ fn json_to_python(py: Python<'_>, value: &serde_json::Value) -> PyResult<PyObjec
 
 /// Module definition
 #[pymodule]
-pub fn stratforge(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
+pub fn seisly(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<PyPluginManager>()?;
     Ok(())
 }
