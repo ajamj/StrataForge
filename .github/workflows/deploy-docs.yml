@@ -25,6 +25,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@v2
+        with:
+          mdbook-version: 'latest'
+
+      - name: Build User Manual (mdBook)
+        run: |
+          cd docs/user-manual
+          mdbook build
+          cd ../..
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -36,6 +47,11 @@ jobs:
 
       - name: Build with Jekyll
         run: bundle exec jekyll build
+
+      - name: Merge mdBook into Jekyll site
+        run: |
+          mkdir -p _site/user-manual
+          cp -r docs/user-manual/book/* _site/user-manual/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

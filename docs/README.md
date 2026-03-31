@@ -1,38 +1,27 @@
-# Seisly Documentation
+---
+layout: default
+title: Core Features
+nav_order: 3
+has_children: true
+description: "Detailed overview of Seisly's interpretation and analysis capabilities."
+---
 
-Welcome to the Seisly documentation. Seisly is a modern, open-source seismic interpretation platform built in Rust.
+# Seisly Core Features
 
-## Getting Started
+Welcome to the Seisly feature documentation. Seisly provides a comprehensive suite of tools for subsurface interpretation.
 
-- [Quick Start Guide](getting-started/quickstart.md) - Get up and running in 5 minutes
+## Interpretation Tools
 
-## Features
+- [**ML Auto Tracking**]({% link docs/features/ml-auto-tracking.md %}) - CNN-based horizon tracking.
+- [**Well-Seismic Tie**]({% link docs/features/well-seismic-tie.md %}) - Well log and seismic correlation.
+- [**Fault Modeling**]({% link docs/roadmap/blueprint.md %}) - Interactive fault sketching.
 
-- [4D Monitoring](features/4d-monitoring.md) - Time-lapse seismic and CCUS monitoring
-- [ML Auto Tracking](features/ml-auto-tracking.md) - Machine learning-based horizon tracking
-- [Quantitative Interpretation](features/quantitative-interpretation.md) - AVO analysis and FWI
-- [Seismic Attributes](features/seismic-attributes.md) - Attribute computation and analysis
-- [Well-Seismic Tie](features/well-seismic-tie.md) - Well log and seismic correlation
+## Advanced Analysis
 
-## Technical Documentation
-
-- [Architecture](architecture.md) - System architecture and crate structure
-- [GPU Acceleration](technical/gpu-acceleration.md) - GPU-accelerated computations
-- [Project Format](technical/project-format.md) - Seisly project file structure
-
-## Development
-
-- [Plugin Development](development/plugin-development.md) - Creating plugins for Seisly
-
-## Design
-
-- [UI Redesign Specification](design/ui-redesign-spec.md) - UI/UX design specifications
-
-## Roadmap
-
-- [Blueprint](roadmap/blueprint.md) - Strategic roadmap 2026-2028
-- [Roadmap](roadmap/roadmap.md) - Development milestones
+- [**Quantitative Interpretation**]({% link docs/features/quantitative-interpretation.md %}) - AVO analysis and FWI.
+- [**4D Monitoring**]({% link docs/features/4d-monitoring.md %}) - Time-lapse seismic and CCUS monitoring.
+- [**Seismic Attributes**]({% link docs/features/seismic-attributes.md %}) - Attribute computation and analysis.
 
 ---
 
-**Note:** This project was formerly known as Seisly. Documentation may contain historical references to the previous name.
+**Note:** Seisly was formerly known as *StrataForge*. Documentation may still be undergoing rebranding.

@@ -1,16 +1,40 @@
-# Jekyll Configuration for Seisly
+# Seisly Documentation Configuration
 title: Seisly
-tagline: Rust-Powered Seismic Studio
-description: The fastest, most accessible seismic interpretation platform
+tagline: The Professional Rust-Powered Seismic Studio
+description: Extreme performance seismic interpretation and modeling platform.
 
-# Base URL for GitHub Pages
-baseurl: ""
-url: "https://ajamj.github.io/seisly"
+# GitHub Pages Settings
+url: "https://ajamj.github.io"
+baseurl: "/seisly" # Crucial: Fixes broken links and CSS paths
+repository: ajamj/seisly
 
-# Theme - Minima (default, most stable)
-theme: minima
+# Theme Settings
+theme: just-the-docs
+
+# Color Scheme & UI
+color_scheme: dark
+aux_links:
+  "GitHub Repository":
+    - "https://github.com/ajamj/seisly"
+
+# Nav Settings
+nav_sort: case_insensitive
 
 # Build settings
 markdown: kramdown
 highlighter: rouge
 permalink: pretty
+
+# Exclude internal planning and temporary files
+exclude:
+  - .planning/
+  - .superpowers/
+  - target/
+  - crates/
+  - python/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
+  - .git/
+  - .github/
