@@ -10,23 +10,32 @@
 | v05-phase-b | Velocity & Depth Modeling | ✅ Complete | 2026-03-28 | 2026-03-28 |
 | v06 | Advanced Features (ML, Wells) | ✅ Complete | 2026-03-30 | 2026-03-31 |
 | v1.0 | Production Release | ✅ Complete | 2026-03-31 | 2026-03-31 |
+| v1.1 | Architectural Hardening | 🔄 In Progress | 2026-04-01 | [To be planned] |
 
-## Current Phase: RELEASED
+## Current Phase: v1.1-hardening
 
-**Goal:** Post-launch monitoring and v1.1 planning.
+**Goal:** Address critical architectural gaps from v1.0 reviews.
 
-**Requirements:** R8.1, R8.2, R8.3, SEC-01, UI-01, ERR-01
+**Requirements:** HARD-01, HARD-02, HARD-03, HARD-04, HARD-05
 
-**Plans:** 5 plans
-- [x] v1.0-01-PLAN.md — Branding, Docs & Quality Audit ✅ (2026-03-31)
-- [x] v1.0-02-PLAN.md — Performance & Robustness ✅ (2026-03-31)
-- [x] v1.0-03-PLAN.md — Secure Plugin Architecture ✅ (2026-03-31)
-- [x] v1.0-04-PLAN.md — Professional UI/UX ✅ (2026-03-31)
-- [x] v1.0-05-PLAN.md — Distribution & Release ✅ (2026-03-31)
+**Plans:** 6 plans
+- [ ] v1.1-01-PLAN.md — Shared Memory IPC Foundation
+- [ ] v1.1-02-PLAN.md — IPC Migration & Handshake
+- [ ] v1.1-03-PLAN.md — Worker Resource Hardening
+- [ ] v1.1-04-PLAN.md — Data Safety (SIGBUS Protection)
+- [ ] v1.1-05-PLAN.md — Interpretive Integrity (Undo/Redo)
+- [ ] v1.1-06-PLAN.md — Visual Hardening (Smooth Normals)
 
 ---
 
 ## Completed Phases
+
+**v1.0-production-release** - ✅ Complete
+- Branding, Docs & Quality Audit.
+- Performance & Robustness improvements.
+- Secure Plugin Architecture (isolated Python workers).
+- Professional UI/UX with docking support.
+- Distribution via `cargo-dist`.
 
 **v06-advanced-features** - ✅ Complete
 - Integrated Plugin Manager UI.
@@ -44,6 +53,8 @@
 
 ## Key Decisions Log
 
+- **2026-04-01:** Implement Shared Memory IPC for large seismic arrays (v1.1-01).
+- **2026-04-01:** Adopt `memmap2` SIGBUS protection (v1.1-03).
 - **2026-03-31:** Switch to process-isolated Python worker model for plugin security (v1.0-03).
 - **2026-03-31:** Adopt `cargo-dist` for multi-platform distribution (v1.0-05).
 - **2026-03-28:** Project-per-database architecture (no multi-project single-db)
