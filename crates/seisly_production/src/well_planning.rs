@@ -1,7 +1,7 @@
 //! Well Planning Tools
 
-use seisly_core::domain::well::Well;
 use seisly_core::domain::trajectory::Trajectory;
+use seisly_core::types::EntityId;
 
 /// Well Planner - design well trajectories
 pub struct WellPlanner {
@@ -23,28 +23,24 @@ impl WellPlanner {
     }
     
     /// Design well trajectory
-    pub fn design_trajectory(&self, well_name: &str) -> Result<Trajectory, String> {
+    pub fn design_trajectory(&self, _well_name: &str) -> Result<Trajectory, String> {
         if self.target_locations.is_empty() {
             return Err("No targets defined".to_string());
         }
         
         // Simple straight-line trajectory (simplified)
-        // In production: implement proper well planning with:
-        // - Kick-off point
-        // - Build rate
-        // - Hold section
-        // - Drop section
-        // - Dogleg severity checks
+        // In production: implement proper well planning
         
-        let mut trajectory = Trajectory::new(well_name.to_string());
+        let well_id = EntityId::new_v4();
+        let mut trajectory = Trajectory::new(well_id);
         
         // Surface location
-        trajectory.add_point(0.0, self.surface_location.0, self.surface_location.1, 0.0);
+        trajectory.add_station(0.0, self.surface_location.0, self.surface_location.1, 0.0);
         
         // Target points
         for (i, (easting, northing, tvd)) in self.target_locations.iter().enumerate() {
             let md = self.calculate_measured_depth(i, *tvd);
-            trajectory.add_point(md, *easting, *northing, *tvd);
+            trajectory.add_station(md, *easting, *northing, *tvd);
         }
         
         Ok(trajectory)
@@ -88,7 +84,7 @@ pub struct WellboreStability;
 
 impl WellboreStability {
     /// Analyze wellbore stability
-    pub fn analyze(trajectory: &Trajectory, formation_pressures: &[f64]) -> StabilityReport {
+    pub fn analyze(_trajectory: &Trajectory, _formation_pressures: &[f64]) -> StabilityReport {
         // In production: implement proper wellbore stability analysis
         StabilityReport {
             stable: true,
@@ -132,7 +128,7 @@ mod tests {
         assert!(trajectory.is_ok());
         
         let traj = trajectory.unwrap();
-        assert!(traj.points().len() >= 2); // Surface + target
+        assert!(traj.stations.len() >= 2); // Surface + target
     }
 
     #[test]

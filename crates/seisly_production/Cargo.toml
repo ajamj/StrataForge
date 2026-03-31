@@ -2,12 +2,13 @@
 name = "seisly_production"
 version.workspace = true
 edition.workspace = true
-description = "Production Tools for StrataForge - Well Planning, CCUS Monitoring"
+description = "Production Tools for Seisly - Well Planning, CCUS Monitoring"
 
 [dependencies]
 seisly_core.workspace = true
 seisly_compute.workspace = true
 seisly_io.workspace = true
 seisly_qi.workspace = true
+seisly_4d.workspace = true
 nalgebra.workspace = true
-ndarray = "0.15"
+ndarray.workspace = true

@@ -45,7 +45,7 @@ impl ReservoirSurveillance {
         let mut total_water = 0.0;
         
         for timeline in &self.production_data {
-            let (oil, gas, water) = timeline.cumulative();
+            let (oil, gas, water): (f32, f32, f32) = timeline.cumulative();
             total_oil += oil;
             total_gas += gas;
             total_water += water;
@@ -90,8 +90,9 @@ impl ReservoirSurveillance {
             // Find location of maximum change
             let diff = analysis.difference();
             for (idx, &val) in diff.iter().enumerate() {
-                if val.abs() > max_change {
-                    max_change = val.abs();
+                let abs_val: f32 = val.abs();
+                if abs_val > max_change {
+                    max_change = abs_val;
                     max_location = Some(idx);
                 }
             }
