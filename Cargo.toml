@@ -24,9 +24,10 @@ members = [
 ]
 
 [workspace.package]
-version = "0.3.0"
+version = "1.0.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
+authors = ["Seisly Team <team@seisly.io>"]
 repository = "https://github.com/ajamj/seisly"
 
 [workspace.dependencies]
@@ -119,3 +120,8 @@ half = "=2.4.0"
 # Python integration
 pyo3 = { version = "0.22.6", features = ["extension-module", "serde"] }
 numpy = "0.22.1"
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
