@@ -8,4 +8,4 @@ seisly_core.workspace = true
 seisly_compute.workspace = true
 wgpu.workspace = true
 nalgebra.workspace = true
-bytemuck = "1.14"
+bytemuck = { version = "1.14", features = ["derive"] }

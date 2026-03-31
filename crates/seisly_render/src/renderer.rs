@@ -40,7 +40,22 @@ impl Renderer {
             vertex: VertexState {
                 module: &shader,
                 entry_point: "vs_main",
-                buffers: &[],
+                buffers: &[wgpu::VertexBufferLayout {
+                    array_stride: 24, // 6 * 4 bytes (position + normal)
+                    step_mode: wgpu::VertexStepMode::Vertex,
+                    attributes: &[
+                        wgpu::VertexAttribute {
+                            offset: 0,
+                            shader_location: 0,
+                            format: wgpu::VertexFormat::Float32x3,
+                        },
+                        wgpu::VertexAttribute {
+                            offset: 12,
+                            shader_location: 1,
+                            format: wgpu::VertexFormat::Float32x3,
+                        },
+                    ],
+                }],
                 compilation_options: Default::default(),
             },
             fragment: Some(FragmentState {

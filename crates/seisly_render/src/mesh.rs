@@ -31,12 +31,34 @@ impl MeshRenderer {
             ]
         };
 
-        // Create vertex buffer
-        let vertex_data: Vec<f32> = mesh
-            .vertices
-            .iter()
-            .flat_map(|v| v.iter().copied())
-            .collect();
+        // Create vertex buffer with position and normal
+        // Format: [x, y, z, nx, ny, nz] per vertex
+        let mut vertex_data = Vec::with_capacity(mesh.vertices.len() * 6);
+        let normals = mesh.normals.as_ref();
+
+        for (i, v) in mesh.vertices.iter().enumerate() {
+            vertex_data.push(v[0]);
+            vertex_data.push(v[1]);
+            vertex_data.push(v[2]);
+
+            if let Some(normals) = normals {
+                if i < normals.len() {
+                    vertex_data.push(normals[i][0]);
+                    vertex_data.push(normals[i][1]);
+                    vertex_data.push(normals[i][2]);
+                } else {
+                    // Default normal (0, 0, 1)
+                    vertex_data.push(0.0);
+                    vertex_data.push(0.0);
+                    vertex_data.push(1.0);
+                }
+            } else {
+                // Default normal (0, 0, 1)
+                vertex_data.push(0.0);
+                vertex_data.push(0.0);
+                vertex_data.push(1.0);
+            }
+        }
 
         let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("Mesh Vertex Buffer"),
