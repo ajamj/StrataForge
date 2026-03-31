@@ -1,344 +1,111 @@
 # Seisly
 
-**Rust-Powered Seismic Studio**
+**The Professional open-source seismic interpretation platform, powered by Rust.**
 
 [![CI/CD](https://github.com/ajamj/seisly/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/ajamj/seisly/actions/workflows/ci-cd.yml)
+[![Latest Release](https://img.shields.io/github/v/release/ajamj/seisly)](https://github.com/ajamj/seisly/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Rust Version](https://img.shields.io/badge/rust-1.70+-orange.svg)](https://www.rust-lang.org)
-[![Documentation](https://img.shields.io/badge/docs-latest-blue)](https://ajamj.github.io/seisly)
+[![Rust Version](https://img.shields.io/badge/rust-1.75+-orange.svg)](https://www.rust-lang.org)
 
-**Seisly** (pronounced: /ˈsaɪzli/) is a modern, open-source seismic interpretation platform built in Rust.
-
-> **🎯 Vision:** The fastest, most accessible seismic studio - from exploration to production.
+**Seisly** (pronounced: /ˈsaɪzli/) is a modern subsurface interpretation workstation built for extreme performance, security, and extensibility.
 
 ---
 
-## ⚡ Quick Stats
+## 🚀 Version 1.0.0 is Here!
 
-| Metric | Seisly | Petrel | OpendTect |
-|--------|--------|--------|-----------|
-| **Startup** | <2s | 30-60s | 10-20s |
-| **Size** | <100MB | ~5GB | ~2GB |
-| **License** | MIT (Free) | $10k+/yr | Open-core |
-| **Engine** | Rust + GPU | .NET | C++ |
+Seisly has reached its production-grade milestone. 
 
-- **Version:** v0.5.0 (Latest)
-- **Platform:** Windows, Linux, macOS
-- **Language:** Rust
+### Key Highlights:
+- 🏢 **Professional Workstation UI**: Multi-tab, dockable panel architecture with persistent layouts.
+- 🛡️ **Secure AI Plugins**: Process-isolated Python worker model for safe, extensible deep learning.
+- ⚡ **Out-of-Core Performance**: LRU brick caching allows handling massive seismic volumes beyond your RAM capacity.
+- 🎨 **Modern Design System**: High-fidelity dark/light themes with a consistent 8px grid.
+- 📈 **Full Interpretation Suite**: Horizon auto-tracking, RBF fault modeling, and well-seismic tie.
 
-## 📚 Documentation
-
-- **[📖 Main Documentation](https://ajamj.github.io/seisly)** - Complete guides and tutorials
-- **[📊 API Reference](https://ajamj.github.io/seisly/docs/api/)** - Auto-generated API docs
-- **[🚀 Quick Start](docs/getting-started/quickstart.md)** - Get started in 5 minutes
-- **[📋 Blueprint](docs/roadmap/blueprint.md)** - Strategic roadmap 2026-2028
-
-## ✨ Features
-
-### Core Features (v0.5.0)
-- ✅ **Seismic Visualization** - 3D volume rendering with inline/crossline slicing
-- ✅ **Horizon Interpretation** - Manual picking, auto-tracking, seed picking
-- ✅ **Fault Modeling** - Interactive sketch mode, RBF surface modeling
-- ✅ **Velocity Modeling** - Linear velocity model (V0 + kZ)
-- ✅ **Time-Depth Conversion** - Real-time depth domain visualization
-- ✅ **Synthetic Data Generation** - Generate test data for training/demo **(GUI)** 🎉
-- ✅ **Well Data Support** - LAS 2.0/3.0 import, well-seismic tie
-- ✅ **Formation Tops** - Stratigraphic marker management
-- ✅ **Full SEG-Y Support** - Reader/writer with textual/binary headers
-- ✅ **Modern UI** - Light/Dark themes, native menu bar, settings panel ⚙️ 🎉
-
-### Advanced Features
-- ✅ **Machine Learning** - U-Net based auto-tracking, CNN fault detection 🤖
-- ✅ **GPU Acceleration** - wgpu-based rendering, 10x speedup for attributes ⚡
-- ✅ **Seismic Attributes** - 20 attributes (amplitude + frequency) 📊
-- ✅ **Quantitative Interpretation** - AVO analysis, FWI, elastic parameters 🔬
-- ✅ **4D Monitoring** - Time-lapse seismic, CCUS monitoring 🌊
-- ✅ **Plugin System** - Rust + Python plugins 🔌
-- ✅ **Production Tools** - Well planning, reservoir surveillance 🛢️
+---
 
 ## 📦 Installation
 
-### Prerequisites
+### Download Installers
+Pre-built binaries for all major platforms are available on the **[Releases Page](https://github.com/ajamj/seisly/releases/latest)**.
 
-**Rust:** Install from https://rustup.rs
-
-**System Dependencies:**
-
-**Ubuntu/Debian:**
-```bash
-sudo apt-get update
-sudo apt-get install -y \
-  libxcb-render0-dev \
-  libxcb-shape0-dev \
-  libxcb-xfixes0-dev \
-  libxkbcommon-dev \
-  libssl-dev \
-  pkg-config \
-  libgtk-3-dev \
-  libfontconfig1-dev \
-  protobuf-compiler
-```
-
-**Windows:**
-```powershell
-# Install via Chocolatey
-choco install protoc sqlite
-```
-
-**macOS:**
-```bash
-brew install openssl pkg-config
-```
+- **Windows:** Download the `.msi` installer.
+- **macOS:** Download the `.pkg` installer.
+- **Linux:** Download the `.deb` or `.tar.gz` package.
 
 ### Build from Source
+If you prefer building from source, ensure you have the [Rust stable toolchain](https://rustup.rs) installed.
 
 ```bash
-# Clone repository
+# Clone and build
 git clone https://github.com/ajamj/seisly.git
 cd seisly
+cargo build --release --features python
 
-# Build release version
-cargo build --release
-
-# Run application
-cargo run --release --bin seisly-app
+# Launch the desktop workstation
+cargo run --release --bin seisly-app --features python
 ```
-
-## 🎯 Quick Start
-
-### 1. Launch Application
-
-```bash
-cargo run --release --bin seisly-app
-```
-
-### 2. Generate Synthetic Data (Optional)
-
-For testing without real data:
-
-```rust
-use seisly_compute::synthetic::*;
-
-// Generate synthetic seismic
-let seismic = SyntheticSeismic::new(500, 500, 512);
-let data = seismic.generate();
-
-// Generate synthetic well logs
-let well = SyntheticWellLog::new("Demo Well", 500000.0, 1000000.0, 50.0, 3000.0);
-let (_depths, gr) = well.generate_gr();
-```
-
-### 3. Interpret Horizons
-
-1. Select picking mode: **Seed** | **Manual** | **Auto**
-2. Click on seismic volume to add picks
-3. Horizon mesh auto-generates
-
-### 4. Sketch Faults
-
-1. Select **Sketch Fault** mode
-2. Click-drag to draw fault stick
-3. Fault surface auto-models with RBF
-
-### 5. Velocity & Depth
-
-1. Set velocity model parameters (V0, k)
-2. Toggle **Depth Mode**
-3. View data in depth domain
-
-## 📚 Documentation
-
-- **[Quick Start Guide](docs/getting-started/quickstart.md)** - User tutorial
-- **[GitHub Setup](GITHUB_SETUP.md)** - Repository setup
-- **[Development Kickoff](DEVELOPMENT_KICKOFF.md)** - Sprint planning
-- **[Production Readiness](PRODUCTION_READINESS.md)** - Feature status
-
-## 🏗️ Architecture
-
-```
-Seisly
-├── seisly_core      - Domain models, types
-├── seisly_io        - File I/O (SEG-Y, LAS, CSV)
-├── seisly_compute   - Algorithms (RBF, tracking, volumetrics)
-├── seisly_storage   - SQLite, blob storage
-├── seisly_render    - 3D rendering (wgpu)
-├── seisly_app       - Desktop application (eframe/egui)
-├── seisly_cli       - Command-line tools
-├── seisly_ml        - Machine learning (auto-tracking)
-├── seisly_plugin    - Plugin system
-├── seisly_attributes - Seismic attribute computation (CPU)
-└── seisly_attributes_gpu - GPU-accelerated attributes (wgpu)
-```
-
-## 🧪 Testing
-
-```bash
-# Run all tests
-cargo test --workspace
-
-# Run with coverage
-cargo tarpaulin --workspace --out Html
-
-# Check code quality
-cargo clippy --workspace --all-targets
-```
-
-## 🤝 Contributing
-
-We welcome contributions! See our [Development Guide](DEVELOPMENT_KICKOFF.md) for:
-- Development workflow
-- Sprint planning
-- Issue tracking
-- Code style guidelines
-
-## 📋 Roadmap
-
-### v0.1.1 (Current) - Beta Release ✅
-- Core interpretation features
-- Synthetic data generation
-- CI/CD pipeline
-- Cross-platform builds
-
-### v0.2.0 - Well Integration
-- LAS 2.0/3.0 import/export
-- Well log visualization
-- Well-seismic tie
-- Formation tops mapping
-
-### v0.3.0 - Advanced Features
-- Auto-tracking enhancement
-- Multi-volume blending
-- Surface clipping
-- Volumetrics export
-
-### v1.0.0 - Production Release
-- Complete well workflow
-- Performance optimization
-- User documentation
-- Plugin architecture
-
-## 📞 Support
-
-- **Issues:** https://github.com/ajamj/seisly/issues
-- **Discussions:** https://github.com/ajamj/seisly/discussions
-- **Actions:** https://github.com/ajamj/seisly/actions
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-**Built with ❤️ using Rust**
+## ✨ Features
 
-## Quick Start
+- **Seismic Visualization**: High-performance 3D volume rendering and multi-slice viewing.
+- **Horizon Interpretation**: Manual picking, BFS-based auto-tracking, and seed point expansion.
+- **Fault Modeling**: Interactive sketch mode with real-time RBF surface generation.
+- **Well Integration**: Full support for LAS 2.0/3.0, formation tops, and time-depth conversion.
+- **Advanced Attributes**: 20+ CPU and GPU-accelerated seismic attributes (RMS, Frequency, Phase, etc.).
+- **Python Extensibility**: Develop your own deep learning models using PyTorch/TensorFlow and run them as isolated Seisly plugins.
 
-### Prerequisites
+---
 
-- Rust stable toolchain
-- PROJ library (`libproj-dev` on Ubuntu, `proj` on macOS via Homebrew)
+## 🏗️ Architecture
 
-On Ubuntu:
-```bash
-sudo apt-get install libproj-dev proj-bin
-```
+Seisly is organized into specialized crates for maximum modularity:
 
-On macOS:
-```bash
-brew install proj
-```
+| Crate | Purpose |
+|-------|---------|
+| `seisly_app` | Main Desktop Workstation (egui + wgpu) |
+| `seisly_core` | Core domain models and shared types |
+| `seisly_io` | High-performance SEG-Y, LAS, and CSV I/O |
+| `seisly_compute` | Interpretation algorithms and math kernels |
+| `seisly_render` | Low-level WGPU 3D rendering engine |
+| `seisly_plugin` | Secure Python/Rust plugin manager |
+| `seisly_py_worker` | Isolated process for Python AI execution |
 
-### Installation
+---
 
-```bash
-cargo install --path crates/seisly_cli
-```
+## 📚 Documentation
 
-### Create a project
+- **[📖 User Manual](docs/user-manual/SUMMARY.md)** - Comprehensive guide for geoscientists.
+- **[📊 API Reference](https://ajamj.github.io/seisly/docs/api/)** - Rust and Python developer docs.
+- **[🚀 Quick Start](docs/getting-started/quickstart.md)** - Get productive in 5 minutes.
 
-```bash
-sf init --name "MyField" --crs 32648
-```
+---
 
-### Import data
+## 🧪 Testing & Quality
 
-```bash
-# Import well logs
-seisly import --project MyField.sf las --well "Well-1" well1.las
-
-# Import trajectory
-seisly import --project MyField.sf trajectory --well "Well-1" traj.csv
-
-# Import surface
-seisly import --project MyField.sf surface --name "Top1" surface.xyz
-```
-
-### List project contents
+Seisly maintains high standards for production readiness:
 
 ```bash
-seisly list --project MyField.sf
+# Run all tests (requires Python environment for plugin tests)
+cargo test --workspace --features python
+
+# Run benchmarks
+cargo bench --workspace
 ```
 
-## Architecture
+---
 
-See [docs/architecture.md](docs/architecture.md) for detailed architecture overview.
+## 🤝 Contributing
 
-## Project Structure
+We welcome contributions from geoscientists and engineers alike. Please see our **[Contributing Guidelines](CONTRIBUTING.md)** to get started.
 
-A Seisly project is a folder with this structure:
+## 📄 License
 
-```
-MyField.sf/
-  project.yaml          # Project manifest
-  metadata.sqlite       # SQLite database (created on first write)
-  blobs/                # Content-addressed blob store
-  cache/                # Derived data cache
-  workflows/            # Workflow run records
-  logs/                 # Application logs
-```
+Seisly is licensed under either of:
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE))
+- MIT license ([LICENSE-MIT](LICENSE-MIT))
 
-## Roadmap
-
-See [docs/roadmap/roadmap.md](docs/roadmap/roadmap.md) for development milestones.
-
-### v0.1 - Current
-- Offline wells + surfaces
-- Basic CLI commands
-
-### v0.2 - Planned
-- SEG-Y seismic import
-- Seismic slice viewer
-- Horizon picking tools
-
-### v0.3 - Planned
-- Server mode with REST API
-- Remote backend for collaboration
-
-## Development
-
-### Build
-
-```bash
-cargo build --workspace
-```
-
-### Test
-
-```bash
-cargo test --workspace
-```
-
-### Lint
-
-```bash
-cargo clippy --workspace -- -D warnings
-cargo fmt --workspace --check
-```
-
-## License
-
-MIT OR Apache-2.0
-
-## Contributing
-
-Contributions welcome! Please read our contributing guidelines before submitting PRs.
+---
+**Built with ❤️ for the Geoscience Community.**
