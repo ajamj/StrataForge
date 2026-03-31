@@ -5196,6 +5196,7 @@ name = "seisly_core"
 version = "1.0.0"
 dependencies = [
  "chrono",
+ "memmap2",
  "serde",
  "serde_json",
  "shared_memory",

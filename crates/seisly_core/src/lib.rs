@@ -6,10 +6,12 @@
 
 pub mod crs;
 pub mod domain;
+pub mod io;
 pub mod types;
 pub mod ipc;
 
 pub use crs::Crs;
 pub use domain::{formation_top, log, surface, trajectory, well};
 pub use domain::{FormationTop, Log, Surface, Trajectory, Well};
+pub use io::{SafeMmap, SafeMmapArc, SafeMmapExt};
 pub use types::{DatasetMetadata, EntityId, Provenance};

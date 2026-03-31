@@ -1,11 +1,11 @@
 use anyhow::Result;
-use memmap2::Mmap;
+use seisly_core::io::SafeMmap;
 use std::collections::HashMap;
 use std::fs::File;
 use std::path::Path;
 
 pub struct MmappedSegy {
-    mmap: Mmap,
+    mmap: SafeMmap,
     pub sample_count: usize,
     pub sample_interval: f32,
     pub format: u16,
@@ -19,16 +19,16 @@ pub struct MmappedSegy {
 impl MmappedSegy {
     pub fn new(path: &Path) -> Result<Self> {
         let file = File::open(path)?;
-        let mmap = unsafe { Mmap::map(&file)? };
+        let mmap = SafeMmap::map(&file)?;
 
         if mmap.len() < 3600 {
             anyhow::bail!("File too small to be a SEG-Y file");
         }
 
         // Binary header parsing (Big-Endian)
-        let sample_interval = u16::from_be_bytes([mmap[3216], mmap[3217]]) as f32;
-        let sample_count = u16::from_be_bytes([mmap[3220], mmap[3221]]) as usize;
-        let format = u16::from_be_bytes([mmap[3224], mmap[3225]]);
+        let sample_interval = mmap.get_u16_be(3216).ok_or_else(|| anyhow::anyhow!("Failed to read sample interval"))? as f32;
+        let sample_count = mmap.get_u16_be(3220).ok_or_else(|| anyhow::anyhow!("Failed to read sample count"))? as usize;
+        let format = mmap.get_u16_be(3224).ok_or_else(|| anyhow::anyhow!("Failed to read format"))?;
 
         if sample_count == 0 {
             anyhow::bail!("Sample count is zero in binary header");
@@ -48,18 +48,8 @@ impl MmappedSegy {
             let offset = 3600 + (i * trace_size);
 
             // Standard SEG-Y Inline/Crossline locations: 189 and 193 (0-based: 188 and 192)
-            let iline = i32::from_be_bytes([
-                mmap[offset + 188],
-                mmap[offset + 189],
-                mmap[offset + 190],
-                mmap[offset + 191],
-            ]);
-            let xline = i32::from_be_bytes([
-                mmap[offset + 192],
-                mmap[offset + 193],
-                mmap[offset + 194],
-                mmap[offset + 195],
-            ]);
+            let iline = mmap.get_i32_be(offset + 188).ok_or_else(|| anyhow::anyhow!("Failed to read inline at trace {}", i))?;
+            let xline = mmap.get_i32_be(offset + 192).ok_or_else(|| anyhow::anyhow!("Failed to read crossline at trace {}", i))?;
 
             index.insert((iline, xline), i);
 
@@ -92,18 +82,13 @@ impl MmappedSegy {
         let mut data = Vec::with_capacity(self.sample_count);
         for i in 0..self.sample_count {
             let start = data_offset + (i * 4);
-            let bytes = [
-                self.mmap[start],
-                self.mmap[start + 1],
-                self.mmap[start + 2],
-                self.mmap[start + 3],
-            ];
 
             let val = if self.format == 5 {
-                f32::from_be_bytes(bytes)
+                self.mmap.get_f32_be(start)?
             } else if self.format == 1 {
                 // IBM Float placeholder - common in legacy SEG-Y
-                ibm_to_ieee_f32(u32::from_be_bytes(bytes))
+                let bytes = self.mmap.get_u32_be(start)?;
+                ibm_to_ieee_f32(bytes)
             } else {
                 0.0
             };
