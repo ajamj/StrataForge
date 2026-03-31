@@ -1,6 +1,6 @@
 //! Elastic FWI Implementation (Vp + Vs inversion)
 
-use ndarray::Array2;
+use ndarray::{Array2, s};
 use crate::acoustic::{AcousticWaveSolver, Source};
 
 /// Elastic Wave Solver (simplified)
@@ -23,13 +23,14 @@ impl ElasticWaveSolver {
         // Simplified: return P-wave and S-wave components
         // In production: implement full elastic wave equation
         let acoustic = AcousticWaveSolver::new(self.vp.clone(), self.dt, self.dx, self.dz);
-        let p_wave = acoustic.forward(source, nt);
+        let wavefield = acoustic.forward(source, nt);
         
-        // S-wave (simplified)
-        let s_wave = p_wave.clone() * 0.5;
+        // Return a slice of the wavefield at surface (z=0) over time
+        // nz is axis 1, nx is axis 2
+        let p_wave = wavefield.slice(s![.., 0, ..]).to_owned();
+        let s_wave = &p_wave * 0.5;
         
-        (p_wave[[0, 0, 0]].into_shape((1, 1)).unwrap(), 
-         s_wave[[0, 0, 0]].into_shape((1, 1)).unwrap())
+        (p_wave, s_wave)
     }
 }
 
@@ -60,20 +61,20 @@ impl ElasticFWI {
     }
     
     /// Compute elastic misfit
-    pub fn misfit(&self, source: &Source, nt: usize) -> f32 {
+    pub fn misfit(&self, _source: &Source, _nt: usize) -> f32 {
         // TODO: Implement full elastic misfit
         0.0
     }
     
     /// Compute gradient for Vp and Vs
-    pub fn gradient(&self, source: &Source, nt: usize) -> (Array2<f32>, Array2<f32>) {
+    pub fn gradient(&self, _source: &Source, _nt: usize) -> (Array2<f32>, Array2<f32>) {
         // TODO: Implement elastic gradient
         (Array2::zeros(self.solver.vp.dim()), 
          Array2::zeros(self.solver.vs.dim()))
     }
     
     /// Update velocity models
-    pub fn update(&mut self, grad_vp: &Array2<f32>, grad_vs: &Array2<f32>, lr: f32) {
+    pub fn update(&mut self, _grad_vp: &Array2<f32>, _grad_vs: &Array2<f32>, _lr: f32) {
         // TODO: Implement velocity update
     }
 }
@@ -91,5 +92,18 @@ mod tests {
         
         let solver = ElasticWaveSolver::new(vp, vs, rho, 0.001, 10.0, 10.0);
         assert_eq!(solver.vp.nrows(), 100);
+    }
+    
+    #[test]
+    fn test_elastic_forward() {
+        let vp = Array2::from_elem((50, 50), 3000.0);
+        let vs = Array2::from_elem((50, 50), 1500.0);
+        let rho = Array2::from_elem((50, 50), 2.5);
+        let solver = ElasticWaveSolver::new(vp, vs, rho, 0.001, 10.0, 10.0);
+        let source = Source::new(25, 25, 25.0);
+        
+        let (p, s) = solver.forward(&source, 100);
+        assert_eq!(p.dim(), (100, 50));
+        assert_eq!(s.dim(), (100, 50));
     }
 }

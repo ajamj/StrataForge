@@ -1,6 +1,6 @@
 //! Acoustic FWI Implementation
 
-use ndarray::{Array2, Array3};
+use ndarray::{Array2, Array3, s};
 use rayon::prelude::*;
 
 /// Acoustic Wave Equation Solver
@@ -55,7 +55,7 @@ impl AcousticWaveSolver {
             // Absorbing boundary conditions (simple sponge)
             self.apply_absorbing_boundary(&mut u_next);
             
-            wavefield.slice_mut(t..).assign(&u_next);
+            wavefield.slice_mut(s![t, .., ..]).assign(&u_next);
             u_prev = u_curr;
             u_curr = u_next;
         }
