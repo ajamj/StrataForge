@@ -86,12 +86,12 @@ fn handle_request(req: Request) -> Response {
                 
                 // Prepare arguments
                 let py_args = PyDict::new_bound(py);
-                // (In a real implementation, we would convert req.params["args"] to py_args)
                 
                 // Call execute
-                let _py_result = execute_fn.call1((py_args,)).map_err(|e| e.to_string())?;
+                let py_result = execute_fn.call1((py_args,)).map_err(|e| e.to_string())?;
                 
-                Ok(serde_json::Value::String("Python execution successful".to_string()))
+                // Convert result to JSON
+                python_to_json(py_result).map_err(|e| e.to_string())
             }
             "ping" => {
                 Ok(serde_json::Value::String("pong".to_string()))
@@ -112,6 +112,23 @@ fn handle_request(req: Request) -> Response {
             error: Some(e),
         },
     }
+}
+
+fn python_to_json(obj: Bound<'_, PyAny>) -> PyResult<serde_json::Value> {
+    if obj.is_none() {
+        return Ok(serde_json::Value::Null);
+    }
+    if let Ok(s) = obj.extract::<String>() {
+        return Ok(serde_json::Value::String(s));
+    }
+    if let Ok(b) = obj.extract::<bool>() {
+        return Ok(serde_json::Value::Bool(b));
+    }
+    if let Ok(n) = obj.extract::<f64>() {
+        return Ok(serde_json::Value::Number(serde_json::Number::from_f64(n).unwrap()));
+    }
+    // For complex types, just use a placeholder for now or convert to string
+    Ok(serde_json::Value::String(obj.str()?.to_string()))
 }
 
 /// NumPy bridging logic moved from seisly_plugin

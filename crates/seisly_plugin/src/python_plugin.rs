@@ -1,19 +1,24 @@
 use crate::api::{Plugin, PluginCommand, PluginError, Result};
 use crate::manifest::PluginManifest;
-use pyo3::prelude::*;
-use pyo3::types::PyDict;
-use serde_json::Value;
+use crate::ipc::IpcBridge;
+use serde_json::{Value, json};
 use std::path::PathBuf;
+use std::sync::Arc;
 
-/// A plugin implemented in Python
+/// A plugin implemented in Python, now running in a separate process.
 pub struct PythonPlugin {
     manifest: PluginManifest,
     path: PathBuf,
+    ipc: Arc<IpcBridge>,
 }
 
 impl PythonPlugin {
     pub fn new(manifest: PluginManifest, path: PathBuf) -> Self {
-        Self { manifest, path }
+        Self { 
+            manifest, 
+            path,
+            ipc: Arc::new(IpcBridge::new()),
+        }
     }
 }
 
@@ -33,32 +38,24 @@ impl Plugin for PythonPlugin {
     fn commands(&self) -> Vec<PluginCommand> {
         vec![PluginCommand {
             name: "run".to_string(),
-            description: "Run the Python plugin".to_string(),
+            description: "Run the Python plugin (isolated)".to_string(),
         }]
     }
 
-    fn execute(&self, _cmd: &str, _args: Value) -> Result<Value> {
-        Python::with_gil(|py| -> PyResult<Value> {
-            let sys = py.import_bound("sys")?;
-            let path = sys.getattr("path")?;
-            
-            let plugin_dir = self.path.parent().ok_or_else(|| {
-                pyo3::exceptions::PyRuntimeError::new_err("Invalid plugin path")
-            })?;
-            
-            path.call_method1("append", (plugin_dir.to_str().unwrap(),))?;
+    fn execute(&self, _cmd: &str, args: Value) -> Result<Value> {
+        let plugin_dir = self.path.parent().ok_or_else(|| {
+            PluginError::ExecutionError("Invalid plugin path".to_string())
+        })?;
+        
+        let module_name = self.manifest.entry_point.trim_end_matches(".py");
+        
+        let params = json!({
+            "plugin_dir": plugin_dir.to_str().unwrap(),
+            "module_name": module_name,
+            "args": args
+        });
 
-            // Import the entry point module
-            let module_name = self.manifest.entry_point.trim_end_matches(".py");
-            let module = py.import_bound(module_name)?;
-            
-            // Call the 'execute' function in the module
-            let execute_fn = module.getattr("execute")?;
-            // Pass args as a Python dict (placeholder for now)
-            let py_args = PyDict::new_bound(py);
-            let _result = execute_fn.call1((py_args,))?;
-            
-            Ok(Value::String("Python execution successful".to_string()))
-        }).map_err(|e| PluginError::ExecutionError(e.to_string()))
+        self.ipc.execute("execute", params)
+            .map_err(|e| PluginError::ExecutionError(e.to_string()))
     }
 }
