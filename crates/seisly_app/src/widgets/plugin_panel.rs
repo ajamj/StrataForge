@@ -28,7 +28,7 @@ impl PluginPanel {
     pub fn show(&mut self, ctx: &egui::Context, manager: &mut PluginManager, results: &mut Vec<serde_json::Value>) {
         if self.is_open {
             let mut is_open = self.is_open;
-            egui::Window::new("🧩 Plugin Manager")
+            egui::Window::new("Plugin Manager")
                 .open(&mut is_open)
                 .show(ctx, |ui| {
                     self.ui(ui, manager, results);

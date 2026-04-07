@@ -24,14 +24,14 @@ impl<'a> TabViewer for SeislyTabViewer<'a> {
 
     fn title(&mut self, tab: &mut Self::Tab) -> egui::WidgetText {
         match tab {
-            Tab::Viewport => "🌐 Viewport".into(),
-            Tab::ProjectExplorer => "📂 Project Explorer".into(),
-            Tab::Properties => "📊 Properties".into(),
-            Tab::WellLogs => "📈 Well Logs".into(),
-            Tab::Plugins => "🧩 Plugins".into(),
-            Tab::CrossPlot => "📉 Crossplot".into(),
-            Tab::Velocity => "📏 Velocity".into(),
-            Tab::Logs => "📜 Logs".into(),
+            Tab::Viewport => "Viewport".into(),
+            Tab::ProjectExplorer => "Project Explorer".into(),
+            Tab::Properties => "Properties".into(),
+            Tab::WellLogs => "Well Logs".into(),
+            Tab::Plugins => "Plugins".into(),
+            Tab::CrossPlot => "Crossplot".into(),
+            Tab::Velocity => "Velocity".into(),
+            Tab::Logs => "Logs".into(),
         }
     }
 

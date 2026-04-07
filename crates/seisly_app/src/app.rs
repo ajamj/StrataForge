@@ -104,6 +104,16 @@ pub struct SeislyApp {
     pub(crate) show_sidebar: bool,
     pub(crate) show_bottom_panel: bool,
     pub(crate) active_sidebar_tab: SidebarTab,
+
+    // Performance & Async
+    pub(crate) last_theme_name: String,
+    pub(crate) tx: std::sync::mpsc::Sender<AppMessage>,
+    pub(crate) rx: std::sync::mpsc::Receiver<AppMessage>,
+}
+
+pub enum AppMessage {
+    ScanComplete(std::path::PathBuf, seisly_io::segy::parser::SegyMetadata),
+    ScanFailed(String),
 }
 
 impl SeislyApp {
@@ -172,6 +182,8 @@ impl SeislyApp {
             .and_then(|json| serde_json::from_str::<(bool, bool, bool, SidebarTab)>(&json).ok())
             .unwrap_or((true, true, true, SidebarTab::Explorer));
 
+        let (tx, rx) = std::sync::mpsc::channel();
+
         Self {
             name: "MyField".to_owned(),
             viewport,
@@ -206,6 +218,9 @@ impl SeislyApp {
             show_sidebar,
             show_bottom_panel,
             active_sidebar_tab,
+            last_theme_name: String::new(),
+            tx,
+            rx,
         }
     }
 
@@ -465,41 +480,95 @@ impl SeislyApp {
             self.import_state = ImportState::Scanning;
             self.is_busy = true;
             self.busy_message = format!("Scanning: {}", path.file_name().unwrap().to_string_lossy());
+            
             let path_clone = path.clone();
-            match seisly_io::segy::parser::parse_metadata(&path_clone) {
-                Ok(metadata) => {
-                    self.import_state = ImportState::Scanned(path_clone, metadata);
-                    self.is_busy = false;
+            let tx = self.tx.clone();
+            
+            std::thread::spawn(move || {
+                match seisly_io::segy::parser::parse_metadata(&path_clone) {
+                    Ok(metadata) => {
+                        let _ = tx.send(AppMessage::ScanComplete(path_clone, metadata));
+                    }
+                    Err(e) => {
+                        let _ = tx.send(AppMessage::ScanFailed(e.to_string()));
+                    }
                 }
-                Err(e) => {
-                    eprintln!("Scan failed: {}", e);
-                    self.is_busy = false;
-                    self.import_state = ImportState::Idle;
-                }
-            }
+            });
         }
     }
 
     #[allow(dead_code)]
     fn import_well(&mut self) {
         use rfd::FileDialog;
-        if let Some(path) = FileDialog::new().set_title("Import Well").pick_file() {
-            println!("Import well: {:?}", path);
+        if let Some(path) = FileDialog::new()
+            .set_title("Import Well Data")
+            .add_filter("LAS File", &["las"])
+            .pick_file()
+        {
+            match seisly_io::las::parser::LasParser::read(&path) {
+                Ok(mut well) => {
+                    if well.name.is_empty() {
+                        well.name = path.file_stem().unwrap_or_default().to_string_lossy().to_string();
+                    }
+                    self.wells.active_well_id = Some(well.id);
+                    self.wells.wells.push(well);
+                    log::info!("Successfully imported well: {:?}", path);
+                }
+                Err(e) => {
+                    log::error!("Failed to import well: {}", e);
+                }
+            }
         }
     }
 }
 
 impl eframe::App for SeislyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // Handle background messages
+        while let Ok(msg) = self.rx.try_recv() {
+            match msg {
+                AppMessage::ScanComplete(path, metadata) => {
+                    self.import_state = ImportState::Scanned(path, metadata);
+                    self.is_busy = false;
+                }
+                AppMessage::ScanFailed(err) => {
+                    log::error!("Scan failed: {}", err);
+                    self.is_busy = false;
+                    self.import_state = ImportState::Idle;
+                }
+            }
+        }
+
         crate::ui::shortcuts::handle_shortcuts(ctx, self);
+        
         let theme = self.theme_manager.current_theme.clone();
-        style::apply_theme(ctx, &theme);
+        if theme.name != self.last_theme_name {
+            style::apply_theme(ctx, &theme);
+            self.last_theme_name = theme.name.clone();
+        }
 
         // 1. Menu Bar
         egui::TopBottomPanel::top("menu_bar")
             .frame(egui::Frame::none().fill(theme.side_bar_bg).inner_margin(4.0))
             .show(ctx, |ui| {
                 ui.horizontal(|ui| {
+                    // Quick access tools
+                    let icon_tint = theme.activity_bar_inactive_icon;
+                    
+                    if ui.add(egui::Button::image(egui::Image::new(egui::include_image!("../assets/icons/undo.svg")).tint(icon_tint)).frame(false))
+                        .on_hover_text("Undo (Ctrl+Z)")
+                        .clicked() {
+                        self.history.undo(&mut self.interpretation);
+                    }
+                    
+                    if ui.add(egui::Button::image(egui::Image::new(egui::include_image!("../assets/icons/redo.svg")).tint(icon_tint)).frame(false))
+                        .on_hover_text("Redo (Ctrl+Y)")
+                        .clicked() {
+                        self.history.redo(&mut self.interpretation);
+                    }
+                    
+                    ui.separator();
+
                     ui.menu_button("📁 File", |ui| {
                         if ui.button("New Project").clicked() { self.new_project(); }
                         if ui.button("Open Project").clicked() { self.open_project(); }
@@ -572,7 +641,7 @@ impl eframe::App for SeislyApp {
 
         // Import Wizard Popup
         if let ImportState::Scanned(path, metadata) = self.import_state.clone() {
-            egui::Window::new("📦 SEG-Y Import Wizard")
+            egui::Window::new("SEG-Y Import Wizard")
                 .collapsible(false)
                 .resizable(false)
                 .show(ctx, |ui| {
