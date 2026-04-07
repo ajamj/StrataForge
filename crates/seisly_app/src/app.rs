@@ -156,10 +156,16 @@ impl SeislyApp {
         let _ = plugin_manager.discover(std::path::Path::new("plugins"));
 
         // Setup Dock Tree
-        let tree = cc.storage
+        let mut tree = cc.storage
             .and_then(|s| s.get_string("seisly_dock_tree"))
             .and_then(|json| serde_json::from_str(&json).ok())
             .unwrap_or_else(Self::default_tree);
+
+        // Ensure Logs tab is available if it was missing from saved state
+        let has_logs = tree.iter_all_tabs().any(|(_, t)| matches!(t, Tab::Logs));
+        if !has_logs {
+            tree.main_surface_mut().push_to_focused_leaf(Tab::Logs);
+        }
 
         Self {
             name: "MyField".to_owned(),
@@ -979,6 +985,16 @@ impl eframe::App for SeislyApp {
                 ui.menu_button("👁 View", |ui| {
                     if ui.button("Reset View\tR").clicked() {
                         // Reset viewport
+                    }
+                    if ui.button("Reset Layout").clicked() {
+                        self.tree = Self::default_tree();
+                    }
+                    if ui.button("📜 Show Logs").clicked() {
+                        // Try to focus logs if it exists, otherwise add it
+                        let has_logs = self.tree.iter_all_tabs().any(|(_, t)| matches!(t, Tab::Logs));
+                        if !has_logs {
+                            self.tree.main_surface_mut().push_to_focused_leaf(Tab::Logs);
+                        }
                     }
                     if ui.button("Toggle Depth Mode\tD").clicked() {
                         self.velocity.is_depth_mode = !self.velocity.is_depth_mode;
