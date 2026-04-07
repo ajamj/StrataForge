@@ -7,11 +7,10 @@ use crate::interpretation::{
     HistoryManager,
     Horizon,
     InterpretationState,
-    PickingMode,
     VelocityState,
     WellState,
 };
-use crate::ui::style::{self, ThemeManager, Theme};
+use crate::ui::style::{self, ThemeManager};
 use crate::ui::layout::{Tab, SeislyTabViewer};
 use crate::widgets::crossplot::CrossPlotWidget;
 use crate::widgets::fault_properties_panel::FaultPropertiesPanel;
@@ -35,14 +34,18 @@ pub enum SidebarTab {
 pub enum ImportState {
     #[default]
     Idle,
-    Scanning(std::path::PathBuf),
+    Scanning,
     Scanned(std::path::PathBuf, seisly_io::segy::parser::SegyMetadata),
 }
 
 pub struct VisualSettings {
+    #[allow(dead_code)]
     pub gain: f32,
+    #[allow(dead_code)]
     pub clip: f32,
+    #[allow(dead_code)]
     pub opacity: f32,
+    #[allow(dead_code)]
     pub colormap: String,
 }
 
@@ -68,10 +71,12 @@ pub struct SeislyApp {
     pub(crate) well_panel: WellPanel,
     pub(crate) interpretation: InterpretationState,
     pub(crate) history: HistoryManager,
+    #[allow(dead_code)]
     pub(crate) visuals: VisualSettings,
     pub(crate) volume: Option<SeismicVolume>,
     pub(crate) seismic_volumes: Vec<SeismicVolumeEntry>,
     pub(crate) velocity: VelocityState,
+    #[allow(dead_code)]
     pub(crate) volumetric_result: Option<f32>,
     pub(crate) wells: WellState,
     pub(crate) theme_manager: ThemeManager,
@@ -79,13 +84,16 @@ pub struct SeislyApp {
     pub(crate) current_project_path: Option<std::path::PathBuf>,
     #[allow(dead_code)]
     pub(crate) recent_projects: Vec<std::path::PathBuf>,
+    #[allow(dead_code)]
     pub(crate) settings: crate::widgets::settings_panel::SettingsPanel,
     pub(crate) show_settings: bool,
     pub(crate) plugin_manager: PluginManager,
     pub(crate) plugin_panel: crate::widgets::plugin_panel::PluginPanel,
     pub(crate) plugin_results: Vec<serde_json::Value>,
     pub(crate) tree: egui_dock::DockState<Tab>,
+    #[allow(dead_code)]
     pub(crate) show_help: bool,
+    #[allow(dead_code)]
     pub(crate) show_synthetic_data: bool,
     pub(crate) is_busy: bool,
     pub(crate) busy_message: String,
@@ -148,10 +156,21 @@ impl SeislyApp {
         let mut plugin_manager = PluginManager::new();
         let _ = plugin_manager.discover(std::path::Path::new("plugins"));
 
-        let tree = cc.storage
+        let mut tree = cc.storage
             .and_then(|s| s.get_string("seisly_dock_tree"))
             .and_then(|json| serde_json::from_str(&json).ok())
             .unwrap_or_else(Self::default_tree);
+
+        // Ensure Logs tab is available if it was missing from saved state
+        let has_logs = tree.iter_all_tabs().any(|(_, t)| matches!(t, Tab::Logs));
+        if !has_logs {
+            tree.main_surface_mut().push_to_focused_leaf(Tab::Logs);
+        }
+
+        let (show_activity_bar, show_sidebar, show_bottom_panel, active_sidebar_tab) = cc.storage
+            .and_then(|s| s.get_string("seisly_ui_state"))
+            .and_then(|json| serde_json::from_str::<(bool, bool, bool, SidebarTab)>(&json).ok())
+            .unwrap_or((true, true, true, SidebarTab::Explorer));
 
         Self {
             name: "MyField".to_owned(),
@@ -183,15 +202,15 @@ impl SeislyApp {
             plugin_panel: crate::widgets::plugin_panel::PluginPanel::new(),
             plugin_results: Vec::new(),
             tree,
-            show_activity_bar: true,
-            show_sidebar: true,
-            show_bottom_panel: true,
-            active_sidebar_tab: SidebarTab::Explorer,
+            show_activity_bar,
+            show_sidebar,
+            show_bottom_panel,
+            active_sidebar_tab,
         }
     }
 
     fn default_tree() -> egui_dock::DockState<Tab> {
-        let mut tree = egui_dock::DockState::new(vec![Tab::Viewport]);
+        let tree = egui_dock::DockState::new(vec![Tab::Viewport]);
         tree
     }
 
@@ -347,12 +366,10 @@ impl SeislyApp {
     pub fn render_properties(&mut self, ui: &mut egui::Ui) {
         ui.heading("📊 Properties");
         ui.separator();
-        if let Some(horizon) = self.interpretation.active_horizon() {
-            ui.label(format!("Name: {}", horizon.name));
-            ui.label(format!("Picks: {}", horizon.picks.len()));
-        } else if let Some(fault) = self.interpretation.active_fault() {
-            ui.label(format!("Name: {}", fault.name));
-            ui.label(format!("Sticks: {}", fault.sticks.len()));
+        if self.interpretation.active_horizon_id.is_some() {
+            self.horizon_properties.ui(ui, &mut self.interpretation);
+        } else if self.interpretation.active_fault_id.is_some() {
+            self.fault_properties.ui(ui, &mut self.interpretation);
         } else {
             ui.label("Select an entity to view properties");
         }
@@ -403,9 +420,9 @@ impl SeislyApp {
         });
     }
 
+    #[allow(dead_code)]
     fn calculate_volumetrics(&mut self) {
         if self.interpretation.selected_horizon_ids.len() < 2 { return; }
-        // ... (existing logic)
     }
 
     #[allow(dead_code)]
@@ -415,6 +432,7 @@ impl SeislyApp {
         }
     }
 
+    #[allow(dead_code)]
     fn handle_plugin_result(&mut self, result: serde_json::Value) {
         println!("Plugin result received: {:?}", result);
     }
@@ -444,7 +462,7 @@ impl SeislyApp {
             .add_filter("SEG-Y File", &["segy", "sgy"])
             .pick_file()
         {
-            self.import_state = ImportState::Scanning(path.clone());
+            self.import_state = ImportState::Scanning;
             self.is_busy = true;
             self.busy_message = format!("Scanning: {}", path.file_name().unwrap().to_string_lossy());
             let path_clone = path.clone();
@@ -462,6 +480,7 @@ impl SeislyApp {
         }
     }
 
+    #[allow(dead_code)]
     fn import_well(&mut self) {
         use rfd::FileDialog;
         if let Some(path) = FileDialog::new().set_title("Import Well").pick_file() {

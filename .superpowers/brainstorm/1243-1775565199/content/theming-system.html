@@ -1,0 +1,36 @@
+<h2>Flexible Theming System</h2>
+<p class="subtitle">How should the UI colors be managed for future theme support?</p>
+
+<div class="options">
+  <div class="option" data-choice="token-system" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Semantic Token System (Recommended)</h3>
+      <p>Components use names like <code>ActivityBar.Background</code> instead of hex codes. Allows swapping entire palettes (Dark, Light, Solarized) easily.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="preset-themes" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Preset Palette Selection</h3>
+      <p>Hardcoded sets of colors for 3-4 specific themes. Simpler to implement but less flexible for custom community themes.</p>
+    </div>
+  </div>
+</div>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Theme A: Dark (Default)</div>
+    <div class="mockup-body" style="background: #1e1e1e; height: 150px; display: flex;">
+      <div style="width: 30px; background: #333; border-right: 1px solid #222;"></div>
+      <div style="flex-grow: 1; padding: 10px; color: #fff; font-size: 10px;">Dark Workstation Content</div>
+    </div>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header">Theme B: Light (Modern)</div>
+    <div class="mockup-body" style="background: #f3f3f3; height: 150px; display: flex;">
+      <div style="width: 30px; background: #2c2c2c; border-right: 1px solid #ddd;"></div>
+      <div style="flex-grow: 1; padding: 10px; color: #333; font-size: 10px;">Light Workstation Content</div>
+    </div>
+  </div>
+</div>

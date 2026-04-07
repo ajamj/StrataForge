@@ -3,7 +3,7 @@
 //! Semantic token-based design system for complete theme flexibility.
 
 use eframe::egui;
-use egui::{Color32, FontFamily, FontId, Margin, Rounding, Stroke, Visuals};
+use egui::{Color32, FontFamily, FontId, Rounding, Stroke, Visuals};
 use serde::{Deserialize, Serialize};
 
 /// Semantic theme tokens (VS Code-style)
@@ -120,30 +120,30 @@ pub mod spacing {
     pub const BOTTOM_PANEL_DEFAULT_HEIGHT: f32 = 200.0;
     pub const STATUS_BAR_HEIGHT: f32 = 22.0;
     
-    pub const PANEL_PADDING: f32 = 8.0;
     pub const ITEM_SPACING: f32 = 4.0;
     pub const BUTTON_PADDING: f32 = 6.0;
-
-    // Legacy compat (will be removed after refactor)
-    pub const TOP_RIBBON_HEIGHT: f32 = 64.0; 
 }
 
 /// Typography
 pub mod typography {
     use super::*;
 
+    #[allow(dead_code)]
     pub fn heading() -> FontId {
         FontId::new(13.0, FontFamily::Proportional)
     }
 
+    #[allow(dead_code)]
     pub fn body() -> FontId {
         FontId::new(11.0, FontFamily::Proportional)
     }
 
+    #[allow(dead_code)]
     pub fn label() -> FontId {
         FontId::new(10.0, FontFamily::Proportional)
     }
 
+    #[allow(dead_code)]
     pub fn status() -> FontId {
         FontId::new(10.0, FontFamily::Monospace)
     }
@@ -216,7 +216,10 @@ impl Default for ThemeManager {
 pub mod colors {
     // Keep legacy accent colors for now to avoid breaking existing widgets
     use egui::Color32;
+    #[allow(dead_code)]
     pub const SEISMIC: Color32 = Color32::from_rgb(79, 195, 247);
+    #[allow(dead_code)]
     pub const HORIZON: Color32 = Color32::from_rgb(129, 199, 132);
+    #[allow(dead_code)]
     pub const FAULT: Color32 = Color32::from_rgb(229, 115, 115);
 }

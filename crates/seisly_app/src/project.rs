@@ -85,6 +85,7 @@ impl ProjectManager {
     }
 
     /// Save project to file
+    #[allow(dead_code)]
     pub fn save(project: &ProjectData, path: &Path) -> Result<(), String> {
         let json =
             serde_json::to_string_pretty(project).map_err(|e| format!("JSON error: {}", e))?;
@@ -93,6 +94,7 @@ impl ProjectManager {
     }
 
     /// Load project from file
+    #[allow(dead_code)]
     pub fn load(path: &Path) -> Result<ProjectData, String> {
         if !path.exists() {
             return Err(format!("Project not found: {}", path.display()));

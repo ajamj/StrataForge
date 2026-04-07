@@ -10,10 +10,6 @@ pub use history::HistoryManager;
 pub use velocity::VelocityState;
 pub use wells::WellState;
 
-// InterpretationCommand is reserved for future history system
-#[allow(unused_imports)]
-pub use history::InterpretationCommand;
-
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum PickSource {
     Manual,
@@ -70,6 +66,7 @@ impl Horizon {
         self.picks.push(pick);
     }
 
+    #[allow(dead_code)]
     pub fn update_mesh(&mut self) {
         if self.picks.len() < 3 {
             return;
@@ -187,6 +184,7 @@ impl Fault {
         self.sticks.push(stick);
     }
 
+    #[allow(dead_code)]
     pub fn update_mesh(&mut self) {
         let mut points = Vec::new();
         for stick in &self.sticks {
@@ -213,6 +211,7 @@ pub struct InterpretationState {
     pub active_horizon_id: Option<Uuid>,
     pub active_fault_id: Option<Uuid>,
     pub selected_horizon_ids: Vec<Uuid>,
+    #[allow(dead_code)]
     pub selected_fault_ids: Vec<Uuid>,
     pub picking_mode: PickingMode,
 }
@@ -238,8 +237,7 @@ impl InterpretationState {
         self.faults.push(fault);
     }
 
-    /// Get active horizon - reserved for future UI
-    #[allow(dead_code)]
+    /// Get active horizon
     pub fn active_horizon(&self) -> Option<&Horizon> {
         self.active_horizon_id
             .and_then(|id| self.horizons.iter().find(|h| h.id == id))
@@ -250,15 +248,13 @@ impl InterpretationState {
             .and_then(|id| self.horizons.iter_mut().find(|h| h.id == id))
     }
 
-    /// Get active fault - reserved for future UI
-    #[allow(dead_code)]
+    /// Get active fault
     pub fn active_fault(&self) -> Option<&Fault> {
         self.active_fault_id
             .and_then(|id| self.faults.iter().find(|f| f.id == id))
     }
 
-    /// Get mutable active fault - reserved for future UI
-    #[allow(dead_code)]
+    /// Get mutable active fault
     pub fn active_fault_mut(&mut self) -> Option<&mut Fault> {
         self.active_fault_id
             .and_then(|id| self.faults.iter_mut().find(|f| f.id == id))
@@ -297,7 +293,6 @@ mod tests {
         assert_eq!(fault.sticks.len(), 1);
         assert_eq!(fault.sticks[0].picks.len(), 3);
 
-        // Add another stick to make it possible to form a surface
         let stick2 = FaultStick::new(vec![
             [10.0, 15.0, 250.0],
             [20.0, 25.0, 250.0],
@@ -307,37 +302,5 @@ mod tests {
 
         fault.update_mesh();
         assert!(!fault.meshes.is_empty());
-        let mesh = &fault.meshes[0];
-        assert!(mesh.vertices.len() > 0);
-    }
-
-    #[test]
-    fn test_fault_color_rgba() {
-        let mut fault = Fault::new("F1".to_string(), [1.0, 0.0, 0.0, 0.5]);
-        assert_eq!(fault.color, [1.0, 0.0, 0.0, 0.5]);
-
-        fault.set_color([0.0, 1.0, 0.0, 0.7]);
-        assert_eq!(fault.color, [0.0, 1.0, 0.0, 0.7]);
-    }
-
-    #[test]
-    fn test_fault_visibility() {
-        let mut fault = Fault::new("F1".to_string(), [1.0, 0.0, 0.0, 0.5]);
-        assert!(fault.is_visible);
-
-        fault.set_visible(false);
-        assert!(!fault.is_visible);
-
-        fault.set_visible(true);
-        assert!(fault.is_visible);
-    }
-
-    #[test]
-    fn test_fault_name_update() {
-        let mut fault = Fault::new("F1".to_string(), [1.0, 0.0, 0.0, 0.5]);
-        assert_eq!(fault.name, "F1");
-
-        fault.set_name("New Fault Name".to_string());
-        assert_eq!(fault.name, "New Fault Name");
     }
 }

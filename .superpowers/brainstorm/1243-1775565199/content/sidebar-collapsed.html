@@ -1,0 +1,42 @@
+<h2>Sidebar "Collapsed" States</h2>
+<p class="subtitle">How should the interface look when sidebars are not in use?</p>
+
+<div class="options">
+  <div class="option" data-choice="icons-only" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>VS Code Style (Activity Bar)</h3>
+      <p>Thin vertical strip of icons remains visible. Clicking an icon opens/closes the sidebar.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="completely-hidden" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Minimalist (Completely Hidden)</h3>
+      <p>Sidebars disappear entirely. Re-enable via View menu or edge-hover "peek".</p>
+    </div>
+  </div>
+</div>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Option A: Activity Bar</div>
+    <div class="mockup-body">
+      <div style="display: flex; height: 200px; background: #1e1e1e;">
+        <div style="width: 30px; background: #333; display: flex; flex-direction: column; align-items: center; padding-top: 5px;">
+          <div style="width: 16px; height: 16px; background: #666; margin-bottom: 8px;"></div>
+          <div style="width: 16px; height: 16px; background: #666;"></div>
+        </div>
+        <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; color: #444; font-size: 12px;">VIEWPORT</div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header">Option B: Hidden</div>
+    <div class="mockup-body">
+      <div style="display: flex; height: 200px; background: #1e1e1e;">
+        <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; color: #444; font-size: 12px;">VIEWPORT (FULL WIDTH)</div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,14 +1,13 @@
 //! Acoustic FWI Implementation
 
 use ndarray::{Array2, Array3, s};
-use rayon::prelude::*;
 
 /// Acoustic Wave Equation Solver
 pub struct AcousticWaveSolver {
-    velocity: Array2<f32>,
-    dt: f32,
-    dx: f32,
-    dz: f32,
+    pub velocity: Array2<f32>,
+    pub dt: f32,
+    pub dx: f32,
+    pub dz: f32,
 }
 
 impl AcousticWaveSolver {
@@ -121,7 +120,7 @@ impl AcousticFWI {
     /// Compute misfit function
     pub fn misfit(&self, velocity: &Array2<f32>, source: &Source, nt: usize) -> f32 {
         // Update solver velocity
-        let mut new_solver = AcousticWaveSolver::new(velocity.clone(), self.solver.dt, self.solver.dx, self.solver.dz);
+        let new_solver = AcousticWaveSolver::new(velocity.clone(), self.solver.dt, self.solver.dx, self.solver.dz);
         
         // Forward modeling
         let wavefield = new_solver.forward(source, nt);
@@ -143,12 +142,7 @@ impl AcousticFWI {
         let wavefield_fwd = self.solver.forward(source, nt);
         
         // Compute residual at receivers
-        let mut residual = Array2::zeros((nt, 100)); // Simplified
-        for t in 0..nt {
-            for i in 0..100 {
-                residual[[t, i]] = wavefield_fwd[[t, 0, i]] - self.observed_data[[t, i]];
-            }
-        }
+        // let mut residual = Array2::zeros((nt, 100)); // Simplified
         
         // Adjoint wavefield (backpropagation)
         // TODO: Implement adjoint

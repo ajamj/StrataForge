@@ -39,7 +39,7 @@ The project currently requires the **GNU toolchain** (`x86_64-pc-windows-gnu`) d
 - **Run CLI:** `cargo run --bin sf -- <args>`
 - **Run Desktop App:** `cargo run --bin sf-app`
 - **Test All:** `cargo test --workspace`
-- **Build All:** `cargo build --workspace`
+- **Build All:** `cargo build --workspace --release` (Always use `--release` for this project)
 
 ### Environment Setup (PowerShell)
 To ensure the correct tools are found during build:

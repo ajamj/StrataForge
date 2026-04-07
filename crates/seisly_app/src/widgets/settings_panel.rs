@@ -1,49 +1,35 @@
-//! Settings / Preferences Panel
-//!
-//! Native desktop app settings like display, performance, data paths, etc.
-
 use eframe::egui;
+use serde::{Deserialize, Serialize};
 
-/// Application settings - simplified for now
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct AppSettings {
     pub theme: String,
 }
 
-impl Default for AppSettings {
-    fn default() -> Self {
-        Self {
-            theme: "Dark".to_string(),
-        }
-    }
-}
-
-/// Settings panel widget
 pub struct SettingsPanel {
-    settings: AppSettings,
-}
-
-impl Default for SettingsPanel {
-    fn default() -> Self {
-        Self {
-            settings: AppSettings::default(),
-        }
-    }
+    #[allow(dead_code)]
+    pub settings: AppSettings,
 }
 
 impl SettingsPanel {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            settings: AppSettings::default(),
+        }
     }
-    
+
+    #[allow(dead_code)]
     pub fn ui(&mut self, ui: &mut egui::Ui) -> bool {
-        ui.heading("⚙️ Settings");
-        ui.separator();
-        
-        ui.label("Settings panel - coming soon!");
-        ui.label("Theme:");
-        ui.label(&self.settings.theme);
-        
-        false
+        let mut changed = false;
+        ui.vertical(|ui| {
+            ui.heading("General Settings");
+            ui.horizontal(|ui| {
+                ui.label("Theme Preference:");
+                if ui.text_edit_singleline(&mut self.settings.theme).changed() {
+                    changed = true;
+                }
+            });
+        });
+        changed
     }
 }
