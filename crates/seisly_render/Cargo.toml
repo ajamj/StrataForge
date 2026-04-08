@@ -9,3 +9,4 @@ seisly_compute.workspace = true
 wgpu.workspace = true
 nalgebra.workspace = true
 bytemuck = { version = "1.14", features = ["derive"] }
+pollster = "0.3"

@@ -13,6 +13,7 @@ pub mod mesh;
 pub mod points;
 pub mod renderer;
 pub mod scene;
+pub mod seismic_renderer;
 
 pub use colormaps::{ColormapManager, ColormapPreset};
 pub use fault_renderer::{FaultMesh, FaultRenderData, FaultRenderer};
@@ -22,3 +23,4 @@ pub use mesh::MeshRenderer;
 pub use points::PointRenderer;
 pub use renderer::Renderer;
 pub use scene::Scene;
+pub use seismic_renderer::{SeismicRenderer, SeismicUniforms};
