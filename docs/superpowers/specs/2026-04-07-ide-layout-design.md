@@ -1,10 +1,10 @@
-# Design Doc: IDE-Inspired Workstation Layout (StrataForge Workstation Pro)
+# Design Doc: IDE-Inspired Workstation Layout (Seisly Workstation Pro)
 
 Date: 2026-04-07
 Topic: UI/UX Refactor - Modern IDE Layout & Flexible Theming
 
 ## 1. Overview
-Refactor the StrataForge workstation UI from a fixed-panel layout to a flexible, dockable, and toggleable layout inspired by modern IDEs (e.g., VS Code). This version introduces a **Semantic Token System** for theming, allowing for complete color flexibility and future custom theme support.
+Refactor the Seisly workstation UI from a fixed-panel layout to a flexible, dockable, and toggleable layout inspired by modern IDEs (e.g., VS Code). This version introduces a **Semantic Token System** for theming, allowing for complete color flexibility and future custom theme support.
 
 ## 2. Architecture & Components
 

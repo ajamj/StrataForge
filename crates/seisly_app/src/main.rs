@@ -56,4 +56,5 @@ fn main() -> eframe::Result<()> {
         native_options,
         Box::new(|cc| Ok(Box::new(SeislyApp::new(cc)))),
     )
-}
+    }
+
