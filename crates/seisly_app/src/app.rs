@@ -24,6 +24,9 @@ use seisly_storage::project::SeismicVolumeEntry;
 
 use seisly_attributes_gpu::GpuAttributeComputer;
 
+use crate::widgets::qi_panel::QiPanel;
+use crate::widgets::time_lapse_panel::TimeLapsePanel;
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SidebarTab {
     Explorer,
@@ -74,6 +77,8 @@ pub struct SeislyApp {
     pub(crate) horizon_properties: HorizonPropertiesPanel,
     pub(crate) velocity_panel: VelocityPanel,
     pub(crate) well_panel: WellPanel,
+    pub(crate) qi_panel: QiPanel,
+    pub(crate) time_lapse_panel: TimeLapsePanel,
     pub(crate) interpretation: InterpretationState,
     pub(crate) history: HistoryManager,
     #[allow(dead_code)]
@@ -224,6 +229,8 @@ impl SeislyApp {
             horizon_properties: HorizonPropertiesPanel::new(),
             velocity_panel: VelocityPanel::new(),
             well_panel: WellPanel::new(),
+            qi_panel: QiPanel::new(),
+            time_lapse_panel: TimeLapsePanel::new(),
             wells: WellState::new(),
             interpretation,
             history: HistoryManager::new(100),
@@ -370,8 +377,8 @@ impl SeislyApp {
                 match active_tab {
                     SidebarTab::Explorer => self.render_project_explorer(ui),
                     SidebarTab::Interpretation => self.render_interpretation_panel(ui),
-                    SidebarTab::QI => { ui.label("QI Analysis tools coming soon..."); },
-                    SidebarTab::TimeLapse => { ui.label("4D Monitoring tools coming soon..."); },
+                    SidebarTab::QI => self.qi_panel.ui(ui),
+                    SidebarTab::TimeLapse => self.time_lapse_panel.ui(ui),
                     SidebarTab::Search => { ui.label("Search implementation coming soon..."); },
                     SidebarTab::Diagnostics => { ui.label("Diagnostics (Logs) are shown in the bottom panel."); },
                     SidebarTab::Extensions => self.render_plugins(ui),
