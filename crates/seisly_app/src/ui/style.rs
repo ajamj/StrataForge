@@ -198,6 +198,14 @@ impl ThemeManager {
         }
     }
 
+    pub fn set_theme(&mut self, name: &str) {
+        match name {
+            "Seisly Dark" => self.current_theme = Theme::dark(),
+            "Seisly Light" => self.current_theme = Theme::light(),
+            _ => self.current_theme = Theme::dark(),
+        }
+    }
+
     pub fn icon(&self) -> &'static str {
         if self.current_theme.is_dark {
             "☀"  // Sun for dark mode

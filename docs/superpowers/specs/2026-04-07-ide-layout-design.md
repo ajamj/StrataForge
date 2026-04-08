@@ -50,8 +50,8 @@ The application window will be divided into the following functional areas:
 - **Step 4: View Menu & State**: Implement the "Show/Hide" logic and state persistence for all panels.
 
 ## 4. Success Criteria
-- [ ] User can toggle the left sidebar and bottom panel.
-- [ ] UI colors are entirely driven by the `ThemeToken` system.
-- [ ] A "Theme Switcher" (e.g., Dark/Light) is functional in Settings.
-- [ ] Icons are consistent, monochromatic Lucide SVGs.
-- [ ] Layout and Theme state persist across application restarts.
+- [x] User can toggle the left sidebar and bottom panel.
+- [x] UI colors are entirely driven by the `ThemeToken` system.
+- [x] A "Theme Switcher" (e.g., Dark/Light) is functional in Settings.
+- [x] Icons are consistent, monochromatic Lucide SVGs.
+- [x] Layout and Theme state persist across application restarts.

@@ -23,11 +23,20 @@ impl SettingsPanel {
         let mut changed = false;
         ui.vertical(|ui| {
             ui.heading("General Settings");
+            ui.add_space(8.0);
+            
             ui.horizontal(|ui| {
-                ui.label("Theme Preference:");
-                if ui.text_edit_singleline(&mut self.settings.theme).changed() {
-                    changed = true;
-                }
+                ui.label("Theme:");
+                egui::ComboBox::from_id_source("theme_selector")
+                    .selected_text(&self.settings.theme)
+                    .show_ui(ui, |ui| {
+                        if ui.selectable_value(&mut self.settings.theme, "Seisly Dark".to_string(), "Dark").clicked() {
+                            changed = true;
+                        }
+                        if ui.selectable_value(&mut self.settings.theme, "Seisly Light".to_string(), "Light").clicked() {
+                            changed = true;
+                        }
+                    });
             });
         });
         changed

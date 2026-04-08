@@ -27,6 +27,7 @@ pub enum SidebarTab {
     Explorer,
     Interpretation,
     Search,
+    Diagnostics,
     Extensions,
 }
 
@@ -118,7 +119,12 @@ pub enum AppMessage {
 
 impl SeislyApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        let theme_manager = ThemeManager::new();
+        let mut theme_manager = ThemeManager::new();
+        if let Some(theme_name) = cc.storage
+            .and_then(|s| s.get_string("seisly_theme")) {
+            theme_manager.set_theme(&theme_name);
+        }
+
         egui_extras::install_image_loaders(&cc.egui_ctx);
         style::apply_theme(&cc.egui_ctx, &theme_manager.current_theme);
         
@@ -184,6 +190,9 @@ impl SeislyApp {
 
         let (tx, rx) = std::sync::mpsc::channel();
 
+        let mut settings = crate::widgets::settings_panel::SettingsPanel::new();
+        settings.settings.theme = theme_manager.current_theme.name.clone();
+
         Self {
             name: "MyField".to_owned(),
             viewport,
@@ -203,7 +212,7 @@ impl SeislyApp {
             theme_manager,
             current_project_path: None,
             recent_projects: Vec::new(),
-            settings: crate::widgets::settings_panel::SettingsPanel::new(),
+            settings,
             show_settings: false,
             show_help: false,
             show_synthetic_data: false,
@@ -254,19 +263,30 @@ impl SeislyApp {
 
     fn render_activity_bar(&mut self, ctx: &egui::Context) {
         if !self.show_activity_bar { return; }
-        let theme = &self.theme_manager.current_theme;
+        let theme_bg = self.theme_manager.current_theme.activity_bar_bg;
+        let active_icon_color = self.theme_manager.current_theme.activity_bar_active_icon;
+        let inactive_icon_color = self.theme_manager.current_theme.activity_bar_inactive_icon;
+
         egui::SidePanel::left("activity_bar")
             .exact_width(crate::ui::style::spacing::ACTIVITY_BAR_WIDTH)
-            .frame(egui::Frame::none().fill(theme.activity_bar_bg))
+            .frame(egui::Frame::none().fill(theme_bg))
             .show(ctx, |ui| {
                 ui.vertical_centered(|ui| {
                     ui.add_space(10.0);
                     self.activity_button(ui, SidebarTab::Explorer, egui::include_image!("../assets/icons/files.svg"), "Explorer");
                     self.activity_button(ui, SidebarTab::Interpretation, egui::include_image!("../assets/icons/horizon.svg"), "Interpretation");
                     self.activity_button(ui, SidebarTab::Search, egui::include_image!("../assets/icons/search.svg"), "Search");
+                    self.activity_button(ui, SidebarTab::Diagnostics, egui::include_image!("../assets/icons/terminal.svg"), "Diagnostics");
+                    
                     ui.with_layout(egui::Layout::bottom_up(egui::Align::Center), |ui| {
                         ui.add_space(10.0);
-                        if ui.button("Settings").on_hover_text("Settings").clicked() { self.show_settings = true; }
+                        let settings_icon = egui::include_image!("../assets/icons/settings.svg");
+                        let tint = if self.show_settings { active_icon_color } else { inactive_icon_color };
+                        if ui.add(egui::ImageButton::new(egui::Image::new(settings_icon).tint(tint)).frame(false))
+                            .on_hover_text("Settings")
+                            .clicked() { 
+                            self.show_settings = !self.show_settings; 
+                        }
                         self.activity_button(ui, SidebarTab::Extensions, egui::include_image!("../assets/icons/fault.svg"), "Plugins");
                     });
                 });
@@ -274,14 +294,18 @@ impl SeislyApp {
     }
 
     fn activity_button(&mut self, ui: &mut egui::Ui, tab: SidebarTab, icon: egui::ImageSource<'_>, tooltip: &str) {
-        let is_active = self.show_sidebar && self.active_sidebar_tab == tab;
+        let is_active = (self.show_sidebar && self.active_sidebar_tab == tab) || (tab == SidebarTab::Diagnostics && self.show_bottom_panel);
         let theme = &self.theme_manager.current_theme;
         let tint = if is_active { theme.activity_bar_active_icon } else { theme.activity_bar_inactive_icon };
         let button = egui::ImageButton::new(egui::Image::new(icon).tint(tint)).frame(false);
         let response = ui.add(button);
         if response.clicked() {
-            if is_active { self.show_sidebar = false; }
-            else { self.show_sidebar = true; self.active_sidebar_tab = tab; }
+            if tab == SidebarTab::Diagnostics {
+                self.show_bottom_panel = !self.show_bottom_panel;
+            } else {
+                if is_active { self.show_sidebar = false; }
+                else { self.show_sidebar = true; self.active_sidebar_tab = tab; }
+            }
         }
         response.clone().on_hover_text(tooltip);
         if is_active {
@@ -307,6 +331,7 @@ impl SeislyApp {
                         SidebarTab::Explorer => "EXPLORER",
                         SidebarTab::Interpretation => "INTERPRETATION",
                         SidebarTab::Search => "SEARCH",
+                        SidebarTab::Diagnostics => "DIAGNOSTICS",
                         SidebarTab::Extensions => "PLUGINS",
                     }).strong().color(theme.side_bar_header_fg));
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
@@ -318,6 +343,7 @@ impl SeislyApp {
                     SidebarTab::Explorer => self.render_project_explorer(ui),
                     SidebarTab::Interpretation => self.render_interpretation_panel(ui),
                     SidebarTab::Search => { ui.label("Search implementation coming soon..."); },
+                    SidebarTab::Diagnostics => { ui.label("Diagnostics (Logs) are shown in the bottom panel."); },
                     SidebarTab::Extensions => self.render_plugins(ui),
                 }
             });
@@ -741,6 +767,16 @@ impl eframe::App for SeislyApp {
         }
 
         self.show_loading_overlay(ctx);
+
+        if self.show_settings {
+            egui::Window::new("Settings")
+                .open(&mut self.show_settings)
+                .show(ctx, |ui| {
+                    if self.settings.ui(ui) {
+                        self.theme_manager.set_theme(&self.settings.settings.theme);
+                    }
+                });
+        }
     }
 
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
@@ -750,5 +786,6 @@ impl eframe::App for SeislyApp {
         if let Ok(json) = serde_json::to_string(&(self.show_activity_bar, self.show_sidebar, self.show_bottom_panel, self.active_sidebar_tab)) {
             storage.set_string("seisly_ui_state", json);
         }
+        storage.set_string("seisly_theme", self.theme_manager.current_theme.name.clone());
     }
 }
