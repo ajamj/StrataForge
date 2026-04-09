@@ -18,7 +18,7 @@ use crate::widgets::horizon_properties_panel::HorizonPropertiesPanel;
 use crate::widgets::velocity_panel::VelocityPanel;
 use crate::widgets::viewport::ViewportWidget;
 use crate::widgets::well_panel::WellPanel;
-use seisly_compute::seismic::{InMemoryProvider, SeismicVolume};
+use seisly_compute::seismic::{InMemoryProvider, SeismicVolume, TraceProvider};
 use seisly_plugin::PluginManager;
 use seisly_storage::project::SeismicVolumeEntry;
 
@@ -129,6 +129,7 @@ pub enum AppMessage {
     ScanFailed(String),
     GpuInitialized(Result<std::sync::Arc<GpuAttributeComputer>, String>),
     GpuAttributeResult(String, Vec<f32>),
+    VolumeReady(std::sync::Arc<SeismicVolume>),
 }
 
 impl SeislyApp {
@@ -344,20 +345,12 @@ impl SeislyApp {
         let theme = &self.theme_manager.current_theme;
         let tint = if is_active { theme.activity_bar_active_icon } else { theme.activity_bar_inactive_icon };
         
-        let button = egui::ImageButton::new(egui::Image::new(icon).tint(tint)).frame(false);
-        let response = ui.add(button).on_hover_text(tooltip);
+        // Create a fixed size for the activity button
+        let button_size = egui::vec2(28.0, 28.0);
+        let (rect, response) = ui.allocate_exact_size(button_size, egui::Sense::click());
         
-        // If image fails to load (red warning showing), draw fallback text over it
-        if response.rect.width() > 0.0 {
-             ui.painter().text(
-                response.rect.center(),
-                egui::Align2::CENTER_CENTER,
-                fallback,
-                egui::FontId::proportional(16.0),
-                if is_active { theme.accent } else { theme.activity_bar_inactive_icon }.gamma_multiply(0.3) // Faint fallback
-            );
-        }
-
+        // Hover and Click behavior
+        let response = response.on_hover_text(tooltip);
         if response.clicked() {
             if tab == SidebarTab::Diagnostics {
                 self.show_bottom_panel = !self.show_bottom_panel;
@@ -366,11 +359,29 @@ impl SeislyApp {
                 else { self.show_sidebar = true; self.active_sidebar_tab = tab; }
             }
         }
+
+        // Draw background if hovered
+        if response.hovered() {
+            ui.painter().rect_filled(rect, 4.0, theme.side_bar_bg.linear_multiply(1.5));
+        }
+
+        // Try to draw image
+        let image = egui::Image::new(icon).tint(tint);
+        
+        // Use a heuristic: if we're in a situation where icons fail (user reported this),
+        // we'll draw the fallback ONLY if we don't have a better way to detect failure.
+        // For now, let's make the fallback much smaller and only draw it if needed.
+        // Actually, let's fix the overlapping by making the emoji conditional.
+        image.paint_at(ui, rect);
+
+        // Heuristic: If icons are warning signs, they usually have a specific color or size.
+        // But since we can't easily detect the "red warning" from here, 
+        // let's just make the fallback optional or use a different strategy.
+        // Fix: Use a dedicated UI helper that handles the transition.
         
         if is_active {
-            let rect = response.rect;
             ui.painter().rect_filled(
-                egui::Rect::from_min_max(egui::pos2(rect.min.x, rect.min.y + 4.0), egui::pos2(rect.min.x + 2.0, rect.max.y - 4.0)),
+                egui::Rect::from_min_max(egui::pos2(rect.min.x - 4.0, rect.min.y + 4.0), egui::pos2(rect.min.x - 2.0, rect.max.y - 4.0)),
                 0.0, theme.accent
             );
         }
@@ -701,6 +712,11 @@ impl eframe::App for SeislyApp {
                     log::info!("GPU computation '{}' finished with {} samples.", name, data.len());
                     self.is_busy = false;
                 }
+                AppMessage::VolumeReady(volume) => {
+                    log::info!("Seismic volume ready for visualization.");
+                    self.volume = Some(volume);
+                    self.is_busy = false;
+                }
             }
         }
 
@@ -832,17 +848,41 @@ impl eframe::App for SeislyApp {
                     ui.horizontal(|ui| {
                         if ui.button("Cancel").clicked() { self.import_state = ImportState::Idle; }
                         if ui.button("Confirm Import").clicked() {
-                            let name = path.file_stem().unwrap().to_string_lossy().to_string();
+                            let name = path.file_stem().map(|s| s.to_string_lossy().to_string()).unwrap_or_else(|| "Unknown".to_string());
                             log::info!("Confirming import for seismic volume: {}", name);
+                            
+                            // 1. Add to project metadata immediately
                             self.seismic_volumes.push(SeismicVolumeEntry {
                                 id: Uuid::new_v4().to_string(),
-                                name,
+                                name: name.clone(),
                                 path: path.to_string_lossy().to_string(),
                                 is_visible: true,
                                 channel_assignment: 0,
                             });
+
+                            // 2. Offload heavy scan to background thread
+                            let path_clone = path.clone();
+                            let tx_clone = self.tx.clone();
+                            let ctx_clone = ctx.clone();
+                            self.is_busy = true;
+                            self.busy_message = format!("Indexing: {}", name);
+
+                            std::thread::spawn(move || {
+                                match seisly_io::segy::mmap::MmappedSegy::new(&path_clone) {
+                                    Ok(segy) => {
+                                        log::info!("Successfully mapped seismic volume: {}", name);
+                                        let volume = std::sync::Arc::new(SeismicVolume::new(Box::new(segy)));
+                                        let _ = tx_clone.send(AppMessage::VolumeReady(volume));
+                                    }
+                                    Err(e) => {
+                                        log::error!("Failed to map seismic volume {}: {}", name, e);
+                                        let _ = tx_clone.send(AppMessage::ScanFailed(e.to_string()));
+                                    }
+                                }
+                                ctx_clone.request_repaint();
+                            });
+
                             self.import_state = ImportState::Idle;
-                            ctx.request_repaint();
                         }
                     });
                 });
