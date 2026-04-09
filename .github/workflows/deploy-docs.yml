@@ -32,22 +32,17 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libproj-dev libsqlite3-dev protobuf-compiler python3-dev
+          sudo apt-get install -y libproj-dev libsqlite3-dev protobuf-compiler
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
       - name: Build Workspace (ensure build artifacts exist)
-        run: cargo build --workspace --features python
+        run: cargo build --workspace
 
       - name: Build API Documentation (cargo doc)
         run: |
-          cargo doc --workspace --no-deps --features python
+          cargo doc --workspace --no-deps
           # Create a redirect from /api/ to the main app docs
           echo '<meta http-equiv="refresh" content="0; url=seisly_app/index.html">' > target/doc/index.html
 
