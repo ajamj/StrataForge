@@ -63,7 +63,17 @@ impl SafeMmap {
     /// - The file cannot be opened for reading
     /// - The memory mapping fails (e.g., insufficient permissions)
     /// - The file is empty
+    #[allow(unsafe_code)]
+    // Safety: memmap2::Mmap::map() requires unsafe because the returned
+    // Mmap provides raw memory access. SafeMmap wraps this and provides
+    // only bounded access via get() and get_slice() methods that validate
+    // offsets against the mapped region length, preventing SIGBUS/Access Violation.
     pub fn map(file: &File) -> Result<Self> {
+        // Safety: The caller of SafeMmap::map() trusts that the file descriptor
+        // remains valid for the lifetime of the SafeMmap. The OS guarantees that
+        // the mapping is valid as long as the file is open and not truncated.
+        // SafeMmap enforces bounds checking on all access methods to prevent
+        // out-of-bounds reads that could cause SIGBUS (Unix) or Access Violation (Windows).
         let mmap = unsafe { memmap2::Mmap::map(file) }?;
         let len = mmap.len();
 
@@ -210,16 +220,45 @@ impl SafeMmap {
         Some(f32::from_le_bytes([slice[0], slice[1], slice[2], slice[3]]))
     }
 
-    /// Returns a reference to the underlying memory-mapped data as a byte slice.
+    /// Returns a reference to the entire underlying memory-mapped data as a byte slice.
+    ///
+    /// This method provides direct, unbounded access to the mapped region. Use it
+    /// only when you need to pass the entire mapping to an API that expects a `&[u8]`.
     ///
     /// # Safety
     ///
-    /// This method is unsafe because it bypasses bounds checking.
-    /// Callers must ensure the file is not modified while mapped,
-    /// the slice is not used after SafeMmap is dropped, and all
-    /// accesses are within bounds.
+    /// This method is unsafe because it exposes the raw memory mapping without
+    /// bounds checking. Callers must ensure:
     ///
-    /// Prefer `get()`, `get_slice()`, or typed accessors instead.
+    /// 1. **No concurrent modification**: The underlying file is not modified or
+    ///    truncated while the mapping is active. Concurrent writes can cause
+    ///    SIGBUS (Unix) or Access Violation (Windows) exceptions.
+    /// 2. **Lifetime safety**: The returned slice is not used after the `SafeMmap`
+    ///    is dropped. The slice borrows from `self` and cannot outlive it.
+    /// 3. **No concurrent writes**: No other process or thread writes to the
+    ///    mapped region while the slice is in use.
+    ///
+    /// # Prefer Safe Alternatives
+    ///
+    /// Prefer using `get(offset)`, `get_slice(offset, len)`, or the typed
+    /// accessors (`get_u32_be`, `get_f32_le`, etc.) instead, which provide
+    /// bounded, safe access with bounds checking.
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use seisly_core::io::safe_mmap::SafeMmap;
+    /// use std::fs::File;
+    ///
+    /// let file = File::open("data.bin").unwrap();
+    /// let mmap = SafeMmap::map(&file).unwrap();
+    ///
+    /// // Safe: use bounded accessors
+    /// if let Some(byte) = mmap.get(42) { /* ... */ }
+    ///
+    /// // Unsafe: direct access — caller must ensure safety invariants
+    /// let all_bytes = unsafe { mmap.as_slice() };
+    /// ```
     #[inline]
     #[allow(unsafe_code)]
     pub unsafe fn as_slice(&self) -> &[u8] {

@@ -50,6 +50,11 @@ impl log::Log for SeislyLogger {
     }
 
     fn log(&self, record: &log::Record) {
+        // Filter out noisy wgpu maintenance logs
+        if record.target().starts_with("wgpu_core::device") && record.args().to_string().contains("waiting for submission index") {
+            return;
+        }
+
         if self.enabled(record.metadata()) {
             let entry = LogEntry {
                 timestamp: Local::now(),

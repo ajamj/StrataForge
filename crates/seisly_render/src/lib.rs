@@ -23,4 +23,4 @@ pub use mesh::MeshRenderer;
 pub use points::PointRenderer;
 pub use renderer::Renderer;
 pub use scene::Scene;
-pub use seismic_renderer::{SeismicRenderer, SeismicUniforms};
+pub use seismic_renderer::{SeismicRenderer, SeismicUniforms, SliceType};

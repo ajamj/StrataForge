@@ -58,8 +58,14 @@ impl MmappedSegy {
         let mmap = SafeMmap::map(&file)?;
         let scanned = Self::scan_trace_headers(&mmap)?;
 
-        // Save index for next time
-        let _ = scanned.save(&index_path);
+        // Save index for next time — log warning but don't fail if save fails
+        if let Err(e) = scanned.save(&index_path) {
+            log::warn!(
+                "Failed to save SEG-Y sidecar index at {}: {} — next load will rescan",
+                index_path.display(),
+                e
+            );
+        }
 
         Self::from_index(mmap, scanned)
     }
@@ -158,8 +164,12 @@ impl MmappedSegy {
             max_xline = trace_count as i32 - 1;
         }
 
+        // Grid is regular only if there's at most one unique step size in each direction.
+        // Single-trace files (0 steps) are considered regular by default.
+        let inline_step_count = inline_steps.len();
+        let crossline_step_count = crossline_steps.len();
         let crossline_step = crossline_steps.into_iter().min().unwrap_or(1);
-        let is_regular = trace_byte_offsets.len() == trace_count;
+        let is_regular = inline_step_count <= 1 && crossline_step_count <= 1;
 
         // Compute strides for regular grids.
         // For a regular grid: trace_index = (il - inline_min) * n_crosslines + (xl - crossline_min)
@@ -199,8 +209,12 @@ impl MmappedSegy {
         if self.is_regular {
             let il_stride = self.index.inline_stride?;
             let xl_stride = self.index.crossline_stride?;
-            let il_offset = (inline - self.inline_min).checked_mul(il_stride as i32)?;
-            let xl_offset = (xline - self.crossline_min).checked_mul(xl_stride as i32)?;
+            // Use checked_sub to prevent overflow panic on i32::MIN - i32::MAX
+            let il_diff = inline.checked_sub(self.inline_min)?;
+            let xl_diff = xline.checked_sub(self.crossline_min)?;
+            // Use checked multiplication with i64 to prevent overflow
+            let il_offset = (il_diff as i64).checked_mul(il_stride as i64)?;
+            let xl_offset = (xl_diff as i64).checked_mul(xl_stride as i64)?;
             let trace_index = il_offset.checked_add(xl_offset)? as u64;
             if trace_index >= self.trace_count as u64 {
                 return None;

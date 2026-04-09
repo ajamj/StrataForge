@@ -11,6 +11,8 @@ pub enum TransformError {
     TransformError(String),
     #[error("PROJ library error: {0}")]
     ProjError(String),
+    #[error("CRS transform not implemented: {source_crs} -> {target_crs}")]
+    NotImplemented { source_crs: String, target_crs: String },
 }
 
 /// Transformer between two CRS definitions
@@ -38,17 +40,14 @@ impl Transformer {
 
     /// Transform points from source to target CRS
     ///
-    /// Note: This is a simplified implementation. A full implementation
-    /// would use the proj crate to perform actual coordinate transformations.
+    /// Note: This is a stub implementation that returns an explicit error.
+    /// A full implementation would use the proj crate to perform actual coordinate transformations.
     pub fn transform_points(&self, points: &[[f64; 3]]) -> Result<Vec<[f64; 3]>, TransformError> {
-        // Placeholder implementation - returns points unchanged
-        // A real implementation would:
-        // 1. Initialize PROJ context with source and target CRS
-        // 2. Transform each point through PROJ
-        // 3. Return transformed points
-
-        // For now, just return the points as-is (identity transform)
-        Ok(points.to_vec())
+        // Return explicit error instead of silent identity transform
+        Err(TransformError::NotImplemented {
+            source_crs: self.source.definition.clone(),
+            target_crs: self.target.definition.clone(),
+        })
     }
 
     /// Transform a single point
@@ -83,15 +82,32 @@ mod tests {
     }
 
     #[test]
-    fn test_identity_transform() {
+    fn test_transform_not_implemented_returns_error() {
         let source = Crs::from_epsg(4326);
-        let target = Crs::from_epsg(4326);
+        let target = Crs::from_epsg(32648);
         let transformer = Transformer::new(&source, &target).unwrap();
 
         let points = vec![[100.0, 0.0, 50.0]];
-        let result = transformer.transform_points(&points).unwrap();
+        let result = transformer.transform_points(&points);
 
-        // Identity transform - points should be unchanged
-        assert_eq!(result[0], points[0]);
+        assert!(result.is_err());
+        let err = result.unwrap_err();
+        match err {
+            TransformError::NotImplemented { source_crs, target_crs } => {
+                assert!(!source_crs.is_empty());
+                assert!(!target_crs.is_empty());
+            }
+            _ => panic!("Expected NotImplemented error, got: {:?}", err),
+        }
+    }
+
+    #[test]
+    fn test_transform_point_propagates_error() {
+        let source = Crs::from_epsg(4326);
+        let target = Crs::from_epsg(32648);
+        let transformer = Transformer::new(&source, &target).unwrap();
+
+        let result = transformer.transform_point([100.0, 0.0, 50.0]);
+        assert!(result.is_err());
     }
 }

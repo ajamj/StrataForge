@@ -10,6 +10,7 @@ pub mod domain;
 pub mod io;
 pub mod types;
 pub mod ipc;
+pub mod seismic;
 
 pub use commands::{Command, UndoRedoStack};
 pub use crs::Crs;
@@ -17,3 +18,4 @@ pub use domain::{formation_top, log, surface, trajectory, well};
 pub use domain::{FormationTop, Log, Surface, Trajectory, Well};
 pub use io::{SafeMmap, SafeMmapArc, SafeMmapExt};
 pub use types::{DatasetMetadata, EntityId, Provenance};
+pub use seismic::TraceProvider;

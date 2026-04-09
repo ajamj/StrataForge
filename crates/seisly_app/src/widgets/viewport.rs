@@ -7,7 +7,7 @@ use crate::interpretation::history::{AddPickCommand, AutoTrackCommand, AddFaultS
 use seisly_compute::seismic::SeismicVolume;
 use seisly_compute::tracking::{snap_to_extrema, track_event};
 
-use seisly_render::{FaultRenderer, SeismicRenderer, SeismicUniforms, ColormapManager, ColormapPreset};
+use seisly_render::{FaultRenderer, SeismicRenderer, SeismicUniforms, ColormapManager, ColormapPreset, SliceType};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ViewMode {
@@ -19,10 +19,14 @@ pub struct ViewportWidget {
     pub target_format: Option<eframe::wgpu::TextureFormat>,
     pub sketch_points: Vec<[f32; 3]>,
     pub view_mode: ViewMode,
-    pub section_xline: i32,
+    pub active_slice_type: SliceType,
+    pub inline_idx: i32,
+    pub crossline_idx: i32,
+    pub time_idx: i32,
     pub gain: f32,
     pub clip: f32,
     pub colormap: ColormapPreset,
+    pub show_wiggles: bool,
     pub tracking_progress: Option<f32>, // 0.0 to 1.0, None = not tracking
 }
 
@@ -32,10 +36,14 @@ impl ViewportWidget {
             target_format: None,
             sketch_points: Vec::new(),
             view_mode: ViewMode::Map,
-            section_xline: 250,
+            active_slice_type: SliceType::Crossline,
+            inline_idx: 250,
+            crossline_idx: 250,
+            time_idx: 250,
             gain: 1.0,
             clip: 1.0,
             colormap: ColormapPreset::Seismic,
+            show_wiggles: false,
             tracking_progress: None,
         }
     }
@@ -52,19 +60,90 @@ impl ViewportWidget {
             ui.selectable_value(&mut self.view_mode, ViewMode::Map, "Map View");
             ui.selectable_value(&mut self.view_mode, ViewMode::Section, "Section View");
             if self.view_mode == ViewMode::Section {
-                if ui.add(egui::Slider::new(&mut self.section_xline, 0..=500).text("Xline Slice")).changed() {
-                    ui.ctx().request_repaint();
+                ui.separator();
+                ui.selectable_value(&mut self.active_slice_type, SliceType::Inline, "Inline");
+                ui.selectable_value(&mut self.active_slice_type, SliceType::Crossline, "Crossline");
+                ui.selectable_value(&mut self.active_slice_type, SliceType::TimeSlice, "Time Slice");
+
+                match self.active_slice_type {
+                    SliceType::Inline => {
+                        let range = if let Some(v) = volume {
+                            let (min, max) = v.provider.inline_range();
+                            min as i32..=max as i32
+                        } else {
+                            0..=500
+                        };
+                        if ui.add(egui::Slider::new(&mut self.inline_idx, range).text("Inline")).changed() {
+                            ui.ctx().request_repaint();
+                        }
+                    }
+                    SliceType::Crossline => {
+                        let range = if let Some(v) = volume {
+                            let (min, max) = v.provider.crossline_range();
+                            min as i32..=max as i32
+                        } else {
+                            0..=500
+                        };
+                        if ui.add(egui::Slider::new(&mut self.crossline_idx, range).text("Crossline")).changed() {
+                            ui.ctx().request_repaint();
+                        }
+                    }
+                    SliceType::TimeSlice => {
+                        let max_time = if let Some(v) = volume {
+                            v.provider.sample_count().saturating_sub(1) as i32
+                        } else {
+                            500
+                        };
+                        if ui.add(egui::Slider::new(&mut self.time_idx, 0..=max_time).text("Time Slice")).changed() {
+                            ui.ctx().request_repaint();
+                        }
+                    }
                 }
             }
             
             ui.separator();
             ui.label("Gain:");
-            if ui.add(egui::Slider::new(&mut self.gain, 0.1..=10.0).logarithmic(true).show_value(false)).changed() {
+            if ui.add(egui::Slider::new(&mut self.gain, 0.1..=10.0).logarithmic(true).show_value(true)).on_hover_text("Amplitude gain multiplier (default: 1.0)").changed() {
                 ui.ctx().request_repaint();
             }
             ui.label("Clip:");
-            if ui.add(egui::Slider::new(&mut self.clip, 0.01..=2.0).show_value(false)).changed() {
+            if ui.add(egui::Slider::new(&mut self.clip, 0.01..=2.0).show_value(true)).on_hover_text("Clip level for amplitude normalization (default: 1.0)").changed() {
                 ui.ctx().request_repaint();
+            }
+            if ui.checkbox(&mut self.show_wiggles, "Wiggles").changed() {
+                ui.ctx().request_repaint();
+            }
+
+            ui.separator();
+            // Colormap selector
+            let colormap_labels = [
+                ("Seismic (BWR)", ColormapPreset::Seismic),
+                ("Viridis", ColormapPreset::Viridis),
+                ("Magma", ColormapPreset::Magma),
+                ("Gray", ColormapPreset::Gray),
+                ("Rainbow \u{26a0}\u{fe0f}", ColormapPreset::Rainbow),
+                ("Blue-White-Red", ColormapPreset::BlueWhiteRed),
+            ];
+            let current_label = colormap_labels.iter()
+                .find(|(_, p)| *p == self.colormap)
+                .map(|(l, _)| *l)
+                .unwrap_or("Seismic (BWR)");
+            egui::ComboBox::from_id_source("colormap_selector")
+                .selected_text(current_label)
+                .show_ui(ui, |ui| {
+                    for (label, preset) in &colormap_labels {
+                        if ui.selectable_label(self.colormap == *preset, *label).clicked() {
+                            self.colormap = *preset;
+                            ui.ctx().request_repaint();
+                        }
+                    }
+                });
+            // Tooltips for accessibility
+            if self.colormap == ColormapPreset::Rainbow {
+                ui.label("\u{26a0}\u{fe0f}").on_hover_text("Not colorblind-safe — consider Viridis or Magma for accessibility");
+            }
+            if self.colormap == ColormapPreset::BlueWhiteRed {
+                ui.label("\u{2139}\u{fe0f}").on_hover_text("Same as Seismic — explicit alias for clarity");
             }
 
             // Auto-tracking progress indicator
@@ -101,29 +180,19 @@ impl ViewportWidget {
 
                     let (iline, xline, sample) = match self.view_mode {
                         ViewMode::Map => (rel_x * 500.0, rel_y * 500.0, 250.0),
-                        ViewMode::Section => {
-                            (
-                                rel_x * 500.0,
-                                self.section_xline as f32,
-                                rel_y * sample_count,
-                            )
+                        ViewMode::Section => match self.active_slice_type {
+                            SliceType::Inline => (self.inline_idx as f32, rel_y * 500.0, rel_x * sample_count),
+                            SliceType::Crossline => (rel_x * 500.0, self.crossline_idx as f32, rel_y * sample_count),
+                            SliceType::TimeSlice => (rel_x * 500.0, rel_y * 500.0, self.time_idx as f32),
                         }
                     };
 
                     // Simple distance check to avoid redundant points
+                    let last_point = self.sketch_points.last().copied().unwrap_or([0.0, 0.0, 0.0]);
                     if self.sketch_points.is_empty()
                         || (pos.to_vec2()
                             - self
-                                .project_to_screen(
-                                    [
-                                        self.sketch_points.last().unwrap()[0],
-                                        self.sketch_points.last().unwrap()[1],
-                                        self.sketch_points.last().unwrap()[2],
-                                    ],
-                                    rect,
-                                    sample_count,
-                                    velocity,
-                                )
+                                .project_to_screen(last_point, rect, sample_count, velocity)
                                 .to_vec2())
                         .length()
                             > 5.0
@@ -154,19 +223,26 @@ impl ViewportWidget {
             }
         }
 
-        // Only draw seismic in Time mode
+        // Only draw seismic in Section mode based on active slice type
         if !velocity.is_depth_mode {
             if let Some(format) = self.target_format {
+                let (slice_type, slice_idx) = match self.active_slice_type {
+                    SliceType::Inline => (SliceType::Inline, self.inline_idx),
+                    SliceType::Crossline => (SliceType::Crossline, self.crossline_idx),
+                    SliceType::TimeSlice => (SliceType::TimeSlice, self.time_idx),
+                };
                 let callback = egui_wgpu::Callback::new_paint_callback(
                     rect,
                     ViewportCallback {
                         format,
                         volume: volume.cloned(),
                         view_mode: self.view_mode,
-                        slice_idx: self.section_xline,
+                        slice_type,
+                        slice_idx,
                         gain: self.gain,
                         clip: self.clip,
                         colormap: self.colormap,
+                        show_wiggles: self.show_wiggles,
                     },
                 );
                 ui.painter().add(callback);
@@ -223,7 +299,11 @@ impl ViewportWidget {
     fn is_visible_in_view(&self, pos: [f32; 3]) -> bool {
         match self.view_mode {
             ViewMode::Map => true,
-            ViewMode::Section => (pos[1] - self.section_xline as f32).abs() < 10.0,
+            ViewMode::Section => match self.active_slice_type {
+                SliceType::Inline => (pos[0] - self.inline_idx as f32).abs() < 10.0,
+                SliceType::Crossline => (pos[1] - self.crossline_idx as f32).abs() < 10.0,
+                SliceType::TimeSlice => true, // Time slice shows all positions
+            },
         }
     }
 
@@ -432,13 +512,18 @@ impl ViewportWidget {
 
         let (iline, xline, mut sample) = match self.view_mode {
             ViewMode::Map => ((rel_x * 500.0) as i32, (rel_y * 500.0) as i32, 250usize),
-            ViewMode::Section => {
-                let s = if velocity.is_depth_mode {
-                    (rel_y * sample_count as f32) as usize
-                } else {
-                    (rel_y * sample_count as f32) as usize
-                };
-                ((rel_x * 500.0) as i32, self.section_xline, s)
+            ViewMode::Section => match self.active_slice_type {
+                SliceType::Inline => {
+                    let s = (rel_x * sample_count as f32) as usize;
+                    (self.inline_idx, (rel_y * 500.0) as i32, s)
+                }
+                SliceType::Crossline => {
+                    let s = (rel_y * sample_count as f32) as usize;
+                    ((rel_x * 500.0) as i32, self.crossline_idx, s)
+                }
+                SliceType::TimeSlice => {
+                    ((rel_x * 500.0) as i32, (rel_y * 500.0) as i32, self.time_idx as usize)
+                }
             }
         };
 
@@ -488,6 +573,10 @@ struct SeismicResources {
     sampler: wgpu::Sampler,
     uniform_buffer: wgpu::Buffer,
     bind_group: wgpu::BindGroup,
+    wiggle_buffer: Option<wgpu::Buffer>,
+    wiggle_count: u32,
+    max_width: u32,
+    max_height: u32,
     last_volume_id: Option<String>,
     last_slice_idx: i32,
     last_view_mode: ViewMode,
@@ -497,10 +586,12 @@ struct ViewportCallback {
     format: eframe::wgpu::TextureFormat,
     volume: Option<Arc<SeismicVolume>>,
     view_mode: ViewMode,
+    slice_type: SliceType,
     slice_idx: i32,
     gain: f32,
     clip: f32,
     colormap: ColormapPreset,
+    show_wiggles: bool,
 }
 
 impl egui_wgpu::CallbackTrait for ViewportCallback {
@@ -529,123 +620,251 @@ impl egui_wgpu::CallbackTrait for ViewportCallback {
         }
 
         if let Some(volume) = &self.volume {
-            let renderer = resources.get::<SeismicRenderer>().unwrap();
-            let colormap_manager = resources.get::<ColormapManager>().unwrap();
+            let Some(renderer) = resources.get::<SeismicRenderer>() else {
+                log::warn!("SeismicRenderer not available in ViewportCallback::prepare");
+                return Vec::new();
+            };
+            let Some(colormap_manager) = resources.get::<ColormapManager>() else {
+                log::warn!("ColormapManager not available in ViewportCallback::prepare");
+                return Vec::new();
+            };
 
-            // Check if we need to update resources
-            let mut needs_update = false;
-            if !resources.contains::<SeismicResources>() {
-                needs_update = true;
-            } else {
-                let sr = resources.get::<SeismicResources>().unwrap();
-                if sr.last_slice_idx != self.slice_idx || sr.last_view_mode != self.view_mode {
-                    needs_update = true;
+            // 1. Calculate required dimensions
+            let (min_il, max_il) = volume.provider.inline_range();
+            let (min_xl, max_xl) = volume.provider.crossline_range();
+            let sample_count = volume.provider.sample_count();
+
+            let (slice_data, width, height) = match self.view_mode {
+                ViewMode::Map => {
+                    let data = volume.get_time_slice(250.min(sample_count - 1));
+                    let w = (max_il - min_il + 1).max(1) as u32;
+                    let h = (max_xl - min_xl + 1).max(1) as u32;
+                    (data, w, h)
+                }
+                ViewMode::Section => match self.slice_type {
+                    SliceType::Inline => {
+                        let target_il = self.slice_idx.clamp(min_il as i32, max_il as i32);
+                        let relative_idx = (target_il - min_il as i32) as usize;
+                        let data = volume.get_inline(relative_idx);
+                        let w = (max_xl - min_xl + 1).max(1) as u32;
+                        let h = sample_count.max(1) as u32;
+                        (data, w, h)
+                    }
+                    SliceType::Crossline => {
+                        let target_xl = self.slice_idx.clamp(min_xl as i32, max_xl as i32);
+                        let relative_idx = (target_xl - min_xl) as usize;
+                        let data = volume.get_crossline(relative_idx);
+                        let w = (max_il - min_il + 1).max(1) as u32;
+                        let h = sample_count.max(1) as u32;
+                        (data, w, h)
+                    }
+                    SliceType::TimeSlice => {
+                        let target_time = (self.slice_idx as usize).min(sample_count - 1);
+                        let data = volume.get_time_slice(target_time);
+                        let w = (max_il - min_il + 1).max(1) as u32;
+                        let h = (max_xl - min_xl + 1).max(1) as u32;
+                        (data, w, h)
+                    }
+                }
+            };
+
+            if slice_data.is_empty() || width == 0 || height == 0 || slice_data.len() != (width * height) as usize {
+                if !slice_data.is_empty() {
+                    log::error!("Slice data mismatch: expected {}, got {}", width * height, slice_data.len());
+                }
+                return Vec::new();
+            }
+
+            // 2. Hardware safety: Enforce 4x4 minimum and alignment
+            let upload_width = width.max(4);
+            let upload_height = height.max(4);
+            
+            // 3. Check if we can reuse existing resources
+            let mut recreate_texture = true;
+            if let Some(sr) = resources.get::<SeismicResources>() {
+                if sr.max_width >= 2048 && sr.max_height >= 2048 {
+                    recreate_texture = false;
                 }
             }
 
-            if needs_update {
-                // Extract slice data
-                let slice_data = match self.view_mode {
-                    ViewMode::Map => vec![0.0; 501 * 501], // TODO: Implement time slice
-                    ViewMode::Section => volume.get_crossline(self.slice_idx as usize),
+            if recreate_texture {
+                log::info!("Allocating stable 2048x2048 seismic texture (RGBA8)");
+                let texture = device.create_texture(&wgpu::TextureDescriptor {
+                    label: Some("Seismic Stable Texture"),
+                    size: wgpu::Extent3d {
+                        width: 2048,
+                        height: 2048,
+                        depth_or_array_layers: 1,
+                    },
+                    mip_level_count: 1,
+                    sample_count: 1,
+                    dimension: wgpu::TextureDimension::D2,
+                    format: wgpu::TextureFormat::Rgba8Unorm,
+                    usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
+                    view_formats: &[],
+                });
+
+                let texture_view = texture.create_view(&Default::default());
+                let sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+                    label: Some("Seismic Sampler"),
+                    address_mode_u: wgpu::AddressMode::ClampToEdge,
+                    address_mode_v: wgpu::AddressMode::ClampToEdge,
+                    mag_filter: wgpu::FilterMode::Linear,
+                    min_filter: wgpu::FilterMode::Linear,
+                    ..Default::default()
+                });
+
+                let uniform_buffer = device.create_buffer(&wgpu::BufferDescriptor {
+                    label: Some("Seismic Uniforms"),
+                    size: std::mem::size_of::<SeismicUniforms>() as u64,
+                    usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
+                    mapped_at_creation: false,
+                });
+
+                let Some(colormap_view) = colormap_manager.get_view(self.colormap) else {
+                    log::warn!("Colormap view not available for preset {:?}", self.colormap);
+                    return Vec::new();
                 };
+                let colormap_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+                    label: Some("Colormap Sampler"),
+                    mag_filter: wgpu::FilterMode::Linear,
+                    min_filter: wgpu::FilterMode::Linear,
+                    ..Default::default()
+                });
 
-                let width = (volume.provider.inline_range().1 - volume.provider.inline_range().0 + 1) as u32;
-                let height = volume.provider.sample_count() as u32;
+                let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
+                    label: Some("Seismic Bind Group"),
+                    layout: &renderer.bind_group_layout,
+                    entries: &[
+                        wgpu::BindGroupEntry { binding: 0, resource: wgpu::BindingResource::TextureView(&texture_view) },
+                        wgpu::BindGroupEntry { binding: 1, resource: wgpu::BindingResource::Sampler(&sampler) },
+                        wgpu::BindGroupEntry { binding: 2, resource: wgpu::BindingResource::TextureView(colormap_view) },
+                        wgpu::BindGroupEntry { binding: 3, resource: wgpu::BindingResource::Sampler(&colormap_sampler) },
+                        wgpu::BindGroupEntry { binding: 4, resource: uniform_buffer.as_entire_binding() },
+                    ],
+                });
 
-                if slice_data.len() as u32 == width * height {
-                    let texture = device.create_texture(&wgpu::TextureDescriptor {
-                        label: Some("Seismic Slice Texture"),
-                        size: wgpu::Extent3d {
-                            width,
-                            height,
-                            depth_or_array_layers: 1,
-                        },
-                        mip_level_count: 1,
-                        sample_count: 1,
-                        dimension: wgpu::TextureDimension::D2,
-                        format: wgpu::TextureFormat::R32Float,
-                        usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
-                        view_formats: &[],
-                    });
+                resources.insert(SeismicResources {
+                    texture,
+                    texture_view,
+                    sampler,
+                    uniform_buffer,
+                    bind_group,
+                    wiggle_buffer: None,
+                    wiggle_count: 0,
+                    max_width: 2048,
+                    max_height: 2048,
+                    last_volume_id: None,
+                    last_slice_idx: -1,
+                    last_view_mode: ViewMode::Map,
+                });
+            }
 
-                    queue.write_texture(
-                        wgpu::ImageCopyTexture {
-                            texture: &texture,
-                            mip_level: 0,
-                            origin: wgpu::Origin3d::ZERO,
-                            aspect: wgpu::TextureAspect::All,
-                        },
-                        bytemuck::cast_slice(&slice_data),
-                        wgpu::ImageDataLayout {
-                            offset: 0,
-                            bytes_per_row: Some(width * 4),
-                            rows_per_image: None,
-                        },
-                        wgpu::Extent3d {
-                            width,
-                            height,
-                            depth_or_array_layers: 1,
-                        },
-                    );
+            // 4. Update texture data if changed
+            let mut slice_changed = false;
+            if let Some(sr) = resources.get_mut::<SeismicResources>() {
+                if sr.last_slice_idx != self.slice_idx || sr.last_view_mode != self.view_mode {
+                    slice_changed = true;
+                }
+            }
 
-                    let texture_view = texture.create_view(&Default::default());
-                    let sampler = device.create_sampler(&wgpu::SamplerDescriptor {
-                        label: Some("Seismic Sampler"),
-                        address_mode_u: wgpu::AddressMode::ClampToEdge,
-                        address_mode_v: wgpu::AddressMode::ClampToEdge,
-                        mag_filter: wgpu::FilterMode::Linear,
-                        min_filter: wgpu::FilterMode::Linear,
-                        ..Default::default()
-                    });
+            if slice_changed {
+                let Some(sr) = resources.get_mut::<SeismicResources>() else {
+                    log::warn!("SeismicResources not available when slice changed");
+                    return Vec::new();
+                };
+                
+                // --- Diagnostic: Check data range ---
+                let mut min_val = f32::MAX;
+                let mut max_val = f32::MIN;
+                for &val in &slice_data {
+                    if val < min_val { min_val = val; }
+                    if val > max_val { max_val = val; }
+                }
+                log::info!("Seismic slice range: [{}, {}]", min_val, max_val);
 
-                    let uniform_buffer = device.create_buffer(&wgpu::BufferDescriptor {
-                        label: Some("Seismic Uniforms"),
-                        size: std::mem::size_of::<SeismicUniforms>() as u64,
-                        usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
+                // Encode seismic float data into RGBA8 Red channel
+                // If range is large (common in real data), we normalize based on the actual range
+                let range = (max_val - min_val).max(0.0001);
+                
+                let mut encoded_data = vec![0u8; (width * height * 4) as usize];
+                for (i, &val) in slice_data.iter().enumerate() {
+                    // Map [min_val, max_val] -> [0, 255]
+                    let normalized = ((val - min_val) / range * 255.0).clamp(0.0, 255.0) as u8;
+                    
+                    encoded_data[i * 4] = normalized;     // R: Normalized Amplitude
+                    encoded_data[i * 4 + 1] = normalized; // G
+                    encoded_data[i * 4 + 2] = normalized; // B
+                    encoded_data[i * 4 + 3] = 255;        // A
+                }
+
+                // Alignment padding: write_texture needs bytes_per_row to be a multiple of 256
+                let bytes_per_row = width * 4;
+                let padded_bytes_per_row = (bytes_per_row + 255) & !255;
+                
+                let mut padded_data = vec![0u8; (padded_bytes_per_row * height) as usize];
+                for y in 0..height {
+                    let src_start = (y * bytes_per_row) as usize;
+                    let dst_start = (y * padded_bytes_per_row) as usize;
+                    padded_data[dst_start..dst_start + bytes_per_row as usize]
+                        .copy_from_slice(&encoded_data[src_start..src_start + bytes_per_row as usize]);
+                }
+
+                queue.write_texture(
+                    wgpu::ImageCopyTexture {
+                        texture: &sr.texture,
+                        mip_level: 0,
+                        origin: wgpu::Origin3d::ZERO,
+                        aspect: wgpu::TextureAspect::All,
+                    },
+                    &padded_data,
+                    wgpu::ImageDataLayout {
+                        offset: 0,
+                        bytes_per_row: Some(padded_bytes_per_row),
+                        rows_per_image: None,
+                    },
+                    wgpu::Extent3d {
+                        width,
+                        height,
+                        depth_or_array_layers: 1,
+                    },
+                );
+
+                // Update Wiggles
+                let mut wiggle_verts = Vec::new();
+                let step = 10;
+                for i in (0..width).step_by(step) {
+                    for j in (0..height).step_by(1) {
+                        let idx = (i * height + j) as usize;
+                        if idx < slice_data.len() {
+                            wiggle_verts.push([i as f32, j as f32, slice_data[idx]]);
+                        }
+                    }
+                }
+
+                if !wiggle_verts.is_empty() {
+                    let buf = device.create_buffer(&wgpu::BufferDescriptor {
+                        label: Some("Wiggle Buffer"),
+                        size: (wiggle_verts.len() * 12) as u64,
+                        usage: wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST,
                         mapped_at_creation: false,
                     });
-
-                    let colormap_view = colormap_manager.get_view(self.colormap).unwrap();
-                    let colormap_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
-                        label: Some("Colormap Sampler"),
-                        mag_filter: wgpu::FilterMode::Linear,
-                        min_filter: wgpu::FilterMode::Linear,
-                        ..Default::default()
-                    });
-
-                    let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
-                        label: Some("Seismic Bind Group"),
-                        layout: &renderer.bind_group_layout,
-                        entries: &[
-                            wgpu::BindGroupEntry { binding: 0, resource: wgpu::BindingResource::TextureView(&texture_view) },
-                            wgpu::BindGroupEntry { binding: 1, resource: wgpu::BindingResource::Sampler(&sampler) },
-                            wgpu::BindGroupEntry { binding: 2, resource: wgpu::BindingResource::TextureView(colormap_view) },
-                            wgpu::BindGroupEntry { binding: 3, resource: wgpu::BindingResource::Sampler(&colormap_sampler) },
-                            wgpu::BindGroupEntry { binding: 4, resource: uniform_buffer.as_entire_binding() },
-                        ],
-                    });
-
-                    resources.insert(SeismicResources {
-                        texture,
-                        texture_view,
-                        sampler,
-                        uniform_buffer,
-                        bind_group,
-                        last_volume_id: None,
-                        last_slice_idx: self.slice_idx,
-                        last_view_mode: self.view_mode,
-                    });
+                    queue.write_buffer(&buf, 0, bytemuck::cast_slice(&wiggle_verts));
+                    sr.wiggle_buffer = Some(buf);
+                    sr.wiggle_count = wiggle_verts.len() as u32;
                 }
+
+                sr.last_slice_idx = self.slice_idx;
+                sr.last_view_mode = self.view_mode;
             }
 
-            // Always update uniforms
+            // 5. Always update uniforms with UV scaling
             if let Some(sr) = resources.get::<SeismicResources>() {
                 let uniforms = SeismicUniforms {
                     gain: self.gain,
                     clip: self.clip,
-                    colormap_index: 0,
-                    _padding: 0,
+                    u_scale: width as f32 / 2048.0,
+                    v_scale: height as f32 / 2048.0,
                 };
                 queue.write_buffer(&sr.uniform_buffer, 0, bytemuck::cast_slice(&[uniforms]));
             }
@@ -661,9 +880,26 @@ impl egui_wgpu::CallbackTrait for ViewportCallback {
         resources: &eframe::egui_wgpu::CallbackResources,
     ) {
         if let (Some(renderer), Some(sr)) = (resources.get::<SeismicRenderer>(), resources.get::<SeismicResources>()) {
+            // Pass 1: Variable Intensity (Color)
             render_pass.set_pipeline(&renderer.pipeline);
             render_pass.set_bind_group(0, &sr.bind_group, &[]);
             render_pass.draw(0..4, 0..1);
+
+            // Pass 2: Wiggle Traces (Optional)
+            if self.show_wiggles {
+                if let (Some(wiggle_buf), Some(volume)) = (&sr.wiggle_buffer, &self.volume) {
+                    render_pass.set_pipeline(&renderer.wiggle_pipeline);
+                    render_pass.set_vertex_buffer(0, wiggle_buf.slice(..));
+                    
+                    let height = volume.provider.sample_count() as u32;
+                    if height > 1 {
+                        let trace_count = sr.wiggle_count / height;
+                        for i in 0..trace_count {
+                            render_pass.draw(i*height..(i+1)*height, 0..1);
+                        }
+                    }
+                }
+            }
         }
 
         let renderer = resources.get::<seisly_render::Renderer>();

@@ -27,6 +27,8 @@ impl ColormapManager {
             ColormapPreset::Viridis,
             ColormapPreset::Magma,
             ColormapPreset::Gray,
+            ColormapPreset::Rainbow,
+            ColormapPreset::BlueWhiteRed,
         ] {
             let data = Self::generate_preset_data(&preset);
             let texture = device.create_texture(&TextureDescriptor {
@@ -151,5 +153,75 @@ impl ColormapManager {
             data.extend_from_slice(&color);
         }
         data
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_rainbow_colormap_has_256_entries() {
+        let data = ColormapManager::generate_preset_data(&ColormapPreset::Rainbow);
+        assert_eq!(data.len(), 1024); // 256 * 4 bytes (RGBA)
+    }
+
+    #[test]
+    fn test_rainbow_first_entry_is_red() {
+        let data = ColormapManager::generate_preset_data(&ColormapPreset::Rainbow);
+        assert_eq!(data[0], 255); // R
+        assert_eq!(data[1], 0);   // G
+        assert_eq!(data[2], 0);   // B
+        assert_eq!(data[3], 255); // A
+    }
+
+    #[test]
+    fn test_bluewhitered_midpoint_is_white() {
+        let data = ColormapManager::generate_preset_data(&ColormapPreset::BlueWhiteRed);
+        // The exact white point is at the transition between the two lerp segments.
+        // Index 127 is the last entry in the blue-to-white segment (t=127/255, t*2=0.996)
+        // Index 128 is the first in the white-to-red segment (t=128/255, (t-0.5)*2=0.004)
+        // Check that both are very close to white (within 3 of 255)
+        for idx in [127, 128] {
+            let offset = idx * 4;
+            assert!(data[offset] >= 252, "R at index {} should be ~255, got {}", idx, data[offset]);
+            assert!(data[offset + 1] >= 252, "G at index {} should be ~255, got {}", idx, data[offset + 1]);
+            assert!(data[offset + 2] >= 252, "B at index {} should be ~255, got {}", idx, data[offset + 2]);
+        }
+    }
+
+    #[test]
+    fn test_bluewhitered_has_256_entries() {
+        let data = ColormapManager::generate_preset_data(&ColormapPreset::BlueWhiteRed);
+        assert_eq!(data.len(), 1024);
+    }
+
+    #[test]
+    fn test_bluewhitered_first_entry_is_blue() {
+        let data = ColormapManager::generate_preset_data(&ColormapPreset::BlueWhiteRed);
+        assert_eq!(data[0], 0);   // R
+        assert_eq!(data[1], 0);   // G
+        assert_eq!(data[2], 255); // B
+        assert_eq!(data[3], 255); // A
+    }
+
+    #[test]
+    fn test_bluewhitered_last_entry_is_red() {
+        let data = ColormapManager::generate_preset_data(&ColormapPreset::BlueWhiteRed);
+        let offset = 255 * 4;
+        assert_eq!(data[offset], 255);     // R
+        assert_eq!(data[offset + 1], 0);   // G
+        assert_eq!(data[offset + 2], 0);   // B
+        assert_eq!(data[offset + 3], 255); // A
+    }
+
+    #[test]
+    fn test_rainbow_last_entry_is_violet() {
+        let data = ColormapManager::generate_preset_data(&ColormapPreset::Rainbow);
+        let offset = 255 * 4;
+        // Last entry should be close to violet (127, 0, 255)
+        assert_eq!(data[offset + 1], 0);   // G should be 0
+        assert_eq!(data[offset + 2], 255); // B should be 255
+        assert_eq!(data[offset + 3], 255); // A should be 255
     }
 }

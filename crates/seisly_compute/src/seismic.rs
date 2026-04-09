@@ -1,11 +1,4 @@
-use seisly_io::segy::mmap::MmappedSegy;
-
-pub trait TraceProvider: Send + Sync {
-    fn get_trace(&self, inline: i32, xline: i32) -> Option<Vec<f32>>;
-    fn inline_range(&self) -> (i32, i32);
-    fn crossline_range(&self) -> (i32, i32);
-    fn sample_count(&self) -> usize;
-}
+pub use seisly_core::seismic::TraceProvider;
 
 pub struct SeismicVolume {
     pub provider: Box<dyn TraceProvider>,
@@ -64,21 +57,30 @@ impl SeismicVolume {
         }
         slice
     }
-}
 
-// Implement for MmappedSegy
-impl TraceProvider for MmappedSegy {
-    fn get_trace(&self, inline: i32, xline: i32) -> Option<Vec<f32>> {
-        self.get_trace(inline, xline)
-    }
-    fn inline_range(&self) -> (i32, i32) {
-        self.inline_range
-    }
-    fn crossline_range(&self) -> (i32, i32) {
-        self.crossline_range
-    }
-    fn sample_count(&self) -> usize {
-        self.sample_count
+    pub fn get_time_slice(&self, sample_idx: usize) -> Vec<f32> {
+        let (min_inline, max_inline) = self.provider.inline_range();
+        let (min_xline, max_xline) = self.provider.crossline_range();
+        let sample_count = self.provider.sample_count();
+
+        if sample_idx >= sample_count {
+            return Vec::new();
+        }
+
+        let inline_count = (max_inline - min_inline + 1) as usize;
+        let xline_count = (max_xline - min_xline + 1) as usize;
+        let mut slice = Vec::with_capacity(inline_count * xline_count);
+
+        for inline in min_inline..=max_inline {
+            for xline in min_xline..=max_xline {
+                if let Some(trace) = self.provider.get_trace(inline, xline) {
+                    slice.push(trace[sample_idx]);
+                } else {
+                    slice.push(0.0);
+                }
+            }
+        }
+        slice
     }
 }
 
@@ -128,6 +130,7 @@ impl TraceProvider for InMemoryProvider {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use seisly_io::segy::mmap::MmappedSegy;
 
     #[test]
     fn test_get_inline() {

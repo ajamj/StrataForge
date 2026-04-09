@@ -783,9 +783,28 @@ impl eframe::App for SeislyApp {
             .frame(egui::Frame::none().fill(theme.status_bar_bg))
             .show(ctx, |ui| {
                 ui.horizontal(|ui| {
-                    ui.label(egui::RichText::new("Ready").color(theme.status_bar_fg).size(10.0));
+                    let status_text = if self.volume.is_some() {
+                        if let Some(vol_entry) = self.seismic_volumes.iter().find(|v| v.is_visible) {
+                            format!("Volume: {}", vol_entry.name)
+                        } else {
+                            "Seismic data loaded".to_string()
+                        }
+                    } else {
+                        "No seismic data loaded".to_string()
+                    };
+                    ui.label(egui::RichText::new(&status_text).color(theme.status_bar_fg).size(10.0).monospace());
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                        ui.label(egui::RichText::new("X: 250.5  Y: 312.8  Z: 1523m ").color(theme.status_bar_fg).size(10.0));
+                        let right_text = if let Some(v) = &self.volume {
+                            let (min_il, max_il) = v.provider.inline_range();
+                            let (min_xl, max_xl) = v.provider.crossline_range();
+                            let samples = v.provider.sample_count();
+                            format!("IL:{}-{} XL:{}-{} S:{}", min_il, max_il, min_xl, max_xl, samples)
+                        } else {
+                            String::new()
+                        };
+                        if !right_text.is_empty() {
+                            ui.label(egui::RichText::new(&right_text).color(theme.status_bar_fg).size(10.0).monospace());
+                        }
                     });
                 });
             });

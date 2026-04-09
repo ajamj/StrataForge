@@ -1,10 +1,11 @@
+use std::sync::Arc;
 use wgpu::{Device, Queue, ComputePipeline, BindGroupLayout};
 
 use crate::{GpuError, Result};
 
 pub struct GpuAttributeComputer {
-    device: Device,
-    queue: Queue,
+    device: Arc<Device>,
+    queue: Arc<Queue>,
     pipeline: ComputePipeline,
     bind_group_layout: BindGroupLayout,
 }
@@ -22,6 +23,71 @@ impl GpuAttributeComputer {
             .await
             .map_err(|e| GpuError::Initialization(e.to_string()))?;
         
+        let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+            label: Some("Attribute Shader"),
+            source: wgpu::ShaderSource::Wgsl(include_str!("shaders/attribute.wgsl").into()),
+        });
+        
+        let bind_group_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+            label: Some("Attribute Bind Group Layout"),
+            entries: &[
+                wgpu::BindGroupLayoutEntry {
+                    binding: 0,
+                    visibility: wgpu::ShaderStages::COMPUTE,
+                    ty: wgpu::BindingType::Buffer {
+                        ty: wgpu::BufferBindingType::Storage { read_only: true },
+                        has_dynamic_offset: false,
+                        min_binding_size: None,
+                    },
+                    count: None,
+                },
+                wgpu::BindGroupLayoutEntry {
+                    binding: 1,
+                    visibility: wgpu::ShaderStages::COMPUTE,
+                    ty: wgpu::BindingType::Buffer {
+                        ty: wgpu::BufferBindingType::Storage { read_only: false },
+                        has_dynamic_offset: false,
+                        min_binding_size: None,
+                    },
+                    count: None,
+                },
+                wgpu::BindGroupLayoutEntry {
+                    binding: 2,
+                    visibility: wgpu::ShaderStages::COMPUTE,
+                    ty: wgpu::BindingType::Buffer {
+                        ty: wgpu::BufferBindingType::Uniform,
+                        has_dynamic_offset: false,
+                        min_binding_size: None,
+                    },
+                    count: None,
+                },
+            ],
+        });
+        
+        let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+            label: Some("Attribute Pipeline"),
+            bind_group_layouts: &[&bind_group_layout],
+            push_constant_ranges: &[],
+        });
+        
+        let pipeline = device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
+            label: Some("Attribute Compute"),
+            layout: Some(&pipeline_layout),
+            module: &shader,
+            entry_point: "compute_rms",
+            cache: None,
+            compilation_options: Default::default(),
+        });
+        
+        Ok(Self {
+            device: Arc::new(device),
+            queue: Arc::new(queue),
+            pipeline,
+            bind_group_layout,
+        })
+    }
+
+    pub fn from_device(device: Arc<Device>, queue: Arc<Queue>) -> Result<Self> {
         let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("Attribute Shader"),
             source: wgpu::ShaderSource::Wgsl(include_str!("shaders/attribute.wgsl").into()),
