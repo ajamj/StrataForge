@@ -2,17 +2,29 @@ use wgpu::{
     include_wgsl, BindGroupLayout, Device, RenderPipeline, TextureFormat,
 };
 
+/// Type of seismic slice being rendered.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SliceType {
+    /// Inline slice (constant inline number, varying crossline)
+    Inline,
+    /// Crossline slice (constant crossline number, varying inline)
+    Crossline,
+    /// Time slice (constant time/sample number, varying inline and crossline)
+    TimeSlice,
+}
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone, bytemuck::Pod, bytemuck::Zeroable)]
 pub struct SeismicUniforms {
     pub gain: f32,
     pub clip: f32,
-    pub colormap_index: u32,
-    pub _padding: u32,
+    pub u_scale: f32,
+    pub v_scale: f32,
 }
 
 pub struct SeismicRenderer {
     pub pipeline: RenderPipeline,
+    pub wiggle_pipeline: RenderPipeline,
     pub bind_group_layout: BindGroupLayout,
 }
 
@@ -62,7 +74,7 @@ impl SeismicRenderer {
                 // Uniforms
                 wgpu::BindGroupLayoutEntry {
                     binding: 4,
-                    visibility: wgpu::ShaderStages::FRAGMENT,
+                    visibility: wgpu::ShaderStages::VERTEX_FRAGMENT,
                     ty: wgpu::BindingType::Buffer {
                         ty: wgpu::BufferBindingType::Uniform,
                         has_dynamic_offset: false,
@@ -85,22 +97,7 @@ impl SeismicRenderer {
             vertex: wgpu::VertexState {
                 module: &shader,
                 entry_point: "vs_main",
-                buffers: &[wgpu::VertexBufferLayout {
-                    array_stride: 20, // 5 * 4 bytes
-                    step_mode: wgpu::VertexStepMode::Vertex,
-                    attributes: &[
-                        wgpu::VertexAttribute {
-                            offset: 0,
-                            shader_location: 0,
-                            format: wgpu::VertexFormat::Float32x3,
-                        },
-                        wgpu::VertexAttribute {
-                            offset: 12,
-                            shader_location: 1,
-                            format: wgpu::VertexFormat::Float32x2,
-                        },
-                    ],
-                }],
+                buffers: &[], // Vertex-buffer-less
                 compilation_options: Default::default(),
             },
             fragment: Some(wgpu::FragmentState {
@@ -128,8 +125,51 @@ impl SeismicRenderer {
             cache: None,
         });
 
+        let wiggle_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+            label: Some("Wiggle Render Pipeline"),
+            layout: Some(&pipeline_layout),
+            vertex: wgpu::VertexState {
+                module: &shader,
+                entry_point: "vs_wiggle",
+                buffers: &[wgpu::VertexBufferLayout {
+                    array_stride: 12, // 3 * 4 bytes (trace_idx, sample_idx, amplitude)
+                    step_mode: wgpu::VertexStepMode::Vertex,
+                    attributes: &[wgpu::VertexAttribute {
+                        offset: 0,
+                        shader_location: 0,
+                        format: wgpu::VertexFormat::Float32x3,
+                    }],
+                }],
+                compilation_options: Default::default(),
+            },
+            fragment: Some(wgpu::FragmentState {
+                module: &shader,
+                entry_point: "fs_wiggle",
+                targets: &[Some(wgpu::ColorTargetState {
+                    format,
+                    blend: Some(wgpu::BlendState::ALPHA_BLENDING),
+                    write_mask: wgpu::ColorWrites::ALL,
+                })],
+                compilation_options: Default::default(),
+            }),
+            primitive: wgpu::PrimitiveState {
+                topology: wgpu::PrimitiveTopology::LineStrip,
+                strip_index_format: None,
+                front_face: wgpu::FrontFace::Ccw,
+                cull_mode: None,
+                unclipped_depth: false,
+                polygon_mode: wgpu::PolygonMode::Fill,
+                conservative: false,
+            },
+            depth_stencil: None,
+            multisample: wgpu::MultisampleState::default(),
+            multiview: None,
+            cache: None,
+        });
+
         Self {
             pipeline,
+            wiggle_pipeline,
             bind_group_layout,
         }
     }

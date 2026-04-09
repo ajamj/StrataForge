@@ -3,7 +3,7 @@ use tonic::transport::Channel;
 
 pub mod seisly {
     pub mod analysis {
-        tonic::include_proto!("Seisly.analysis");
+        tonic::include_proto!("seisly.analysis");
     }
 }
 

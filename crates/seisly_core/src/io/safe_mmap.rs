@@ -210,14 +210,18 @@ impl SafeMmap {
         Some(f32::from_le_bytes([slice[0], slice[1], slice[2], slice[3]]))
     }
 
-    /// Returns a reference to the underlying memory-mapped data.
+    /// Returns a reference to the underlying memory-mapped data as a byte slice.
     ///
     /// # Safety
     ///
-    /// This method is unsafe because it bypasses the bounds checking.
-    /// Only use this if you need to pass the mmap to other APIs and
-    /// you manually ensure all accesses are within bounds.
+    /// This method is unsafe because it bypasses bounds checking.
+    /// Callers must ensure the file is not modified while mapped,
+    /// the slice is not used after SafeMmap is dropped, and all
+    /// accesses are within bounds.
+    ///
+    /// Prefer `get()`, `get_slice()`, or typed accessors instead.
     #[inline]
+    #[allow(unsafe_code)]
     pub unsafe fn as_slice(&self) -> &[u8] {
         &self.inner
     }

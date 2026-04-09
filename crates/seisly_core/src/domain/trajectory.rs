@@ -36,7 +36,7 @@ impl Trajectory {
     pub fn add_station(&mut self, md: f64, x: f64, y: f64, z: f64) {
         self.stations.push(Station { md, x, y, z });
         self.stations
-            .sort_by(|a, b| a.md.partial_cmp(&b.md).unwrap());
+            .sort_by(|a, b| a.md.total_cmp(&b.md));
     }
 }
 

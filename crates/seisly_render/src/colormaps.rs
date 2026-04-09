@@ -10,6 +10,8 @@ pub enum ColormapPreset {
     Viridis,
     Magma,
     Gray,
+    Rainbow,
+    BlueWhiteRed,
 }
 
 pub struct ColormapManager {
@@ -120,6 +122,30 @@ impl ColormapManager {
                 ColormapPreset::Gray => {
                     let val = (t * 255.0) as u8;
                     [val, val, val, 255]
+                }
+                ColormapPreset::Rainbow => {
+                    // Red → Orange → Yellow → Green → Cyan → Blue → Violet
+                    if t < 1.0 / 6.0 {
+                        Self::lerp_color([255, 0, 0], [255, 127, 0], t * 6.0)
+                    } else if t < 2.0 / 6.0 {
+                        Self::lerp_color([255, 127, 0], [255, 255, 0], (t - 1.0 / 6.0) * 6.0)
+                    } else if t < 3.0 / 6.0 {
+                        Self::lerp_color([255, 255, 0], [0, 255, 0], (t - 2.0 / 6.0) * 6.0)
+                    } else if t < 4.0 / 6.0 {
+                        Self::lerp_color([0, 255, 0], [0, 255, 255], (t - 3.0 / 6.0) * 6.0)
+                    } else if t < 5.0 / 6.0 {
+                        Self::lerp_color([0, 255, 255], [0, 0, 255], (t - 4.0 / 6.0) * 6.0)
+                    } else {
+                        Self::lerp_color([0, 0, 255], [127, 0, 255], (t - 5.0 / 6.0) * 6.0)
+                    }
+                }
+                ColormapPreset::BlueWhiteRed => {
+                    // Same as Seismic — explicit alias
+                    if t < 0.5 {
+                        Self::lerp_color([0, 0, 255], [255, 255, 255], t * 2.0)
+                    } else {
+                        Self::lerp_color([255, 255, 255], [255, 0, 0], (t - 0.5) * 2.0)
+                    }
                 }
             };
             data.extend_from_slice(&color);

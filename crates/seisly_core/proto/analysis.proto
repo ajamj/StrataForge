@@ -1,5 +1,5 @@
 syntax = "proto3";
-package Seisly.analysis;
+package seisly.analysis;
 
 service Detection {
   rpc DetectFaults (SliceRequest) returns (DetectionResponse);
