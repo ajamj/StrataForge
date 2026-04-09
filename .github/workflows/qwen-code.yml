@@ -1,0 +1,259 @@
+name: '🤖 Qwen Code'
+
+# Unified workflow: dispatch, triage, review, and invoke
+on:
+  pull_request_review_comment:
+    types: ['created']
+  pull_request_review:
+    types: ['submitted']
+  pull_request:
+    types: ['opened']
+  issues:
+    types: ['opened', 'reopened']
+  issue_comment:
+    types: ['created']
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.event.pull_request.number || github.event.issue.number || github.run_id }}'
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: 'bash'
+
+jobs:
+  # ---- Dispatch Router ----
+  dispatch:
+    if: >-
+      (
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.fork == false
+      ) || (
+        github.event_name == 'issues' &&
+        contains(fromJSON('["opened", "reopened"]'), github.event.action)
+      ) || (
+        github.event.sender.type == 'User' &&
+        startsWith(github.event.comment.body || github.event.review.body || github.event.issue.body, '@qwen-code') &&
+        contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association || github.event.review.author_association || github.event.issue.author_association)
+      )
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 2
+    permissions:
+      contents: 'read'
+      issues: 'write'
+      pull-requests: 'write'
+    outputs:
+      command: '${{ steps.extract.outputs.command }}'
+      request: '${{ steps.extract.outputs.request }}'
+      additional_context: '${{ steps.extract.outputs.additional_context }}'
+      issue_number: '${{ github.event.pull_request.number || github.event.issue.number }}'
+    steps:
+      - name: 'Extract command'
+        id: 'extract'
+        uses: 'actions/github-script@v8'
+        env:
+          EVENT_TYPE: '${{ github.event_name }}.${{ github.event.action }}'
+          REQUEST: '${{ github.event.comment.body || github.event.review.body || github.event.issue.body }}'
+        with:
+          script: |
+            const eventType = process.env.EVENT_TYPE;
+            const request = process.env.REQUEST;
+            core.setOutput('request', request);
+
+            if (eventType === 'pull_request.opened') {
+              core.setOutput('command', 'review');
+            } else if (['issues.opened', 'issues.reopened'].includes(eventType)) {
+              core.setOutput('command', 'triage');
+            } else if (request.startsWith("@qwen-code /review")) {
+              core.setOutput('command', 'review');
+              core.setOutput('additional_context', request.replace(/^@qwen-code \/review/, '').trim());
+            } else if (request.startsWith("@qwen-code /triage")) {
+              core.setOutput('command', 'triage');
+            } else if (request.startsWith("@qwen-code")) {
+              core.setOutput('command', 'invoke');
+              core.setOutput('additional_context', request.replace(/^@qwen-code/, '').trim());
+            } else {
+              core.setOutput('command', 'fallthrough');
+            }
+
+      - name: 'Acknowledge'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          ISSUE_NUMBER: '${{ github.event.pull_request.number || github.event.issue.number }}'
+          REPO: '${{ github.repository }}'
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "🤖 Received your request — working on it! [Logs](/${{ github.repository }}/actions/runs/${{ github.run_id }})" --repo "$REPO"
+
+  # ---- Triage ----
+  triage:
+    needs: 'dispatch'
+    if: needs.dispatch.outputs.command == 'triage'
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 7
+    permissions:
+      contents: 'read'
+      issues: 'write'
+      pull-requests: 'write'
+    outputs:
+      available_labels: '${{ steps.labels.outputs.labels }}'
+      selected_labels: '${{ env.SELECTED_LABELS }}'
+    steps:
+      - name: 'Get labels'
+        id: 'labels'
+        uses: 'actions/github-script@v8'
+        with:
+          script: |
+            const labels = [];
+            for await (const res of github.paginate.iterator(github.rest.issues.listLabelsForRepo, {
+              owner: context.repo.owner, repo: context.repo.repo, per_page: 100
+            })) labels.push(...res.data);
+            const names = labels.map(l => l.name).sort();
+            core.setOutput('labels', names.join(','));
+
+      - name: 'Analyze issue'
+        id: 'analysis'
+        if: steps.labels.outputs.labels != ''
+        uses: 'QwenLM/qwen-code-action@v1'
+        env:
+          GITHUB_TOKEN: ''
+          ISSUE_TITLE: '${{ github.event.issue.title }}'
+          ISSUE_BODY: '${{ github.event.issue.body }}'
+          AVAILABLE_LABELS: '${{ steps.labels.outputs.labels }}'
+        with:
+          openai_api_key: '${{ secrets.QWEN_API_KEY }}'
+          openai_base_url: '${{ vars.QWEN_BASE_URL }}'
+          openai_model: '${{ vars.QWEN_MODEL }}'
+          qwen_cli_version: '${{ vars.QWEN_CLI_VERSION }}'
+          workflow_name: 'qwen-code'
+          settings: |
+            {
+              "model": { "maxSessionTurns": 25 },
+              "telemetry": { "enabled": true, "target": "local", "outfile": ".qwen/telemetry.log" },
+              "tools": { "core": ["run_shell_command(echo)"] }
+            }
+          prompt: '/qwen-triage'
+
+      - name: 'Apply labels'
+        if: needs.dispatch.outputs.selected_labels != ''
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          ISSUE_NUMBER: '${{ github.event.issue.number }}'
+          AVAILABLE: '${{ steps.labels.outputs.labels }}'
+          SELECTED: '${{ needs.dispatch.outputs.selected_labels }}'
+        uses: 'actions/github-script@v8'
+        with:
+          script: |
+            const avail = (process.env.AVAILABLE || '').split(',').map(s => s.trim());
+            const sel = (process.env.SELECTED || '').split(',').map(s => s.trim()).filter(s => avail.includes(s));
+            if (sel.length > 0) {
+              await github.rest.issues.setLabels({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: parseInt(process.env.ISSUE_NUMBER), labels: sel
+              });
+            }
+
+  # ---- PR Review ----
+  review:
+    needs: 'dispatch'
+    if: needs.dispatch.outputs.command == 'review'
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 7
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      issues: 'write'
+      pull-requests: 'write'
+    steps:
+      - uses: 'actions/checkout@v4'
+      - uses: 'QwenLM/qwen-code-action@v1'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          ISSUE_TITLE: '${{ github.event.pull_request.title }}'
+          ISSUE_BODY: '${{ github.event.pull_request.body }}'
+          PULL_REQUEST_NUMBER: '${{ github.event.pull_request.number }}'
+          REPOSITORY: '${{ github.repository }}'
+          ADDITIONAL_CONTEXT: '${{ needs.dispatch.outputs.additional_context }}'
+        with:
+          openai_api_key: '${{ secrets.QWEN_API_KEY }}'
+          openai_base_url: '${{ vars.QWEN_BASE_URL }}'
+          openai_model: '${{ vars.QWEN_MODEL }}'
+          qwen_cli_version: '${{ vars.QWEN_CLI_VERSION }}'
+          workflow_name: 'qwen-code'
+          settings: |
+            {
+              "model": { "maxSessionTurns": 25 },
+              "telemetry": { "enabled": true, "target": "local", "outfile": ".qwen/telemetry.log" },
+              "mcpServers": {
+                "github": {
+                  "command": "docker",
+                  "args": ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server:v0.18.0"],
+                  "includeTools": ["add_comment_to_pending_review", "create_pending_pull_request_review", "pull_request_read", "submit_pending_pull_request_review"],
+                  "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}" }
+                }
+              },
+              "tools": { "core": ["run_shell_command(cat)", "run_shell_command(echo)", "run_shell_command(grep)", "run_shell_command(head)", "run_shell_command(tail)"] }
+            }
+          prompt: '/qwen-review'
+
+  # ---- Generic Invoke ----
+  invoke:
+    needs: 'dispatch'
+    if: needs.dispatch.outputs.command == 'invoke'
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 7
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      issues: 'write'
+      pull-requests: 'write'
+    steps:
+      - uses: 'QwenLM/qwen-code-action@v1'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          ISSUE_TITLE: '${{ github.event.pull_request.title || github.event.issue.title }}'
+          DESCRIPTION: '${{ github.event.pull_request.body || github.event.issue.body }}'
+          EVENT_NAME: '${{ github.event_name }}'
+          IS_PULL_REQUEST: '${{ !!github.event.pull_request }}'
+          ISSUE_NUMBER: '${{ github.event.pull_request.number || github.event.issue.number }}'
+          REPOSITORY: '${{ github.repository }}'
+          ADDITIONAL_CONTEXT: '${{ needs.dispatch.outputs.additional_context }}'
+        with:
+          openai_api_key: '${{ secrets.QWEN_API_KEY }}'
+          openai_base_url: '${{ vars.QWEN_BASE_URL }}'
+          openai_model: '${{ vars.QWEN_MODEL }}'
+          qwen_cli_version: '${{ vars.QWEN_CLI_VERSION }}'
+          workflow_name: 'qwen-code'
+          settings: |
+            {
+              "model": { "maxSessionTurns": 25 },
+              "telemetry": { "enabled": true, "target": "local", "outfile": ".qwen/telemetry.log" },
+              "mcpServers": {
+                "github": {
+                  "command": "docker",
+                  "args": ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server:v0.18.0"],
+                  "includeTools": ["add_issue_comment", "get_issue", "get_issue_comments", "list_issues", "search_issues", "create_pull_request", "pull_request_read", "list_pull_requests", "search_pull_requests", "create_branch", "create_or_update_file", "delete_file", "fork_repository", "get_commit", "get_file_contents", "list_commits", "push_files", "search_code"],
+                  "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}" }
+                }
+              },
+              "tools": { "core": ["run_shell_command(cat)", "run_shell_command(echo)", "run_shell_command(grep)", "run_shell_command(head)", "run_shell_command(tail)"] }
+            }
+          prompt: '/qwen-invoke'
+
+  # ---- Fallthrough (no match) ----
+  fallthrough:
+    needs: ['dispatch', 'triage', 'review', 'invoke']
+    if: always() && !cancelled() && (failure() || needs.dispatch.outputs.command == 'fallthrough')
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 1
+    permissions:
+      contents: 'read'
+      issues: 'write'
+      pull-requests: 'write'
+    steps:
+      - name: 'Notify failure'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          ISSUE_NUMBER: '${{ github.event.pull_request.number || github.event.issue.number }}'
+          REPO: '${{ github.repository }}'
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "🤖 Couldn't process your request. [Check logs](/${{ github.repository }}/actions/runs/${{ github.run_id }})." --repo "$REPO"
